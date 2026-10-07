@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/c/:key", "destination": "/api/share?k=:key" }
+  ],
+  "crons": [
+    { "path": "/api/record?deep=1", "schedule": "17 6 * * *" }
+  ]
+}

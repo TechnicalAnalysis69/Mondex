@@ -1,1 +1,1 @@
-{ "name": "mondex", "private": true, "version": "0.1.0", "type": "module", "engines": { "node": ">=18" } }
+{ "name": "mondex", "private": true, "version": "0.1.0", "type": "module", "engines": { "node": ">=18" }, "dependencies": { "@vercel/og": "^0.6.2" } }
