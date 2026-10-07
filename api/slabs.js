@@ -42,19 +42,28 @@ export default async function handler(req, res) {
       const m = (a.content && a.content.metadata) || {};
       const attrs = {};
       (m.attributes || []).forEach((t) => { if (t && t.trait_type) attrs[String(t.trait_type).toLowerCase()] = t.value; });
-      const pick = (...names) => { for (const n of names) for (const k in attrs) if (k.includes(n)) return attrs[k]; return null; };
+      const pick = (...names) => { for (const n of names) { if (attrs[n] != null && attrs[n] !== '') return attrs[n]; } return null; };
       const files = (a.content && a.content.files) || [];
+      const rawName = m.name || 'Graded card';
+      // "2021 #175 Full Art/Celebi V CGC" -> "Celebi V"
+      let title = rawName.includes('/') ? rawName.split('/').slice(1).join('/') : rawName;
+      title = title.replace(/\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)\s*$/i, '').trim() || rawName;
+      const insured = parseFloat(pick('insured value'));
       return {
         id: a.id,
-        name: m.name || 'Graded card',
+        name: rawName,
+        title,
         image: (files[0] && (files[0].cdn_uri || files[0].uri)) || (a.content && a.content.links && a.content.links.image) || null,
-        grade: pick('grade') ,
-        grader: pick('grading company', 'grader', 'company'),
+        grade: pick('gradenum') || pick('the grade', 'grade'),
+        gradeText: pick('the grade', 'grade'),
+        grader: pick('grading company'),
+        cert: pick('grading id'),
         set: pick('set'),
         year: pick('year'),
-        cert: pick('cert', 'serial'),
+        insured: Number.isFinite(insured) ? insured : null,
+        vault: pick('vault'),
+        category: pick('category'),
         owner: a.ownership && a.ownership.owner,
-        attributes: m.attributes || [],
       };
     });
 
