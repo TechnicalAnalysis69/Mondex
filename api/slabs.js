@@ -8,6 +8,18 @@
 //
 // GET /api/slabs?page=1          → a page of vaulted slabs in the collection
 // GET /api/slabs?owner=<wallet>  → the slabs a wallet holds
+// "2022 #182 Galarian Zapdos V CGC 9 Brilliant Stars - English" -> "Galarian Zapdos V"
+// "2021 #175 Full Art/Celebi V CGC" -> "Celebi V"
+function cleanTitle(raw) {
+  let s = String(raw || '').trim();
+  const m = s.match(/^\d{4}\s+#\S+\s+(.*?)\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)\b/i);
+  if (m) s = m[1]; else s = s.replace(/^\d{4}\s+#\S+\s+/, '');
+  if (s.includes('/')) s = s.split('/').slice(1).join('/');
+  s = s.replace(/\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)(\s+\d+(\.\d+)?)?\s*$/i, '').trim();
+  return s || String(raw || 'Graded card');
+}
+const gradeNum = (num, text) => num || ((String(text || '').match(/\d+(\.\d+)?(?!.*\d)/) || [])[0]) || null;
+
 export default async function handler(req, res) {
   const key = process.env.HELIUS_API_KEY;
   const collection = process.env.CC_COLLECTION;
@@ -45,16 +57,14 @@ export default async function handler(req, res) {
       const pick = (...names) => { for (const n of names) { if (attrs[n] != null && attrs[n] !== '') return attrs[n]; } return null; };
       const files = (a.content && a.content.files) || [];
       const rawName = m.name || 'Graded card';
-      // "2021 #175 Full Art/Celebi V CGC" -> "Celebi V"
-      let title = rawName.includes('/') ? rawName.split('/').slice(1).join('/') : rawName;
-      title = title.replace(/\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)(\s+\d+(\.\d+)?)?\s*$/i, '').trim() || rawName;
+      const title = cleanTitle(rawName);
       const insured = parseFloat(pick('insured value'));
       return {
         id: a.id,
         name: rawName,
         title,
         image: (files[0] && (files[0].cdn_uri || files[0].uri)) || (a.content && a.content.links && a.content.links.image) || null,
-        grade: pick('gradenum') || pick('the grade', 'grade'),
+        grade: gradeNum(pick('gradenum'), pick('the grade', 'grade')),
         gradeText: pick('the grade', 'grade'),
         grader: pick('grading company'),
         cert: pick('grading id'),
