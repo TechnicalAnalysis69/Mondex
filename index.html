@@ -397,12 +397,12 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding-block:48px 32px;
 }
 </style>
 
-<div class="banner">Prototype · Cards, prices, users and balances are demo data · No live blockchain activity · Not affiliated with Nintendo or The Pokémon Company</div>
+<div class="banner">Independent fan project · Not affiliated with Nintendo, The Pokémon Company, Collector Crypt or Magic Eden</div>
 <header class="nav">
   <div class="wrap nav-in">
     <a class="logo" href="#home" aria-label="MONDEX home"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6DE"/><stop offset="1" stop-color="#B4873A"/></linearGradient></defs><path d="M16 1 30 9v14L16 31 2 23V9z" fill="none" stroke="url(#lg)" stroke-width="2.4"/><path d="M9 22V11l7 7 7-7v11" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linejoin="round"/></svg>MONDEX</a>
     <nav class="nav-links" aria-label="Main">
-      <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#packs">Packs</a><a href="#marketplace">Marketplace</a><a href="#leaderboard">Leaderboard</a><a href="#vault">Vault</a>
+      <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#marketplace">Marketplace</a>
     </nav>
     <div class="nav-right">
       <a class="rewards" href="#rewards">Rewards</a>
@@ -411,7 +411,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding-block:48px 32px;
     </div>
   </div>
   <nav class="mnav" id="mnav" aria-label="Mobile">
-    <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#packs">Packs</a><a href="#marketplace">Marketplace</a><a href="#leaderboard">Leaderboard</a><a href="#vault">Vault</a><a href="#rewards">Rewards</a><a href="#guide">Guide</a><a href="#faq">FAQ</a>
+    <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#marketplace">Marketplace</a><a href="#rewards">Rewards</a><a href="#guide">Guide</a><a href="#faq">FAQ</a>
   </nav>
 </header>
 <main id="view"></main>
@@ -423,46 +423,27 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding-block:48px 32px;
         <p class="eyebrow" style="margin-top:10px">Collect what comes next.</p>
         <p class="muted" style="margin-top:14px;font-size:.88rem;max-width:34ch">Real graded Pokémon cards, vaulted and traded on Solana. Pull them, trade them, or ship them home.</p>
       </div>
-      <div><h5>Collect</h5><ul><li><a href="#collect">My Collection</a></li><li><a href="#explore">Explore</a></li><li><a href="#packs">Packs</a></li><li><a href="#marketplace">Marketplace</a></li><li><a href="#vault">The Vault</a></li></ul></div>
-      <div><h5>Community</h5><ul><li><a href="#leaderboard">Leaderboard</a></li><li><a href="#rewards">Rewards</a></li><li><a href="#guide">Grading guide</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#collector-crypt">Collector Crypt</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h5>Collect</h5><ul><li><a href="#collect">My Collection</a></li><li><a href="#explore">Explore</a></li><li><a href="#slabs">Live Slabs</a></li><li><a href="#marketplace">Marketplace</a></li></ul></div>
+      <div><h5>More</h5><ul><li><a href="#rewards">Rewards</a></li><li><a href="#collector-crypt">About the vault</a></li><li><a href="#guide">Grading guide</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#faq">FAQ</a></li></ul></div>
       <div><h5>Social</h5><ul><li><span class="soon">X · coming soon</span></li><li><span class="soon">Discord · coming soon</span></li><li><span class="soon">Telegram · coming soon</span></li></ul>
         <h5 style="margin-top:20px">Legal</h5><ul><li><a href="#terms">Terms</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#terms" data-act="risk">Risk Disclosure</a></li></ul></div>
     </div>
-    <div class="disclaim"><span style="max-width:80ch">MONDEX is a digital collectible project. Nothing on this website constitutes financial, investment, or legal advice. Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. MONDEX is not affiliated with, sponsored or endorsed by Nintendo, The Pokémon Company, Collector Crypt, PSA, Beckett or CGC.</span><span>© 2026 MONDEX · Prototype build</span></div>
+    <div class="disclaim"><span style="max-width:80ch">MONDEX is a digital collectible project. Nothing on this website constitutes financial, investment, or legal advice. Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. MONDEX is not affiliated with, sponsored or endorsed by Nintendo, The Pokémon Company, Collector Crypt, PSA, Beckett or CGC.</span><span>© 2026 MONDEX</span></div>
   </div>
 </footer>
 <div id="modal"></div>
 <div id="toast" aria-live="polite"></div>
-<canvas id="fx"></canvas>
+
 <script>
 /* =====================================================================
-   MONDEX — prototype front end (real graded Pokémon cards, vaulted on Solana)
-   Model: each physical graded card sits in an insured vault and is represented
-   1:1 by a token. Users pull packs, trade 24/7, take instant buyback, or burn
-   the token to have the physical card shipped.
-   Everything here runs on demo data. Search "INTEGRATION POINT" for where real
-   Solana, marketplace, vault/custody, randomness, pricing and metadata services
-   connect. Secrets belong in server-side env vars, never in this file.
+   MONDEX — graded Pokémon slabs on Solana
+   Live data: Collector Crypt tokens via Helius (api/slabs.js), Magic Eden
+   listings (api/listings.js), card images + TCGplayer prices via the
+   Pokémon TCG API (api/cards.js). Wallets: Phantom, Solflare, Backpack.
+   MONDEX never takes custody of funds or cards and never asks for keys.
    ===================================================================== */
 (function(){
 'use strict';
-
-/* ---------------- Config (prototype, configurable) ---------------- */
-const RARITIES=['Common','Rare','Epic','Legendary','Mythic'];
-// Pull tiers are value bands, not printed rarities.
-const R={
-  Common:{score:1,odds:62,band:'$15–60'},
-  Rare:{score:5,odds:25,band:'$60–200'},
-  Epic:{score:15,odds:9.5,band:'$200–600'},
-  Legendary:{score:50,odds:3,band:'$600–2,500'},
-  Mythic:{score:250,odds:0.5,band:'$2,500+'},
-};
-const PACK_PRICE=100;       // USDC, demo
-const BUYBACK=0.85;         // instant buyback share of insured value, demo
-const REDEEM_FEE=15;        // USDC, demo
-const BONUS={firstEdition:0.5,completedSet:100,season:500};
-const LEVELS=[[1,'Novice'],[5,'Explorer'],[10,'Collector'],[20,'Hunter'],[30,'Elite'],[50,'Master'],[75,'Legend'],[100,'Mythic']];
-
 /* Energy-type colors and simple glyphs (generic shapes, not official symbols) */
 const GLYPH={
   Fire:'<path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2.5 1.2-3.8 2.4-5 .2 1.6 1 2.6 2 3-.6-3.2-.2-6.2.6-9z" fill="currentColor"/>',
@@ -481,7 +462,6 @@ const TY={
   Darkness:{c1:'#5B6B8C',c2:'#B9C6E6',bg:'#0C1020'},Dragon:{c1:'#D8B24A',c2:'#FFE9A8',bg:'#1E1A08'},Colorless:{c1:'#C9C4D8',c2:'#FFFFFF',bg:'#1C1A26'},
 };
 const TYPES=Object.keys(TY);
-
 /* ---------------- Card catalog (real cards; names identify the cards) ----------------
    INTEGRATION POINT (metadata): replace with the vault inventory API / token metadata
    (name, set, number, grader, grade, cert, image, insured value). */
@@ -579,79 +559,6 @@ async function loadLive(){
   }
 }
 const find=(name,set,fe)=>CARDS.find(c=>c.name===name&&(!set||c.set===set)&&(fe===undefined||c.fe===fe));
-const GMULT={10:3.2,9.5:2,9:1.4,8.5:1.15,8:1,7:.7};
-// INTEGRATION POINT (pricing): insured value should come from the custodian's appraisal
-// or a pricing oracle. These figures are generated demo values, not market data.
-const value=(c,grade)=>Math.round(TIER_BASE[c.rarity]*c.k*(GMULT[grade]||1)*(c.fe?1.6:1));
-
-const SETS=[
-  {id:'big3',name:'Base Set Big Three',ids:[find('Charizard','Base Set',false).id,find('Blastoise').id,find('Venusaur').id]},
-  {id:'birds',name:'Fossil Legendary Birds',ids:[find('Articuno').id,find('Zapdos','Fossil').id,find('Moltres').id]},
-  {id:'eevee',name:'Jungle Eeveelutions',ids:[find('Flareon').id,find('Jolteon').id,find('Vaporeon').id]},
-  {id:'fight',name:'Base Set Fighters',ids:[find('Hitmonchan').id,find('Machamp').id]},
-  {id:'skies',name:'Evolving Skies Alt Arts',ids:[find('Umbreon VMAX').id,find('Rayquaza VMAX').id]},
-  {id:'zard',name:'Charizard Collection',ids:CARDS.filter(c=>c.name.includes('Charizard')).map(c=>c.id)},
-];
-
-/* ---------------- Demo data ---------------- */
-const SAMPLE=[['Pikachu','Base Set',9,'PSA'],['Pikachu','Base Set',8,'PSA'],['Clefairy','Base Set',8,'PSA'],['Hitmonchan','Base Set',9,'PSA'],['Machamp','Base Set',9,'PSA'],['Nidoking','Base Set',8.5,'CGC'],['Kangaskhan','Jungle',9,'PSA'],['Ditto','Fossil',9,'BGS'],['Haunter','Fossil',8,'PSA'],['Flareon','Jungle',9,'PSA'],['Jolteon','Jungle',8,'PSA'],['Vaporeon','Jungle',9,'PSA'],['Snorlax','Jungle',10,'PSA'],['Lapras','Fossil',9,'CGC'],['Gyarados','Base Set',8,'PSA'],['Gengar','Fossil',9,'PSA'],['Mew ex','151',10,'PSA'],['Charizard VMAX',"Champion's Path",10,'PSA'],['Charizard ex','151',10,'PSA'],['Umbreon VMAX','Evolving Skies',10,'PSA']];
-const DEMO_USERS=['SlabHunter','vintage_val','Base1Ben','gem.mint.gina','PullPilot','holo_harper','graded_greg','neo.nadia','VaultVic','1stEdEddie','sleeve_sage','popreport_pat','chase.chloe','tcg_theo','mintcondition','BoosterBree','PSA10Pete','swirl_seeker','alt.art.ali','ShadowlessSam'];
-const LB=DEMO_USERS.map((u,i)=>{const r=rng(hash(u)),score=Math.round(48200*Math.pow(.84,i)*(0.96+r()*.08));
-  return {user:u,score,level:levelOf(score).level,mythics:Math.max(0,Math.round(score/9000+r()*1.2-.4)),sets:Math.min(6,Math.round(score/8000+r()*2)),hue:Math.floor(r()*360),weekly:Math.round(score*(0.04+r()*.12)),season:Math.round(score*(0.35+r()*.4)),delta:Math.round((r()-.4)*4)}});
-const LISTINGS_SEED=[
-  ['Charizard','Base Set',false,9,'PSA',2,'SlabHunter'],['Blastoise','Base Set',undefined,8,'PSA',5,'vintage_val'],['Umbreon VMAX','Evolving Skies',undefined,10,'PSA',9,'alt.art.ali'],['Lugia V','Silver Tempest',undefined,10,'PSA',1,'neo.nadia'],
-  ['Dark Charizard','Team Rocket',undefined,8,'BGS',20,'Base1Ben'],['Venusaur','Base Set',undefined,9,'CGC',30,'gem.mint.gina'],['Charizard ex','151',undefined,10,'PSA',44,'PullPilot'],['Machamp','Base Set',undefined,10,'PSA',3,'1stEdEddie'],
-  ['Pikachu','Base Set',undefined,9,'PSA',6,'sleeve_sage'],['Gengar VMAX','Fusion Strike',undefined,10,'PSA',12,'holo_harper'],['Lugia','Neo Genesis',undefined,8,'PSA',50,'ShadowlessSam'],['Snorlax','Jungle',undefined,9,'PSA',15,'tcg_theo'],
-];
-const QUESTS=[
-  {id:'q1',name:'Open 1 Pack',goal:1,rw:'+100 XP',f:s=>s.packsOpened},
-  {id:'q2',name:'Open 5 Packs',goal:5,rw:'+300 XP · Pack Opener badge',f:s=>s.packsOpened},
-  {id:'q3',name:'Collect 3 New Cards',goal:3,rw:'+150 XP',f:s=>s.newFromPacks.length},
-  {id:'q4',name:'Complete a Set',goal:1,rw:'Set Collector badge',f:s=>completedSets(s).length},
-  {id:'q5',name:'Trade 1 Card',goal:1,rw:'+200 XP · Trader badge',f:s=>s.trades},
-  {id:'q6',name:'Pull an Epic',goal:1,rw:'+150 XP',f:s=>countR(s,'Epic')},
-  {id:'q7',name:'Collect Every Charizard',goal:SETS[5].ids.length,rw:'Flame Frame cosmetic',f:s=>uniq(s).filter(id=>SETS[5].ids.includes(id)).length},
-  {id:'q8',name:'Wishlist 5 Cards',goal:5,rw:'+50 XP',f:s=>s.wishlist.length},
-  {id:'q9',name:'Pull a Legendary',goal:1,rw:'+400 XP',f:s=>countR(s,'Legendary')},
-  {id:'q10',name:'Ship a Card Home',goal:1,rw:'Collector Box badge',f:s=>s.shipped},
-];
-const REWARDS=[
-  {cat:'Collector',name:'First Pull',kind:'Badge',desc:'Open your first MONDEX pack.',f:s=>s.packsOpened>=1},
-  {cat:'Collector',name:'Level 10 Frame',kind:'Special frame',desc:'Reach Collector Level 10.',f:s=>levelOf(score(s)).level>=10},
-  {cat:'Collector',name:'Chase Hunter',kind:'Badge',desc:'Hold a Mythic-tier card.',f:s=>countR(s,'Mythic')>=1},
-  {cat:'Collection',name:'Eeveelution Frame',kind:'Special frame',desc:'Complete the Jungle Eeveelutions set.',f:s=>completedSets(s).some(x=>x.id==='eevee')},
-  {cat:'Collection',name:'Fighters Badge',kind:'Badge',desc:'Complete the Base Set Fighters set.',f:s=>completedSets(s).some(x=>x.id==='fight')},
-  {cat:'Collection',name:'Big Three Showcase',kind:'Profile cosmetic',desc:'Complete the Base Set Big Three.',f:s=>completedSets(s).some(x=>x.id==='big3')},
-  {cat:'Community',name:'Genesis Supporter',kind:'Early access',desc:'Early access to Season 02. Opens when the community launches.',f:()=>false},
-  {cat:'Community',name:'First Trade',kind:'Badge',desc:'Complete one marketplace trade.',f:s=>s.trades>=1},
-  {cat:'Seasonal',name:'Season Champion Slab',kind:'Vaulted graded card',desc:'Finish Season 01 at rank #1.',f:()=>false},
-  {cat:'Seasonal',name:'Free Pack Credit',kind:'Pack access',desc:'Complete 5 quests this season.',f:s=>QUESTS.filter(q=>q.f(s)>=q.goal).length>=5},
-];
-
-/* ---------------- State (demo, per browser) ----------------
-   INTEGRATION POINT (indexer): replace with reads from an indexer/DAS API keyed by wallet. */
-const KEY='mondex-proto-v2';
-let vidc=184000;
-const vid=()=>'VLT-'+(vidc+=Math.floor(Math.random()*97)+1);
-let uidc=Date.now();
-function uid(){return 'u'+(uidc++).toString(36)}
-const mkItem=(c,grade,grader,src)=>({uid:uid(),cid:c.id,grade,grader,vid:vid(),status:'vaulted',fav:false,src});
-const blank=()=>({wallet:null,collection:[],wishlist:[],packsOpened:0,newFromPacks:[],trades:0,shipped:0,buybacks:0,photos:{},
-  listings:LISTINGS_SEED.map((l,i)=>{const c=find(l[0],l[1],l[2]);return {lid:'L'+(i+1),cid:c.id,grade:l[3],grader:l[4],price:Math.round(value(c,l[3])*(1.02+((i*7)%10)/100)),hours:l[5],seller:l[6],gone:i===7}}),seeded:false});
-let S=blank();
-try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(blank(),JSON.parse(raw))}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Your browser storage is full. Remove a photo to keep saving.','err')}}
-
-/* ---------------- Scoring ---------------- */
-function cardScore(e){const c=BY[e.cid];return R[c.rarity].score*(c.fe?1+BONUS.firstEdition:1)}
-function mine(s){return s.collection.filter(e=>e.status==='vaulted')}
-function uniq(s){return [...new Set(s.collection.map(e=>e.cid))]}
-function completedSets(s){const u=new Set(uniq(s));return SETS.filter(x=>x.ids.every(id=>u.has(id)))}
-function countR(s,r){return s.collection.filter(e=>BY[e.cid].rarity===r).length}
-function score(s){const base=s.collection.reduce((a,e)=>a+cardScore(e),0),cs=completedSets(s).length;return Math.round(base+cs*BONUS.completedSet+(cs===SETS.length?BONUS.season:0))}
-function levelOf(sc){const level=Math.min(100,Math.floor(Math.sqrt(sc/3))+1);let title='Novice';LEVELS.forEach(([l,t])=>{if(level>=l)title=t});
-  const cur=3*Math.pow(level-1,2),next=3*Math.pow(level,2);return {level,title,pct:level>=100?100:Math.round((sc-cur)/(next-cur)*100),next}}
-
 /* ---------------- Helpers ---------------- */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -691,466 +598,404 @@ const faceOrPhoto=c=>S.photos[c.id]?`<img src="${S.photos[c.id]}" alt="Photo of 
 // a single card image that fails to load falls back to the placeholder face
 document.addEventListener('error',e=>{const t=e.target;if(t.tagName==='IMG'&&t.dataset.fallback){const c=BY[t.dataset.fallback];t.outerHTML=face(c)}},true);
 
-/* ---------------- Slab component ---------------- */
+/* ---------------- Modal / toast ---------------- */
+function modal(html,wide){$('#modal').innerHTML=`<div class="modal-bg" data-act="bg"><div class="modal ${wide?'wide':''}" role="dialog" aria-modal="true"><button class="x" data-act="close" aria-label="Close">×</button>${html}</div></div>`;document.body.style.overflow='hidden';setTimeout(()=>{const b=$('#modal .modal button:not(.x)');if(b)b.focus()},30)}
+function closeModal(){$('#modal').innerHTML='';document.body.style.overflow='';txOk=null}
+function toast(msg,kind=''){const t=document.createElement('div');t.className='t '+kind;t.textContent=msg;$('#toast').appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3800)}
+function copy(text){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>toast('Copied.','ok'),()=>toast('Copy failed. Select the text and copy it manually.','err'))}else toast('Copy is not available here.','err')}
+/* ---------------- Real wallet, real slabs, real listings ---------------- */
+let txOk=null; // kept for the shared modal helpers
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const tierOf=v=>v==null?'Rare':v<60?'Common':v<200?'Rare':v<600?'Epic':v<2500?'Legendary':'Mythic';
+const TIER_SCORE={Common:1,Rare:5,Epic:15,Legendary:50,Mythic:250};
+const LEVELS=[[1,'Novice'],[5,'Explorer'],[10,'Collector'],[20,'Hunter'],[30,'Elite'],[50,'Master'],[75,'Legend'],[100,'Mythic']];
+const TIER_BANDS={Common:'Under $60',Rare:'$60–200',Epic:'$200–600',Legendary:'$600–2,500',Mythic:'$2,500+'};
+const RARITIES=['Common','Rare','Epic','Legendary','Mythic'];
+const isAddr=v=>/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v||'');
+const short=a=>a?a.slice(0,4)+'…'+a.slice(-4):'';
+
+/* Per-browser conveniences only: wishlist, card photos, last wallet used */
+const KEY='mondex-v3';
+let S={wishlist:[],photos:{},lastWallet:null};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Your browser storage is full. Remove a photo to keep saving.','err')}}
+
+/* Collector Score from real holdings: tier points, +50% for a grade 10 */
+function slabScore(x){const t=tierOf(x.insured);return TIER_SCORE[t]*(parseFloat(x.grade)>=10?1.5:1)}
+function scoreOf(slabs){return Math.round(slabs.reduce((a,x)=>a+slabScore(x),0))}
+function levelOf(sc){const level=Math.min(100,Math.floor(Math.sqrt(sc/3))+1);let title='Novice';LEVELS.forEach(([l,t])=>{if(level>=l)title=t});
+  const cur=3*Math.pow(level-1,2),next=3*Math.pow(level,2);return {level,title,pct:level>=100?100:Math.round((sc-cur)/(next-cur)*100),next}}
+
+const ACHIEVEMENTS=[
+  {name:'First Slab',desc:'Hold one Collector Crypt slab.',type:'Water',f:s=>s.length>=1},
+  {name:'Five Deep',desc:'Hold five slabs.',type:'Grass',f:s=>s.length>=5},
+  {name:'Binder Builder',desc:'Hold twenty slabs.',type:'Fighting',f:s=>s.length>=20},
+  {name:'Gem Mint',desc:'Hold a grade 10.',type:'Colorless',f:s=>s.some(x=>parseFloat(x.grade)>=10)},
+  {name:'Triple Grader',desc:'Hold PSA, CGC and BGS slabs.',type:'Psychic',f:s=>['PSA','CGC','BGS'].every(g=>s.some(x=>String(x.grader||'').toUpperCase().includes(g)))},
+  {name:'Legendary Holder',desc:'Hold a Legendary-tier slab ($600+ insured).',type:'Fire',f:s=>s.some(x=>x.insured>=600)},
+  {name:'Mythic Hunter',desc:'Hold a Mythic-tier slab ($2,500+ insured).',type:'Dragon',f:s=>s.some(x=>x.insured>=2500)},
+  {name:'High Roller',desc:'Hold $1,000 in total insured value.',type:'Lightning',f:s=>s.reduce((a,x)=>a+(x.insured||0),0)>=1000},
+  {name:'Vintage Vault',desc:'Hold a slab from 2003 or earlier.',type:'Darkness',f:s=>s.some(x=>parseInt(x.year,10)<=2003)},
+  {name:'Import Collector',desc:'Hold a Japanese card.',type:'Water',f:s=>s.some(x=>/japan/i.test(x.set||'')||/japan/i.test(x.name||''))},
+];
+
+/* ---------------- Wallet (real) ----------------
+   Uses the wallet the visitor already has installed. MONDEX only reads the public
+   address; it never asks for a seed phrase or private key and never requests approvals.
+   Purchases are signed on Magic Eden, in the visitor's own wallet. */
+const W={address:null,provider:null,name:null,slabs:[],state:'idle',err:null};
+const PROVIDERS=()=>[
+  {name:'Phantom',p:(window.phantom&&window.phantom.solana)||(window.solana&&window.solana.isPhantom?window.solana:null),url:'https://phantom.app/download'},
+  {name:'Solflare',p:window.solflare&&window.solflare.isSolflare?window.solflare:null,url:'https://solflare.com/download'},
+  {name:'Backpack',p:window.backpack||null,url:'https://backpack.app/downloads'},
+];
+const isMobile=()=>/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+function walletBtn(){
+  $('#walletSlot').innerHTML=W.address
+    ?`<button class="btn sm wallet-btn" data-act="wallet"><span class="dot"></span>${short(W.address)}</button>`
+    :`<button class="btn sm primary wallet-btn" data-act="connect">Connect<span class="long">&nbsp;Wallet</span></button>`;
+}
+function connectModal(){
+  const list=PROVIDERS(),found=list.filter(x=>x.p);
+  const here=encodeURIComponent(location.href);
+  modal(`<h3>Connect wallet</h3>
+  <p class="muted">Connect a Solana wallet to see the Collector Crypt slabs you own, your Collector Score and your achievements.</p>
+  <div style="display:grid;gap:10px;margin-top:16px">${list.map(x=>x.p
+    ?`<button class="btn" style="justify-content:space-between" data-act="use-wallet" data-v="${x.name}">${x.name}<span class="chip live">Detected</span></button>`
+    :`<a class="btn ghost" style="justify-content:space-between" href="${x.url}" target="_blank" rel="noopener">${x.name}<span class="chip">Install</span></a>`).join('')}</div>
+  ${!found.length&&isMobile()?`<p class="muted" style="font-size:.84rem;margin-top:14px">On a phone, open MONDEX inside your wallet app's browser: <a href="https://phantom.app/ul/browse/${here}?ref=${encodeURIComponent(location.origin)}">Open in Phantom</a>.</p>`:''}
+  <div class="safety"><div>${ICON.shield}<span>MONDEX only reads your public address.</span></div><div>${ICON.shield}<span>We never ask for your seed phrase or private key.</span></div><div>${ICON.shield}<span>We never request token approvals. Purchases are signed on Magic Eden.</span></div></div>
+  <p class="muted" style="font-size:.84rem;margin-top:14px">No wallet? You can still look up any address on the <a href="#slabs">Live Slabs</a> page.</p>`);
+}
+async function useWallet(name,silent){
+  const x=PROVIDERS().find(p=>p.name===name);if(!x||!x.p)return;
+  try{
+    const r=silent?await x.p.connect({onlyIfTrusted:true}):await x.p.connect();
+    const pk=(r&&r.publicKey)||x.p.publicKey;if(!pk)throw new Error('No public key');
+    W.address=pk.toString();W.provider=x.p;W.name=name;S.lastWallet=name;save();
+    if(x.p.on){try{x.p.on('disconnect',()=>{disconnect(true)});x.p.on('accountChanged',pk2=>{if(pk2){W.address=pk2.toString();loadMine()}else disconnect(true)})}catch(e){}}
+    closeModal();walletBtn();if(!silent)toast(name+' connected.','ok');loadMine();checkPass(true);
+  }catch(e){
+    if(silent)return;
+    closeModal();toast(e&&(e.code===4001||/reject|cancel/i.test(e.message||''))?'Connection cancelled. No changes were made.':'We couldn’t connect to your wallet. Please try again.','err');
+  }
+}
+function disconnect(quiet){try{W.provider&&W.provider.disconnect&&W.provider.disconnect()}catch(e){}
+  W.address=null;W.provider=null;W.slabs=[];W.state='idle';S.lastWallet=null;save();closeModal();walletBtn();if(!quiet)toast('Wallet disconnected.');rerender()}
+function walletModal(){
+  const sc=scoreOf(W.slabs);
+  modal(`<h3>${esc(W.name||'Wallet')}</h3><dl class="kv"><dt>Address</dt><dd>${W.address}</dd><dt>Slabs</dt><dd>${W.slabs.length}</dd><dt>Collector Score</dt><dd>${n(sc)}</dd><dt>MONDEX Pass</dt><dd>${hasPass()?'Active':'Not yet'}</dd></dl>
+  <div class="acts"><a class="btn" href="https://solscan.io/account/${W.address}" target="_blank" rel="noopener">View on Solscan</a><button class="btn ghost" data-act="disconnect">Disconnect</button></div>`);
+}
+async function loadMine(){
+  if(!W.address)return;W.state='loading';rerender();
+  try{const r=await fetch('/api/slabs?owner='+encodeURIComponent(W.address));const j=await r.json().catch(()=>({}));
+    if(!r.ok){W.state='error';W.err=j.error||'We couldn’t connect to the network. Please try again.';rerender();return}
+    W.slabs=j.slabs||[];W.state='ready';rerender();
+  }catch(e){W.state='error';W.err='We couldn’t connect to the network. Please try again.';rerender()}
+}
+
+/* ---------------- Slab card (real token) ---------------- */
+function slabCard(x,o={}){
+  const v=x.insured,tier=tierOf(v);
+  return `<div class="listing"><div class="card ${tier}" style="cursor:default" role="img" aria-label="${esc(x.title||x.name)}, ${esc(x.grader||'')} ${esc(x.grade||'')}"><div class="card-in">
+    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(x.title||x.name)}</div><div class="sl-sub">${esc([x.year,x.set].filter(Boolean).join(' · ')||'Vaulted slab')}</div></div><div class="sl-g"><div class="sl-grader">${esc(x.grader||'GRADE')}</div><div class="sl-num">${esc(x.grade||'—')}</div></div></div>
+    <div class="art">${x.image?`<img src="${esc(x.image)}" loading="lazy" alt="${esc(x.title||x.name)} slab photo">`:''}</div>
+    <div class="card-bot"><span class="rb ${tier}">${tier}</span><span class="serial">${v!=null?'$'+n(v)+' insured':'Vaulted'}</span></div></div></div>
+    ${o.price!=null?`<div style="display:grid;gap:8px"><span class="price tnum">${(+o.price).toLocaleString('en-US',{maximumFractionDigits:3})}<small>SOL</small></span><a class="btn sm primary" style="width:100%" href="${esc(o.url)}" target="_blank" rel="noopener">Buy on Magic Eden</a></div>`:''}
+    <div class="mono muted" style="font-size:.72rem;line-height:1.5">${x.gradeText?esc(x.gradeText)+' · ':''}${x.cert?'Cert '+esc(x.cert):''}<br>${esc(x.vault||'Collector Crypt vault')} · <a href="https://solscan.io/token/${esc(x.id)}" target="_blank" rel="noopener">Solscan</a></div></div>`;
+}
+
+/* ---------------- Catalog card (reference cards with live TCGplayer prices) ---------------- */
 function card(c,o={}){
-  const sparks=c.rarity==='Mythic'?`<div class="sparks">${Array.from({length:8},(_,i)=>`<i style="left:${(i*37+11)%92+4}%;top:${(i*53+7)%88+6}%;animation-delay:${(i*.3).toFixed(1)}s"></i>`).join('')}</div>`:'';
-  const g=o.grade!=null?o.grade:'—',gr=o.grader||'GRADE';
-  return `<div class="card ${c.rarity}" ${o.noclick?'':`data-act="detail" data-cid="${c.id}"`} ${o.tilt?'data-tilt':''} tabindex="${o.noclick?-1:0}" role="${o.noclick?'img':'button'}" aria-label="${esc(c.name)}, ${esc(c.set)} ${esc(c.number)}${o.grade!=null?', '+gr+' '+g:''}, ${c.rarity} tier">
+  const L=LIVE.byId[c.ptcg];
+  return `<div class="card ${c.rarity}" ${o.noclick?'':`data-act="detail" data-cid="${c.id}"`} ${o.tilt?'data-tilt':''} tabindex="${o.noclick?-1:0}" role="${o.noclick?'img':'button'}" aria-label="${esc(c.name)}, ${esc(c.set)} ${esc(c.number)}">
   <div class="card-in">${c.fe?'<span class="fe-tag">1ST ED</span>':''}
-    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(c.name)}</div><div class="sl-sub">${c.year} · ${esc(c.set)} · ${esc(c.number)}</div></div><div class="sl-g"><div class="sl-grader">${gr}</div><div class="sl-num">${g}</div></div></div>
+    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(c.name)}</div><div class="sl-sub">${c.year} · ${esc(c.set)} · ${esc(c.number)}</div></div><div class="sl-g"><div class="sl-grader">RAW</div><div class="sl-num" style="font-size:7cqw">${L&&L.market?'$'+n(Math.round(L.market)):'—'}</div></div></div>
     <div class="art">${faceOrPhoto(c)}</div>
-    <div class="card-bot"><span class="rb ${c.rarity}">${c.rarity}</span><span class="serial">${o.vid||c.id}</span></div>
-    ${sparks}
+    <div class="card-bot"><span class="rb ${c.rarity}">${esc(c.era)}</span><span class="serial">${esc(c.variant)}</span></div>
   </div></div>`;
 }
-const cardBack=()=>`<div class="cback"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 1 30 9v14L16 31 2 23V9z" fill="none" stroke="#E9C77B" stroke-width="1.6"/><path d="M9 22V11l7 7 7-7v11" fill="none" stroke="#E9C77B" stroke-width="2" stroke-linejoin="round"/></svg></div>`;
 function badgeSvg(t,size=52,label=''){
   const T=TY[t],id='bd'+(svgc++);
   return `<svg viewBox="0 0 120 120" width="${size}" height="${size}" role="img" aria-label="badge"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${T.c2}"/><stop offset="1" stop-color="${T.c1}"/></linearGradient></defs>
   <path d="M60 4 108 32v56L60 116 12 88V32z" fill="${T.bg}" stroke="url(#${id})" stroke-width="4"/><g transform="translate(36 ${label?26:34}) scale(2)" style="color:${T.c2}">${GLYPH[t]}</g>${label?`<text x="60" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="${T.c2}">${label}</text>`:''}</svg>`;
 }
-
-/* ---------------- Wallet (mock) ----------------
-   INTEGRATION POINT (Solana): @solana/wallet-adapter-react. Read publicKey only.
-   Never request seed phrases/private keys or unlimited approvals. Show every tx in
-   reviewTx() before wallet.signTransaction(). RPC from NEXT_PUBLIC_SOLANA_RPC_URL. */
-function walletBtn(){
-  $('#walletSlot').innerHTML=S.wallet
-    ?`<button class="btn sm wallet-btn" data-act="wallet"><span class="dot"></span><span class="long">Demo · </span>${S.wallet.slice(0,4)}…${S.wallet.slice(-4)}</button>`
-    :`<button class="btn sm primary wallet-btn" data-act="connect">Connect<span class="long">&nbsp;Wallet</span></button>`;
-}
-let pendingAfter=null,txOk=null;
-function connectModal(after){
-  modal(`<h3>Connect wallet</h3>
-  <p class="muted">Live wallet support isn't switched on yet. Connect a demo wallet to try the prototype. Demo wallets hold no funds and nothing is sent on-chain.</p>
-  <div class="safety"><div>${ICON.shield}<span>MONDEX will never ask for your seed phrase or private key.</span></div><div>${ICON.shield}<span>We never request unlimited token approvals.</span></div><div>${ICON.shield}<span>Every transaction is shown in full before you sign it.</span></div></div>
-  <div class="acts"><button class="btn primary" data-act="do-connect">Connect demo wallet</button><button class="btn ghost" data-act="sim-reject">Simulate a rejected request</button><button class="btn ghost" data-act="sim-network">Simulate a network issue</button></div>
-  <p class="muted" style="font-size:.8rem;margin-top:14px">New demo wallets start with 20 sample vaulted slabs so you can explore the dashboard, vault and rewards.</p>`);
-  pendingAfter=after||null;
-}
-function doConnect(){
-  const ch='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  S.wallet=Array.from({length:44},()=>ch[Math.floor(Math.random()*ch.length)]).join('');
-  if(!S.seeded){S.collection=SAMPLE.map(([nm,st,g,gr],i)=>{const it=mkItem(find(nm,st),g,gr,'sample');it.fav=i>=18;return it});S.seeded=true}
-  save();closeModal();walletBtn();toast('Demo wallet connected.','ok');const f=pendingAfter;pendingAfter=null;if(f)f();else render();
-}
-function walletModal(){modal(`<h3>Demo wallet</h3><dl class="kv"><dt>Address</dt><dd>${S.wallet}</dd><dt>Network</dt><dd>Prototype (no chain)</dd><dt>Slabs in vault</dt><dd>${mine(S).length}</dd><dt>Demo USDC</dt><dd>Unlimited (prototype)</dd></dl>
-  <p class="muted" style="font-size:.86rem">This address is randomly generated for the demo and does not exist on Solana.</p><div class="acts"><button class="btn" data-act="disconnect">Disconnect</button><button class="btn ghost" data-act="reset">Reset demo data</button></div>`)}
-function reviewTx(t,onOk){
-  modal(`<span class="chip proto">Demo transaction</span><h3 style="margin-top:12px">Review before signing</h3>
-  <dl class="kv">${t.rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}<dt>Network fee</dt><dd>~0.000005 SOL (estimate, demo)</dd><dt>Permissions</dt><dd>${t.perm}</dd></dl>
-  <p class="muted" style="font-size:.84rem">Prototype: approving updates your demo account only. Nothing is signed, paid or sent.</p>
-  <div class="acts"><button class="btn primary" data-act="tx-ok">Approve</button><button class="btn ghost" data-act="tx-reject">Reject</button></div>`);
-  txOk=onOk;
-}
-
-/* ---------------- Modal / toast ---------------- */
-function modal(html,wide){$('#modal').innerHTML=`<div class="modal-bg" data-act="bg"><div class="modal ${wide?'wide':''}" role="dialog" aria-modal="true"><button class="x" data-act="close" aria-label="Close">×</button>${html}</div></div>`;document.body.style.overflow='hidden';setTimeout(()=>{const b=$('#modal .modal button:not(.x)');if(b)b.focus()},30)}
-function closeModal(){$('#modal').innerHTML='';document.body.style.overflow='';txOk=null}
-function toast(msg,kind=''){const t=document.createElement('div');t.className='t '+kind;t.textContent=msg;$('#toast').appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3800)}
-
-/* ---------------- Card detail ---------------- */
 function detail(cid){
-  const c=BY[cid],owned=mine(S).filter(e=>e.cid===cid),wish=S.wishlist.includes(cid),f=owned[0];
-  modal(`<div class="detail"><div>${card(c,{grade:f&&f.grade,grader:f&&f.grader,vid:f&&f.vid,noclick:true,tilt:true})}</div>
-  <div style="min-width:0">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="rb ${c.rarity}">${c.rarity} tier</span><span class="chip">${glyph(c.type)} ${c.type}</span><span class="chip">${c.era}</span>${c.fe?'<span class="chip proto">1st Edition</span>':''}</div>
+  const c=BY[cid],L=LIVE.byId[c.ptcg],wish=S.wishlist.includes(cid);
+  modal(`<div class="detail"><div>${card(c,{noclick:true,tilt:true})}</div><div style="min-width:0">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="chip">${glyph(c.type)} ${c.type}</span><span class="chip">${c.era}</span>${c.fe?'<span class="chip proto">1st Edition</span>':''}</div>
     <h3 style="font-size:2.8rem;margin-top:14px">${esc(c.name)}</h3>
     <p class="muted" style="margin-top:6px">${esc(c.set)} (${c.year}) · ${esc(c.number)} · ${esc(c.variant)}</p>
-    <dl class="kv">${(()=>{const L=LIVE.byId[c.ptcg];return L&&L.market?`<dt>TCGplayer market, raw (live)</dt><dd>${usd(L.market)}${L.url?` · <a href="${L.url}" target="_blank" rel="noopener">view</a>`:''}</dd>`:`<dt>Live price</dt><dd>${LIVE.prices?'Not listed':'Loads on the deployed site'}</dd>`})()}<dt>Est. insured value, grade 9</dt><dd>${usd(value(c,9))} (demo)</dd><dt>Est. insured value, grade 10</dt><dd>${usd(value(c,10))} (demo)</dd><dt>Collector Score</dt><dd>${cardScore({cid})}</dd>
-    <dt>You hold</dt><dd>${owned.length?owned.map(e=>`${e.grader} ${e.grade} · ${e.vid}`).join('<br>'):'—'}</dd>
-    ${owned.length?'<dt>Cert · custody history</dt><dd>Shown once cards are vaulted and tokenized</dd>':''}</dl>
-    <div class="acts" style="margin-top:8px">
-      <button class="btn ${wish?'':'primary'}" data-act="wish" data-cid="${cid}">${wish?'On wishlist ✓':'Add to wishlist'}</button><button class="btn" data-act="to-market" data-cid="${cid}">Find in marketplace</button>
-      ${owned.length&&['Epic','Legendary','Mythic'].includes(c.rarity)?`<button class="btn" data-act="share" data-uid="${f.uid}">Share pull</button>`:`<button class="btn ghost" data-act="copy-c" data-cid="${cid}">Share</button>`}
-      <label class="btn ghost" for="photoIn" style="cursor:pointer">${S.photos[cid]?'Replace photo':'Add photo'}</label><input id="photoIn" type="file" accept="image/*" data-cid="${cid}" hidden>
-      ${S.photos[cid]?`<button class="btn ghost" data-act="rm-photo" data-cid="${cid}">Remove photo</button>`:''}
-    </div>
-    <p class="muted" style="font-size:.78rem;margin-top:10px">Photos stay in your browser and replace the placeholder for this card everywhere on the site.</p>
+    <dl class="kv"><dt>TCGplayer market, ungraded</dt><dd>${L&&L.market?usd(L.market)+(L.url?` · <a href="${L.url}" target="_blank" rel="noopener">view</a>`:''):(LIVE.prices?'Not listed':'Loading…')}</dd>${L&&L.updated?`<dt>Price updated</dt><dd>${esc(L.updated)}</dd>`:''}</dl>
+    <div class="acts" style="margin-top:8px"><button class="btn primary" data-act="to-market" data-cid="${cid}">Find graded copies for sale</button><button class="btn ${wish?'':'ghost'}" data-act="wish" data-cid="${cid}">${wish?'On wishlist ✓':'Add to wishlist'}</button>
+      <label class="btn ghost" for="photoIn" style="cursor:pointer">${S.photos[cid]?'Replace photo':'Add photo'}</label><input id="photoIn" type="file" accept="image/*" data-cid="${cid}" hidden>${S.photos[cid]?`<button class="btn ghost" data-act="rm-photo" data-cid="${cid}">Remove photo</button>`:''}</div>
   </div></div>`,true);
 }
 function addPhoto(file,cid){
-  const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const W=420,H=Math.round(W*88/63),cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
-    const s=Math.max(W/im.width,H/im.height);x.drawImage(im,(W-im.width*s)/2,(H-im.height*s)/2,im.width*s,im.height*s);
+  const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const Wd=420,H=Math.round(Wd*88/63),cv=document.createElement('canvas');cv.width=Wd;cv.height=H;const x=cv.getContext('2d');
+    const s=Math.max(Wd/im.width,H/im.height);x.drawImage(im,(Wd-im.width*s)/2,(H-im.height*s)/2,im.width*s,im.height*s);
     S.photos[cid]=cv.toDataURL('image/jpeg',.82);save();detail(cid);rerender();toast('Photo added.','ok')};im.onerror=()=>toast('That file isn’t an image we can read. Try a JPG or PNG.','err');im.src=fr.result};fr.readAsDataURL(file);
 }
 
-/* ---------------- Share pull ---------------- */
-async function sharePull(item){
-  const c=BY[item.cid],text=`I just pulled ${c.name} — ${c.set} ${c.number} · ${item.grader} ${item.grade} · ${c.rarity} tier on MONDEX (prototype). Collect what comes next.`;
-  modal(`<h3>Share your pull</h3><div id="shareImg" style="min-height:200px;display:grid;place-items:center" class="muted">Rendering…</div>
-  <div class="acts"><a class="btn primary" target="_blank" rel="noopener" href="https://x.com/intent/post?text=${encodeURIComponent(text)}">Share to X</a><button class="btn" data-act="copy" data-text="${esc(text)}">Copy text</button><button class="btn ghost" data-act="dl-tip">Download image</button></div>
-  <p class="muted" id="dlTip" style="font-size:.82rem;margin-top:10px" hidden>To save the image, right-click it (desktop) or press and hold it (mobile).</p>`);
-  try{await document.fonts.ready}catch(e){}
-  const W=900,H=1125,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d'),T=TY[c.type];
-  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1d1838');g.addColorStop(1,'#0c0a16');x.fillStyle=g;x.fillRect(0,0,W,H);
-  const rg=x.createRadialGradient(W/2,560,40,W/2,560,520);rg.addColorStop(0,T.c1+'55');rg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=rg;x.fillRect(0,0,W,H);
-  const ph='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(face(c).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="252" height="352" '));
-  const loadImg=src=>new Promise(r=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>r(im);im.onerror=()=>r(null);im.src=src});
-  // a remote image without CORS headers fails to load here (crossOrigin set), so the canvas never gets tainted
-  const img=(await loadImg(S.photos[c.id]||(LIVE.images?c.imgLg:ph)))||(await loadImg(ph));
-
-  const rc={Common:'#B9B3D0',Rare:'#5AA9FF',Epic:'#B57BFF',Legendary:'#F3B53F',Mythic:'#FF7AD9'}[c.rarity];
-  x.save();x.shadowColor=rc;x.shadowBlur=60;x.fillStyle='#2a2546';x.fillRect(W/2-170,300,340,500);x.restore();
-  x.fillStyle='#EEEAF7';x.fillRect(W/2-158,312,316,60);x.fillStyle='#17132C';x.font='800 30px "Big Shoulders Display", Impact, sans-serif';x.textAlign='left';x.fillText(c.name.toUpperCase().slice(0,16),W/2-146,352);
-  x.textAlign='right';x.font='900 40px "Big Shoulders Display", Impact, sans-serif';x.fillText(item.grader+' '+item.grade,W/2+146,356);
-  try{x.drawImage(img,W/2-138,384,276,386)}catch(e){}
-
-
-  x.textAlign='center';x.fillStyle='#A29BC2';x.font='600 30px "JetBrains Mono", monospace';x.fillText('I JUST PULLED',W/2,130);
-  x.fillStyle='#EFEBF9';x.font='900 '+(c.name.length>12?84:112)+'px "Big Shoulders Display", Impact, sans-serif';x.fillText(c.name.toUpperCase(),W/2,240);
-  x.fillStyle=rc;x.font='800 60px "Big Shoulders Display", Impact, sans-serif';x.fillText(c.rarity.toUpperCase()+' PULL',W/2,880);
-  x.fillStyle='#A29BC2';x.font='600 26px "JetBrains Mono", monospace';x.fillText(`${c.set.toUpperCase()} ${c.number}  ·  ${item.grader} ${item.grade}`,W/2,930);
-  x.fillStyle='#E9C77B';x.font='900 72px "Big Shoulders Display", Impact, sans-serif';x.fillText('MONDEX',W/2,1022);
-  x.fillStyle='#A29BC2';x.font='600 22px "JetBrains Mono", monospace';x.fillText('COLLECT WHAT COMES NEXT.',W/2,1060);
-  x.fillStyle='#6E6890';x.font='500 15px "JetBrains Mono", monospace';x.fillText('PROTOTYPE PULL · DEMO DATA',W/2,1098);
-  const el=$('#shareImg');if(el)el.innerHTML=`<img class="share-img" alt="Share image: I just pulled ${esc(c.name)}" src="${cv.toDataURL('image/png')}">`;
-}
-function copy(text){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>toast('Copied.','ok'),()=>toast('Copy failed. Select the text and copy it manually.','err'))}else toast('Copy is not available here.','err')}
-
-/* ---------------- Particle FX ---------------- */
-const fx=$('#fx'),fctx=fx.getContext('2d');let parts=[],fxOn=false;
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-function burst(x,y,colors,count=90){if(reduce)return;fx.width=innerWidth*devicePixelRatio;fx.height=innerHeight*devicePixelRatio;fctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-  for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=2+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,l:60+Math.random()*40,c:colors[i%colors.length],r:1.5+Math.random()*2.5})}if(!fxOn){fxOn=true;requestAnimationFrame(step)}}
-function step(){fctx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.l>0);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.vx*=.98;p.l--;fctx.globalAlpha=Math.min(1,p.l/40);fctx.fillStyle=p.c;fctx.beginPath();fctx.arc(p.x,p.y,p.r,0,7);fctx.fill()});if(parts.length)requestAnimationFrame(step);else{fxOn=false;fctx.clearRect(0,0,innerWidth,innerHeight)}}
-
-/* ---------------- Pack opening ----------------
-   INTEGRATION POINT (randomness + inventory): production pulls must draw from real vault
-   inventory using verifiable randomness (e.g. on-chain VRF), executed server-side/on-chain,
-   and return the token IDs actually transferred. Math.random() is prototype-only. */
-let P={phase:'sealed',items:[],shown:0,claimed:false,timer:null};
-function rollRarity(min){const pool=RARITIES.slice(RARITIES.indexOf(min||'Common'));const tot=pool.reduce((a,r)=>a+R[r].odds,0);let v=Math.random()*tot;for(const r of pool){v-=R[r].odds;if(v<=0)return r}return pool[pool.length-1]}
-function rollGrade(){const v=Math.random();return v<.22?10:v<.6?9:v<.72?8.5:v<.92?8:7}
-function rollGrader(){const v=Math.random();return v<.7?'PSA':v<.9?'CGC':'BGS'}
-function pull(i){const r=rollRarity(i===4?'Rare':'Common'),opts=CARDS.filter(c=>c.rarity===r),c=opts[Math.floor(Math.random()*opts.length)];return mkItem(c,rollGrade(),rollGrader(),'pack')}
-function startPack(){
-  if(P.phase!=='sealed')return;
-  if(!S.wallet){connectModal(startPack);return}
-  reviewTx({rows:[['Action','Open MONDEX Pack'],['Contents','5 vaulted graded cards'],['Price',PACK_PRICE+' USDC (demo)']],perm:`Transfer exactly ${PACK_PRICE} USDC. No unlimited approval.`},openPack);
-}
-function openPack(){
-  P={phase:'opening',items:[0,1,2,3,4].map(pull),shown:0,claimed:false,timer:null};
-  P.items.sort((a,b)=>RARITIES.indexOf(BY[a.cid].rarity)-RARITIES.indexOf(BY[b.cid].rarity));
-  S.packsOpened++;save();{const sp=$('#packsOpened');if(sp)sp.textContent=S.packsOpened}
-  const pk=$('.pack');if(pk)pk.classList.add('opening');
-  setTimeout(()=>{P.phase='reveal';renderStage();P.timer=setTimeout(revealNext,700)},reduce?50:750);
-}
-function labelFor(i,el){const it=P.items[i],c=BY[it.cid],lab=el.parentElement.querySelector('.reveal-label');if(lab){lab.textContent=`${c.rarity} · ${usd(value(c,it.grade))}`;lab.style.color=`var(--c-${c.rarity.toLowerCase()})`}}
-function revealNext(){
-  if(P.phase!=='reveal')return;const i=P.shown;if(i>=5){P.phase='summary';renderStage();return}
-  const el=document.querySelector(`.flip[data-i="${i}"]`);if(!el)return;el.classList.add('on');P.shown++;labelFor(i,el);
-  const c=BY[P.items[i].cid],big=['Epic','Legendary','Mythic'].includes(c.rarity);
-  if(big){el.classList.add('hl');setTimeout(()=>{const b=el.getBoundingClientRect(),cols={Epic:['#B57BFF','#E3CCFF'],Legendary:['#F3B53F','#FFF3CF','#FFE29A'],Mythic:['#FF7AD9','#6BE3FF','#FFD27A','#9C8CFF']}[c.rarity];burst(b.left+b.width/2,b.top+b.height/2,cols,c.rarity==='Mythic'?180:c.rarity==='Legendary'?120:60)},350)}
-  P.timer=setTimeout(revealNext,reduce?120:big?(c.rarity==='Mythic'?1900:1300):650);
-}
-function revealAll(){clearTimeout(P.timer);document.querySelectorAll('.flip').forEach((f,i)=>{f.classList.add('on');labelFor(i,f)});P.shown=5;P.phase='summary';setTimeout(renderStage,500)}
-function claim(){
-  if(P.claimed)return;const had=new Set(uniq(S));
-  P.items.forEach(it=>{S.collection.push(it);if(!had.has(it.cid)&&!S.newFromPacks.includes(it.cid))S.newFromPacks.push(it.cid)});
-  P.claimed=true;save();renderStage();toast('Five slabs added to your vault (demo).','ok');
-}
-function buybackAll(){
-  if(P.claimed)return;const tot=P.items.reduce((a,it)=>a+value(BY[it.cid],it.grade),0);
-  reviewTx({rows:[['Action','Instant buyback · 5 cards'],['Insured value',usd(tot)+' (demo)'],['Buyback rate',Math.round(BUYBACK*100)+'%'],['You receive',usd(tot*BUYBACK)+' USDC (demo)']],perm:'Transfer only these 5 card tokens.'},()=>{P.claimed='sold';S.buybacks++;save();renderStage();toast(`Sold back for ${usd(tot*BUYBACK)} USDC (demo). No funds moved.`,'ok')});
-}
-function renderStage(){
-  const st=$('#stage');if(!st)return;
-  if(P.phase==='sealed'||P.phase==='opening'){
-    st.innerHTML=`<div class="pack" data-act="open" role="button" tabindex="0" aria-label="Open a MONDEX pack"><div class="pack-top"><div class="pack-foil"></div></div><div class="pack-body"><div class="pack-foil"></div>
-      <div class="pack-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 1 30 9v14L16 31 2 23V9z" fill="none" stroke="#E9C77B" stroke-width="1.4"/><path d="M9 22V11l7 7 7-7v11" fill="none" stroke="#E9C77B" stroke-width="1.8" stroke-linejoin="round"/></svg>
-      <div class="wm">MONDEX</div><div class="sub">5 GRADED CARDS · ${PACK_PRICE} USDC</div><div class="sub" style="color:var(--muted)">SEASON 01</div></div></div></div><div class="stage-hint">Tap the pack to open</div>`;return;
-  }
-  const best=P.items.reduce((a,it)=>Math.max(a,RARITIES.indexOf(BY[it.cid].rarity)),0),bestI=P.items.length-1;
-  const tot=P.items.reduce((a,it)=>a+value(BY[it.cid],it.grade),0);
-  st.innerHTML=`<div style="width:100%;display:grid;justify-items:center">
-   <div class="slots">${P.items.map((it,i)=>{const on=P.phase==='summary'||i<P.shown,c=BY[it.cid];return `<div><div class="flip ${on?'on':''}" data-i="${i}" style="animation-delay:${i*90}ms"><div class="flip-in"><div class="b" data-act="reveal-one">${cardBack()}</div><div class="f">${card(c,{grade:it.grade,grader:it.grader,vid:it.vid})}</div></div></div><div class="reveal-label" style="${on?`color:var(--c-${c.rarity.toLowerCase()})`:''}">${on?`${c.rarity} · ${usd(value(c,it.grade))}`:''}</div></div>`}).join('')}</div>
-   ${P.phase==='reveal'?`<div class="summary"><button class="btn ghost sm" data-act="reveal-all">Reveal all</button></div>`:''}
-   ${P.phase==='summary'?`<div class="summary"><div><span class="eyebrow">Pull summary</span><h3 style="margin-top:8px">Best pull: <span style="color:var(--c-${RARITIES[best].toLowerCase()})">${RARITIES[best]}</span></h3>
-     <p class="muted tnum" style="margin-top:6px">Insured value ${usd(tot)} · pack ${PACK_PRICE} USDC · instant buyback ${usd(tot*BUYBACK)} (all demo figures)</p></div>
-     <div class="acts">${P.claimed==='sold'?'<button class="btn" disabled>Sold back ✓</button>':P.claimed?'<button class="btn" disabled>In your vault ✓</button>':`<button class="btn primary" data-act="claim">Keep in vault</button><button class="btn" data-act="buyback">Instant buyback ${Math.round(BUYBACK*100)}%</button>`}
-     <a class="btn" href="#collect">View collection</a>${best>=2?`<button class="btn" data-act="share-pull" data-i="${bestI}">Share pull</button>`:''}<button class="btn ghost" data-act="again">Open another</button></div></div>`:''}
-  </div>`;
-}
-
-/* ---------------- Pages ---------------- */
-const head=(eyebrow,title,lede,chips='')=>`<div class="page-head"><div class="wrap"><div class="row"><span class="eyebrow">${eyebrow}</span>${chips}</div><h1 style="font-size:clamp(2.6rem,8vw,5.6rem)">${title}</h1>${lede?`<p>${lede}</p>`:''}</div></div>`;
-const PROTO='<span class="chip proto">Prototype</span>',DEMO='<span class="chip proto">Demo data</span>',PROPOSED='<span class="chip proposed">Proposed · Coming soon</span>';
-const pages={};
-
-pages.home=()=>`<div class="wrap"><section class="hero">
-  <div><span class="eyebrow">Season 01 · Graded Pokémon cards on Solana</span><h1>MONDEX</h1><div class="tag">COLLECT WHAT COMES NEXT.</div>
-    <p class="lede">Pull, trade and collect real graded Pokémon cards. Every card sits in an insured vault and is yours on-chain. Trade it in seconds, sell it back instantly, or ship the slab home.</p>
-    <div class="ctas"><a class="btn primary" href="#packs">Start collecting</a><a class="btn" href="#explore">Explore cards</a><button class="btn ghost" data-act="how">How it works</button></div>
-    <p class="muted" style="margin-top:22px;font-size:.84rem">Digital Cards. Real Ownership. &nbsp;·&nbsp; PSA · BGS · CGC slabs &nbsp;·&nbsp; Pay in USDC</p></div>
-  <div class="hero-stage"><div class="ghost-card g1">${card(find('Lugia','Neo Genesis'),{grade:9,grader:'PSA',noclick:true})}</div><div class="ghost-card g2">${card(find('Shining Charizard'),{grade:9,grader:'BGS',noclick:true})}</div>${card(find('Charizard','Base Set',true),{grade:10,grader:'PSA',tilt:true})}<div class="hero-caption" style="position:absolute;bottom:-14px">${LIVE.images?'Mythic tier · 1st Edition':'Mythic tier · Real card images load on the deployed site'}</div></div>
-</section></div>
-<section class="sec" id="how"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">The collecting loop</span><h2 style="margin-top:10px">Pull. Collect. Trade.</h2></div><p class="lede">Every pull has a story. Each card is a real graded slab held in the vault.</p></div>
-  <div class="loop">${[['Open','Open a pack of five vaulted, graded cards.'],['Discover','See the card, its grade and insured value.'],['Collect','Keep it in the vault, or sell it back instantly.'],['Complete','Finish sets like the Base Set Big Three for rewards.'],['Compete','Climb the collector leaderboard each season.']].map((s,i)=>`<div><span class="n">0${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div></div></section>
-<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Pull tiers</span><h2 style="margin-top:10px">Five tiers. One chase in two hundred.</h2></div><p class="lede">Tiers are bands of insured value. Odds below are prototype values and will be published with live inventory before launch.</p></div>
-  <div class="tiers">${RARITIES.map(r=>{const c={Common:find('Pikachu','Base Set'),Rare:find('Snorlax'),Epic:find('Lugia V'),Legendary:find('Blastoise'),Mythic:find('Umbreon VMAX')}[r];return `<div class="tier">${card(c,{grade:r==='Common'?9:10,grader:'PSA'})}<dl><dt>Value band</dt><dd>${R[r].band}</dd><dt>Pack odds</dt><dd>${R[r].odds}%</dd><dt>Score</dt><dd>${R[r].score}</dd></dl></div>`}).join('')}</div></div></section>
-<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Chase cards</span><h2 style="margin-top:10px">Vintage icons. Modern alt arts.</h2></div><a class="btn" href="#explore">Browse all ${CARDS.length}</a></div>
-  <div class="grid-cards">${[['Charizard','Base Set',false],['Rayquaza VMAX'],['Dark Charizard'],['Giratina V'],['Gengar VMAX'],['Charizard ex','151']].map(a=>card(find(...a),{grade:10,grader:'PSA'})).join('')}</div>
-  <p class="muted" style="margin-top:16px;font-size:.82rem">${LIVE.images?'Card images from the Pokémon TCG API. Open any card to add a photo of your own slab.':'Real card images and live prices load on the deployed site. Open any card to add a photo of your own slab.'}</p></div></section>
-<section class="sec"><div class="wrap split">
-  <div class="panel feature"><span class="eyebrow">The Vault</span><h3>Stored, insured, tradeable.</h3><p class="muted">Each slab is held in an insured vault and backed 1:1 by a token in your wallet. Trades settle on Solana in seconds. When you want the physical card, request shipping and it comes to your door.</p><div><a class="btn" href="#vault">How the vault works</a></div></div>
-  <div class="panel feature"><span class="eyebrow">Instant buyback</span><h3>Don't want it? Sell it back.</h3><p class="muted">Any pulled card can be sold back on the spot for ${Math.round(BUYBACK*100)}% of its insured value, paid in USDC. Or list it on the marketplace and set your own price.</p><div><a class="btn" href="#marketplace">Visit the marketplace</a></div></div>
-</div></section>
-<section class="sec"><div class="wrap"><div class="panel" style="display:grid;gap:14px;background:linear-gradient(135deg,rgba(255,122,217,.08),rgba(107,227,255,.05)),var(--panel)">
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="eyebrow">MONDEX × Collector Crypt</span>${PROPOSED}</div>
-  <h2>Bring your collection into the digital world.</h2><p class="muted" style="max-width:62ch">A proposed integration that would recognize your Collector Crypt cards and activity with Collector Score, achievements and exclusive rewards. MONDEX is not currently affiliated with Collector Crypt.</p>
-  <div><a class="btn" href="#collector-crypt">Read the concept</a></div></div></div></section>
-<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">MONDEX Ecosystem</span><h2 style="margin-top:10px;font-size:2.2rem">Possible future utility</h2></div></div>
-  <div class="util-list">${['Marketplace utility','Pack access','Premium packs','Special events','Cosmetic upgrades','Community governance'].map((u,i)=>`<div><span>0${i+1} · UNDER REVIEW</span>${u}</div>`).join('')}</div>
-  <p class="notice" style="margin-top:14px"><strong>There is no MONDEX token today.</strong> Any future token functionality is subject to legal, regulatory and technical review. MONDEX makes no promise of price, returns or value.</p></div></section>
-<section class="sec"><div class="wrap" style="text-align:center;display:grid;gap:18px;justify-items:center"><h2>Your first pull is waiting.</h2><a class="btn primary" href="#packs">Open a pack</a></div></section>`;
-
-let X={type:'All',rar:null,era:'All',q:''};
-const xfilter=()=>CARDS.filter(c=>(X.type==='All'||c.type===X.type)&&(!X.rar||c.rarity===X.rar)&&(X.era==='All'||c.era===X.era)&&(!X.q||(c.name+' '+c.set+' '+c.number+' '+c.id).toLowerCase().includes(X.q.toLowerCase())));
-const xgrid=list=>list.length?`<div class="grid-cards">${list.map(c=>`<div class="cell">${card(c)}<div class="cell-meta"><span class="mono">${esc(c.set)} ${esc(c.number)}</span><button class="fav" data-act="wish" data-cid="${c.id}" aria-pressed="${S.wishlist.includes(c.id)}" aria-label="Wishlist ${esc(c.name)}">${ICON.heart}</button></div></div>`).join('')}</div>`:`<div class="empty"><h3>No cards found.</h3><p>Try a different type, tier or search.</p></div>`;
-const liveChip=()=>LIVE.prices?`<span class="chip live">Live card data${LIVE.updated?' · prices '+esc(LIVE.updated):''}</span>`:LIVE.images?'<span class="chip live">Real card images</span>':'<span class="chip">Card images load on the deployed site</span>';
-pages.explore=()=>{const list=xfilter();return head('Catalog · '+CARDS.length+' cards','Explore','Vintage and modern cards that can appear in packs and on the marketplace. Tap a card for its live TCGplayer price, graded estimates and your copies.',DEMO+liveChip())+
- `<div class="wrap"><div class="filters"><div class="row"><input class="field search" id="xq" type="search" placeholder="Search name, set or number (e.g. 4/102)" value="${esc(X.q)}" aria-label="Search cards"><span class="count" id="xcount">${list.length} OF ${CARDS.length}</span></div>
-  <div class="seg" role="group" aria-label="Era">${['All','Vintage','Modern'].map(e=>`<button data-act="x-era" data-v="${e}" aria-pressed="${X.era===e}">${e==='All'?'All eras':e}</button>`).join('')}</div>
-  <div class="seg" role="group" aria-label="Type">${['All',...TYPES].map(e=>`<button data-act="x-type" data-v="${e}" aria-pressed="${X.type===e}">${e==='All'?'All types':e}</button>`).join('')}</div>
-  <div class="seg" role="group" aria-label="Tier">${RARITIES.map(r=>`<button data-act="x-rar" data-v="${r}" aria-pressed="${X.rar===r}">${r}</button>`).join('')}</div>
- </div><div id="xgrid">${xgrid(list)}</div></div>`};
-
-let CT='All Cards';
-pages.collect=()=>{
-  if(!S.wallet)return head('My collection','Collect','')+`<div class="wrap"><div class="empty"><h3>Connect your wallet to begin building your collection.</h3><p>Use a demo wallet to try the prototype. It comes with 20 sample slabs.</p><button class="btn primary" data-act="connect">Connect wallet</button></div></div>`;
-  const held=mine(S),sc=score(S),lv=levelOf(sc),sets=completedSets(S),val=held.reduce((a,e)=>a+value(BY[e.cid],e.grade),0);
-  const counts={};held.forEach(e=>counts[e.cid]=(counts[e.cid]||0)+1);
-  let items=held.slice().reverse();
-  if(CT==='Favorites')items=items.filter(e=>e.fav);if(CT==='1st Editions')items=items.filter(e=>BY[e.cid].fe);if(CT==='Mythics')items=items.filter(e=>BY[e.cid].rarity==='Mythic');if(CT==='Duplicates')items=items.filter(e=>counts[e.cid]>1);if(CT==='Shipping')items=S.collection.filter(e=>e.status!=='vaulted');
-  return head('My collection · Demo wallet','Collect','Your vaulted slabs, score and progress. Collector Score is a game metric with no monetary value.',DEMO)+
-  `<div class="wrap"><div class="level">${badgeSvg('Dragon',76,'LV '+lv.level)}<div style="flex:1;min-width:220px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong style="font:800 1.8rem var(--f-display);text-transform:uppercase">Level ${lv.level} · ${lv.title}</strong><span class="mono muted tnum" style="font-size:.8rem">${n(sc)} / ${n(lv.next)} to level ${Math.min(100,lv.level+1)}</span></div><div class="bar" style="margin-top:8px"><i style="width:${lv.pct}%"></i></div></div></div>
-  <div class="stats">${[['Collector level',lv.level],['Collector score',n(sc)],['Slabs in vault',held.length],['Unique cards',uniq(S).length+' / '+CARDS.length],['Completed sets',sets.length+' / '+SETS.length],['1st Editions',held.filter(e=>BY[e.cid].fe).length],['Insured value (demo)',usd(val)]].map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>
-  ${sets.length?`<p class="muted" style="margin:-10px 0 24px;font-size:.86rem">Completed: ${sets.map(s=>esc(s.name)).join(' · ')} (+${BONUS.completedSet} score each)</p>`:''}
-  <div class="tabs" role="tablist">${['All Cards','Favorites','1st Editions','Mythics','Duplicates','Shipping'].map(t=>`<button role="tab" data-act="ctab" data-v="${t}" aria-selected="${CT===t}">${t}</button>`).join('')}</div>
-  ${S.collection.length===0?`<div class="empty"><h3>Your collection is waiting.</h3><p>Open a pack to pull your first five slabs.</p><a class="btn primary" href="#packs">Open a pack</a></div>`
-  :items.length?`<div class="grid-cards">${items.map(e=>{const c=BY[e.cid];return `<div class="cell">${card(c,{grade:e.grade,grader:e.grader,vid:e.vid})}<div class="cell-meta"><span class="mono tnum">${e.status==='vaulted'?usd(value(c,e.grade)):'<span class="chip proto">Shipping</span>'}${counts[e.cid]>1?' · ×'+counts[e.cid]:''}</span><button class="fav" data-act="fav" data-uid="${e.uid}" aria-pressed="${!!e.fav}" aria-label="Favorite">${ICON.star}</button></div></div>`}).join('')}</div>`
-  :`<div class="empty"><h3>Nothing here yet.</h3><p>No cards match this tab.</p></div>`}</div>`;
-};
-
-pages.packs=()=>head('Season 01','Packs','Five vaulted, graded cards per pack, revealed one at a time. The fifth card is always Rare tier or better. Keep them in the vault or sell them back instantly.',PROTO)+
- `<div class="wrap"><div class="pack-wrap"><div class="stage" id="stage"></div>
- <aside class="panel" style="display:grid;gap:16px"><div><span class="eyebrow">MONDEX Pack</span><h3 style="font-size:2.2rem;margin-top:8px">${PACK_PRICE} USDC · 5 cards</h3></div>
-  <table class="odds"><tbody>${RARITIES.map(r=>`<tr><td><span class="rb ${r}">${r}</span> <span class="muted" style="font-size:.78rem">${R[r].band}</span></td><td>${R[r].odds}%</td></tr>`).join('')}</tbody></table>
-  <p class="muted" style="font-size:.84rem">Prototype odds per card. At launch, pulls draw from live vault inventory using verifiable on-chain randomness, and odds are published with each pack.</p>
-  <dl class="kv" style="margin:0"><dt>Packs opened</dt><dd id="packsOpened">${S.packsOpened}</dd><dt>Instant buyback</dt><dd>${Math.round(BUYBACK*100)}%</dd></dl>
-  <p class="notice" style="font-size:.8rem"><strong>Prototype.</strong> No payment is taken. Paid packs and buyback will only launch where legally permitted.</p>
- </aside></div></div>`;
-
-let M={q:'',rar:'',type:'',grader:'',fe:false,max:0,sort:'recent'};
-function mgrid(){
-  // INTEGRATION POINT (marketplace): fetch live listings from the marketplace program/API.
-  let L=S.listings.filter(l=>{const c=BY[l.cid];return (!M.q||(c.name+' '+c.set+' '+c.number).toLowerCase().includes(M.q.toLowerCase()))&&(!M.rar||c.rarity===M.rar)&&(!M.type||c.type===M.type)&&(!M.grader||l.grader===M.grader)&&(!M.fe||c.fe)&&(!M.max||l.price<=M.max)});
-  const ri=l=>RARITIES.indexOf(BY[l.cid].rarity);
-  L.sort({low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price,new:(a,b)=>BY[b.cid].year-BY[a.cid].year,recent:(a,b)=>a.hours-b.hours,rare:(a,b)=>ri(b)-ri(a)||b.grade-a.grade}[M.sort]);
-  if(!L.length)return `<div class="empty"><h3>No cards found.</h3><p>Try widening your filters.</p></div>`;
-  return `<p class="count" style="margin-bottom:14px">${L.length} LISTINGS · DEMO</p><div class="grid-cards">${L.map(l=>{const c=BY[l.cid];return `<div class="listing">${card(c,{grade:l.grade,grader:l.grader})}
-    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px"><span class="price tnum">${n(l.price)}<small>USDC</small></span><span class="mono muted" style="font-size:.7rem">${l.hours}h ago</span></div>
-    <div class="mono muted" style="font-size:.72rem">${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${l.grader} ${l.grade}</div>
-    <div class="acts"><button class="btn sm primary" data-act="buy" data-lid="${l.lid}">Buy</button><button class="btn sm" data-act="offer" data-lid="${l.lid}">Make offer</button></div></div>`}).join('')}</div>`;
-}
-pages.marketplace=()=>head('Secondary market','Marketplace','Buy vaulted slabs instantly or make an offer. Trades settle on-chain in seconds while the physical card stays safe in the vault.',DEMO+'<span class="chip">Mock listings</span>')+
- `<div class="wrap"><div class="mk-layout"><aside class="mk-filters panel">
-  <label>Search<input class="field" id="mq" type="search" placeholder="Name, set or number" value="${esc(M.q)}"></label>
-  <label>Tier<select class="field" id="mr"><option value="">All tiers</option>${RARITIES.map(r=>`<option ${M.rar===r?'selected':''}>${r}</option>`).join('')}</select></label>
-  <label>Type<select class="field" id="me"><option value="">All types</option>${TYPES.map(r=>`<option ${M.type===r?'selected':''}>${r}</option>`).join('')}</select></label>
-  <label>Grader<select class="field" id="mg"><option value="">Any grader</option>${['PSA','BGS','CGC'].map(r=>`<option ${M.grader===r?'selected':''}>${r}</option>`).join('')}</select></label>
-  <label class="check"><input type="checkbox" id="mfe" ${M.fe?'checked':''}> 1st Edition only</label>
-  <label>Max price (USDC)<input class="field" id="mp" type="number" min="0" step="1" placeholder="Any" value="${M.max||''}"></label>
-  <label>Sort<select class="field" id="ms">${[['low','Price: lowest'],['high','Price: highest'],['new','Newest release'],['rare','Rarest'],['recent','Recently listed']].map(([v,l])=>`<option value="${v}" ${M.sort===v?'selected':''}>${l}</option>`).join('')}</select></label>
-  ${S.wallet?'<button class="btn sm" data-act="list-help">Sell a card</button>':''}
- </aside><div id="mgrid" style="min-width:0">${mgrid()}</div></div></div>`;
-
-let LT='Global';
-pages.leaderboard=()=>{const key=LT==='Global'?'score':LT==='Weekly'?'weekly':'season';let rows=LB.map(u=>({...u,v:u[key]}));
-  if(S.wallet){const sc=score(S);rows.push({user:'You',me:true,v:LT==='Weekly'?Math.round(sc*.3):sc,level:levelOf(sc).level,mythics:countR(S,'Mythic'),sets:completedSets(S).length,hue:40,delta:1})}
-  rows.sort((a,b)=>b.v-a.v);
-  return head('Season 01','Leaderboard','Ranked by Collector Score. Scores reward pull tier, 1st Editions and completed sets, and have no monetary value.',DEMO)+
-  `<div class="wrap"><div class="tabs" role="tablist">${['Global','Weekly','Season'].map(t=>`<button role="tab" data-act="ltab" data-v="${t}" aria-selected="${LT===t}">${t}</button>`).join('')}</div>
-  <div class="tbl-wrap"><table class="lb"><thead><tr><th>Rank</th><th>Collector</th><th class="num">Level</th><th class="num">Score</th><th class="num">Mythics</th><th class="num">Completed sets</th></tr></thead><tbody>
-  ${rows.map((u,i)=>`<tr class="${u.me?'me':''}" style="animation-delay:${Math.min(i,20)*25}ms"><td class="rank ${i<3?'top':''}">${i+1}</td><td><div class="who"><span class="avatar" style="background:linear-gradient(135deg,hsl(${u.hue} 70% 60%),hsl(${(u.hue+60)%360} 60% 35%))"></span>${esc(u.user)}${u.me?' <span class="chip proto">Demo wallet</span>':''}${u.delta?`<span class="delta ${u.delta>0?'up':'down'}">${u.delta>0?'▲':'▼'}${Math.abs(u.delta)}</span>`:''}</div></td><td class="num">${u.level}</td><td class="num">${n(u.v)}</td><td class="num">${u.mythics}</td><td class="num">${u.sets}</td></tr>`).join('')}
-  </tbody></table></div><p class="muted" style="margin-top:12px;font-size:.82rem">All collectors shown are fictional demo users.${S.wallet?'':' Connect a demo wallet to see your own rank.'}</p></div>`};
-
-// INTEGRATION POINT (custody): deposit intake, cert verification, insurance and shipping
-// come from the vault/custodian API. Redemption burns the token on-chain, then ships.
-pages.vault=()=>{const held=mine(S);
- return head('Storage & shipping','The Vault','Your graded cards are stored in an insured vault and backed 1:1 by tokens in your wallet, so you can trade them without shipping. Request delivery any time.',PROTO)+
- `<div class="wrap"><div class="loop" style="margin-bottom:36px">${[['Send in','Mail your PSA, BGS or CGC slabs, or buy and pull them here.'],['Verify','Each slab is checked against its grading cert on arrival.'],['Vault','Stored in insured, climate-controlled storage.'],['Trade','A 1:1 token in your wallet moves instantly on Solana.'],['Ship','Burn the token and the slab ships to your door.']].map((s,i)=>`<div><span class="n">0${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div>
- <div class="sec-head"><div><span class="eyebrow">Your vaulted slabs</span><h2 style="margin-top:10px">${S.wallet?held.length+' in the vault':'Your vault'}</h2></div>${S.wallet?`<button class="btn" data-act="deposit">Send cards to the vault</button>`:''}</div>
- ${!S.wallet?`<div class="empty"><h3>Connect your wallet to begin building your collection.</h3><button class="btn primary" data-act="connect">Connect wallet</button></div>`
- :held.length?`<div class="grid-cards">${held.slice().reverse().map(e=>{const c=BY[e.cid];return `<div class="listing">${card(c,{grade:e.grade,grader:e.grader,vid:e.vid})}<div class="mono muted" style="font-size:.72rem">${usd(value(c,e.grade))} insured (demo)</div><div class="acts"><button class="btn sm" data-act="ship" data-uid="${e.uid}">Ship to me</button><button class="btn sm ghost" data-act="sellback" data-uid="${e.uid}">Buyback</button></div></div>`}).join('')}</div>`
- :`<div class="empty"><h3>Your collection is waiting.</h3><p>Open a pack or buy a slab to fill your vault.</p><a class="btn primary" href="#packs">Open a pack</a></div>`}
- <p class="notice" style="margin-top:24px"><strong>Prototype.</strong> Vault location, custodian, insurance coverage and shipping fees will be published before launch. The redemption fee shown is a placeholder (${REDEEM_FEE} USDC).</p></div>`};
-
-pages.rewards=()=>{const st=S.wallet?S:blank();
- return head('Season 01','Rewards','Earn badges, frames, profile cosmetics, pack credits and season prizes by collecting, completing sets and competing.',PROTO)+
- `<div class="wrap"><section style="margin-bottom:48px"><div class="sec-head"><div><span class="eyebrow">Season 01</span><h2 style="margin-top:10px">Season rewards</h2></div><p class="lede">Goals: complete sets, pull Mythics, earn score and finish quests.</p></div>
- <div class="season-ranks"><div><div class="pl" style="color:var(--foil)">#1</div><strong>Season Champion Slab</strong><p class="muted" style="font-size:.86rem">A vaulted graded chase card.</p></div><div><div class="pl">#2–10</div><strong>Legendary-tier slab</strong><p class="muted" style="font-size:.86rem">Delivered to your vault.</p></div><div><div class="pl">#11–100</div><strong>Epic-tier slab</strong><p class="muted" style="font-size:.86rem">Delivered to your vault.</p></div></div>
- <p class="muted" style="margin-top:10px;font-size:.8rem">Prototype reward structure. Final prizes and official rules will be published before Season 01 begins.</p></section>
- <section style="margin-bottom:48px"><div class="sec-head"><div><span class="eyebrow">Quests</span><h2 style="margin-top:10px">This season's quests</h2></div></div>
- <div class="quests">${QUESTS.map(q=>{const v=Math.min(q.goal,q.f(st)),d=v>=q.goal;return `<div class="quest ${d?'done':''}"><span class="ic">${d?ICON.check:ICON.pack}</span><h4>${q.name}</h4><span class="mono tnum muted" style="font-size:.78rem">${v} / ${q.goal}</span><div class="rw" style="grid-column:2/-1">${q.rw}</div><div class="bar"><i style="width:${v/q.goal*100}%"></i></div></div>`}).join('')}</div></section>
- <section><div class="sec-head"><div><span class="eyebrow">Rewards</span><h2 style="margin-top:10px">Your rewards</h2></div></div>
- ${!S.wallet||!REWARDS.some(r=>r.f(st))?`<div class="empty" style="margin-bottom:24px"><h3>No rewards yet.</h3><p>Start collecting to unlock your first achievement.</p>${S.wallet?'<a class="btn primary" href="#packs">Open a pack</a>':'<button class="btn primary" data-act="connect">Connect wallet</button>'}</div>`:''}
- ${['Collector','Collection','Community','Seasonal'].map(cat=>`<h3 style="margin:26px 0 14px;font-size:1.5rem">${cat} rewards</h3><div class="rewards">${REWARDS.filter(r=>r.cat===cat).map(r=>{const u=r.f(st);return `<div class="reward ${u?'':'locked'}">${badgeSvg(TYPES[(REWARDS.indexOf(r)*4)%9],52)}<div><h4>${r.name}</h4><p class="muted" style="font-size:.84rem">${r.desc}</p></div><div style="display:flex;justify-content:space-between;gap:6px;align-items:center;margin-top:auto"><span class="chip">${r.kind}</span>${u?'<span class="chip live">Unlocked</span>':'<span class="chip">Locked</span>'}</div></div>`}).join('')}</div>`).join('')}</section></div>`};
-
-pages['collector-crypt']=()=>head('MONDEX × Collector Crypt','Bring your collection into the digital world.','Collector Crypt vaults and tokenizes graded cards on Solana. MONDEX is designed to complement that with a collector identity, achievements, sets and exclusive rewards.',PROPOSED)+
- `<div class="wrap"><p class="notice"><strong>Proposed integration.</strong> This page describes a concept. MONDEX is not currently affiliated with, endorsed by, or integrated with Collector Crypt, and none of the features below are live.</p>
- <section class="sec"><div class="split" style="align-items:center"><div><span class="eyebrow">Concept flow</span><h2 style="margin-top:10px">From the slab to your score.</h2><p class="muted" style="margin-top:14px;max-width:48ch">If an integration goes ahead, verified cards and activity from a connected Collector Crypt wallet could count toward your MONDEX Collector Score, set completion and season rewards.</p></div>
- <div class="flow">${['Physical collecting','Verified collector activity','MONDEX Collector Score','Exclusive digital rewards','Digital collection'].map((s,i,a)=>`<div class="step ${i===2?'hl':''}">${s.toUpperCase()}</div>${i<a.length-1?'<div class="arrow"></div>':''}`).join('')}</div></div></section>
- <section style="padding-bottom:48px"><span class="eyebrow">Potential features</span><h2 style="margin:10px 0 22px">What it could include</h2>
- <div class="feat-grid">${[['Verified collector rewards','Rewards for verified collecting milestones.'],['Collector Score','Cards held through Collector Crypt counted toward your score.'],['CC Vault Series','A concept reward series for verified collectors.'],['Digital achievements','Badges that recognize long-term collecting.'],['Special quests','Quests that span both platforms.'],['Collector identity','One profile for your whole collecting history.']].map(([t,d])=>`<div><h4>${t}</h4><p>${d}</p></div>`).join('')}</div></section>
- <section class="panel recipe"><div><span class="eyebrow">CC Vault Series</span><h3 style="font-size:2.4rem;margin-top:8px">Vault Guardian</h3><p class="muted" style="margin-top:8px">Legendary · #001 / 500 · Prototype exclusive reward</p><p style="margin-top:14px"><span class="chip proposed">Concept — not currently available</span></p><p class="muted" style="margin-top:14px;font-size:.88rem">A MONDEX profile frame and badge that would be reserved for verified Collector Crypt collectors. It cannot be earned today.</p></div><div style="display:grid;place-items:center">${badgeSvg('Dragon',200,'#001/500')}</div></section>
- <!-- INTEGRATION POINT (Collector Crypt): only after a signed agreement. Read public wallet holdings
-      via their API using a server-side key from env vars; never call it with secrets client-side. -->
- </div>`;
-
-pages.roadmap=()=>head('Where MONDEX is going','Roadmap','Phases describe intent and order. Dates will be announced when each phase is ready.')+
- `<div class="wrap"><div class="road">${[['Foundation','now','In progress',['Brand','Website prototype','Card catalog','Community']],['Collect','','Planned',['Packs','Collection dashboard','Collector Score','Leaderboards','Quests']],['Trade','','Planned',['Marketplace','Offers','Instant buyback','1st Edition tracking']],['Connect','','Proposed',['Proposed Collector Crypt integration','Verified activity','CC Vault Series']],['Expand','','Planned',['Vault deposits','Shipping and redemption','New seasons','Mobile']],['Ecosystem','','Subject to review',['Potential token utility, subject to legal, regulatory and technical review']]]
- .map(([t,c,s,items],i)=>`<div class="phase ${c}"><div class="pn">0${i+1}</div><div><h3>${t} <span class="chip ${s==='In progress'?'live':s==='Proposed'?'proposed':''}">${s}</span></h3><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`).join('')}</div></div>`;
-
-pages.guide=()=>head('Collector guide','Grading & vault guide','What the numbers on a slab mean, how pull tiers work, and what happens when you ship a card home.')+
- `<div class="wrap"><div class="split" style="margin-bottom:20px"><div class="panel"><span class="eyebrow">Grading scale</span><h3 style="margin:10px 0 14px">PSA grades</h3>
- <table class="odds"><tbody>${[['10','Gem Mint'],['9','Mint'],['8','Near Mint–Mint'],['7','Near Mint'],['6','Excellent–Mint']].map(([g,d])=>`<tr><td>${d}</td><td>${g}</td></tr>`).join('')}</tbody></table>
- <p class="muted" style="font-size:.84rem;margin-top:12px">BGS and CGC use similar 1–10 scales with half grades (for example 9.5). A higher grade usually means a much higher value for the same card.</p></div>
- <div class="panel"><span class="eyebrow">Graders</span><h3 style="margin:10px 0 14px">Who grades the slabs</h3><div style="display:grid;gap:12px" class="muted"><p><strong style="color:var(--fg)">PSA</strong> is the most common grader for Pokémon cards and the reference for most price data.</p><p><strong style="color:var(--fg)">BGS (Beckett)</strong> adds subgrades for centering, corners, edges and surface.</p><p><strong style="color:var(--fg)">CGC</strong> grades with half points and is common on modern cards.</p></div></div></div>
- <div class="split"><div class="panel"><span class="eyebrow">Eras</span><h3 style="margin:10px 0 14px">Vintage and modern</h3><p class="muted"><strong style="color:var(--fg)">Vintage</strong> means the Wizards of the Coast era sets from 1999–2003, such as Base Set, Jungle, Fossil, Team Rocket and Neo. A 1st Edition stamp marks the first print run. <strong style="color:var(--fg)">Modern</strong> covers recent sets, where alternate arts and special illustration rares are the chase cards.</p></div>
- <div class="panel"><span class="eyebrow">Shipping home</span><h3 style="margin:10px 0 14px">Redeeming a card</h3><p class="muted">Choose "Ship to me" on any vaulted slab. You confirm your address, the card's token is burned, and the slab ships insured. Once shipped it leaves the marketplace and your on-chain collection, but it still counts toward your Collector Score history.</p></div></div></div>`;
-
-pages.faq=()=>{const Q=[
- ['What is MONDEX?','<p>A platform for collecting real graded Pokémon cards on Solana: open packs, trade on the marketplace, complete sets and climb the leaderboard.</p><p><span class="chip proto">Prototype</span> This website is a working prototype. Every card, price and balance is demo data.</p>'],
- ['Are the cards real?','<p>At launch, every card will be a physical PSA, BGS or CGC slab stored in an insured vault and represented 1:1 by a token in your wallet.</p><p><span class="chip proto">Prototype</span> Cards in this demo are not backed by real slabs and nothing is minted.</p>'],
- ['How do packs and buyback work?','<p>A pack contains five vaulted cards drawn by tier. After the reveal you can keep the cards in your vault or sell them back instantly for a share of insured value (prototype: '+Math.round(BUYBACK*100)+'%). Packs and buyback will only launch where legally permitted.</p>'],
- ['What are pull tiers?','<p>Common, Rare, Epic, Legendary and Mythic tiers are bands of insured value, from about $15 to $2,500+. They are MONDEX tiers, not the rarity printed on the card.</p>'],
- ['What is Collector Score?','<p>A game metric: Common 1, Rare 5, Epic 15, Legendary 50, Mythic 250. 1st Editions add 50%, completed sets add 100, completing every set adds 500. It has no monetary value.</p>'],
- ['Can I ship my card home?','<p>Yes. Request shipping from The Vault. The token is burned and the slab ships to you. Shipping and redemption fees will be published before launch.</p>'],
- ['Is MONDEX connected to Collector Crypt?','<p>No. A Collector Crypt integration is a proposal only. MONDEX is not affiliated with or endorsed by Collector Crypt.</p>'],
- ['Is MONDEX affiliated with Pokémon?','<p>No. Pokémon is a trademark of Nintendo, Creatures Inc. and GAME FREAK inc. MONDEX is an independent marketplace for graded cards and is not sponsored or endorsed by them. Card names are used only to identify the cards.</p>'],
- ['Is there a MONDEX token?','<p>No. There is no MONDEX token today. Possible future utility is subject to legal, regulatory and technical review. MONDEX does not promise price, returns or income.</p>']];
- return head('Questions','FAQ','What works today, and what is still a plan.')+`<div class="wrap"><div class="faq" style="max-width:860px">${Q.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}</summary><div class="ans">${a}</div></details>`).join('')}</div></div>`};
-pages.terms=()=>head('Legal','Terms','Draft terms for the prototype. Final terms will be reviewed by counsel before launch.')+`<div class="wrap"><div class="legal">
- <h3>1. Prototype</h3><p>This website is a product prototype. Cards, users, listings, prices, insured values, balances and transactions shown are demo data. No payments are taken, no cards are vaulted or shipped, and no blockchain transactions occur.</p>
- <h3>2. Cards and custody</h3><p>At launch, tokens will represent ownership of specific graded cards held by a third-party custodian. Custody, insurance and redemption terms will be published before launch.</p>
- <h3>3. Packs and buyback</h3><p>Randomized packs and instant buyback may be regulated where you live and will be offered only where permitted, with odds published.</p>
- <h3>4. Your wallet</h3><p>MONDEX will never ask for your seed phrase or private key and will never request unlimited approvals.</p>
- <h3>5. Trademarks</h3><p>Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. PSA, Beckett/BGS and CGC are trademarks of their owners. MONDEX is not affiliated with or endorsed by any of them.</p>
- <h3 id="risk">6. Risk disclosure</h3><p>Collectible values can fall. Graded cards can be hard to sell. Blockchain networks can fail or change, and smart contracts can contain bugs. Laws on digital assets vary and may change. Nothing on this website constitutes financial, investment, or legal advice, and nothing here is an offer of securities.</p></div></div>`;
-pages.privacy=()=>head('Legal','Privacy','Draft privacy notice for the prototype.')+`<div class="wrap"><div class="legal">
- <h3>What we store</h3><p>The prototype keeps your demo collection, wishlist, quest progress and any card photos you add in your own browser's local storage. Nothing is sent to a MONDEX server.</p>
- <h3>Shipping addresses</h3><p>Addresses typed into the demo shipping form are not saved or sent anywhere.</p>
- <h3>Wallets</h3><p>Demo wallet addresses are randomly generated. When real wallet support launches, MONDEX will read only your public address.</p>
- <h3>Clearing your data</h3><p>Use "Reset demo data" in the wallet menu, or clear this site's data in your browser.</p></div></div>`;
-
-/* ---------------- Live Slabs (real Collector Crypt tokens via /api/slabs) ---------------- */
+/* ---------------- Live Slabs (all Collector Crypt tokens) ---------------- */
 const SL={state:'idle',slabs:[],page:1,total:null,err:null,owner:'',missing:null};
 async function loadSlabs(page,owner){
   SL.state='loading';SL.err=null;rerender();
   try{const r=await fetch('/api/slabs?page='+page+(owner?'&owner='+encodeURIComponent(owner):''));const j=await r.json().catch(()=>({}));
     if(!r.ok){SL.state=r.status===503?'setup':'error';SL.err=j.error||'We couldn’t connect to the network. Please try again.';SL.missing=j.missing||null;rerender();return}
     SL.slabs=j.slabs||[];SL.total=j.total;SL.page=page;SL.owner=owner||'';SL.state='ready';rerender();
-  }catch(e){SL.state='setup';SL.err=null;rerender()}
+  }catch(e){SL.state='error';SL.err='We couldn’t connect to the network. Please try again.';rerender()}
 }
-function slabCard(x){
-  const v=x.insured, tier=v==null?'Rare':v<60?'Common':v<200?'Rare':v<600?'Epic':v<2500?'Legendary':'Mythic';
-  return `<div class="listing"><div class="card ${tier}" style="cursor:default" role="img" aria-label="${esc(x.title||x.name)}, ${esc(x.grader||'')} ${esc(x.grade||'')}"><div class="card-in">
-    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(x.title||x.name)}</div><div class="sl-sub">${esc([x.year,x.set].filter(Boolean).join(' · ')||'Vaulted slab')}</div></div><div class="sl-g"><div class="sl-grader">${esc(x.grader||'GRADE')}</div><div class="sl-num">${esc(x.grade||'—')}</div></div></div>
-    <div class="art">${x.image?`<img src="${esc(x.image)}" loading="lazy" alt="${esc(x.title||x.name)} slab photo">`:''}</div>
-    <div class="card-bot"><span class="rb ${tier}">${tier}</span><span class="serial">${v!=null?'$'+n(v)+' insured':'Vaulted'}</span></div></div></div>
-    <div class="mono muted" style="font-size:.72rem;line-height:1.5">${x.gradeText?esc(x.gradeText)+' · ':''}${x.cert?'Cert '+esc(x.cert):''}<br>${esc(x.vault||'Collector Crypt vault')} · <a href="https://solscan.io/token/${esc(x.id)}" target="_blank" rel="noopener">Solscan</a></div></div>`;
+
+/* ---------------- Marketplace (real Magic Eden listings) ---------------- */
+const MK={state:'idle',items:[],offset:0,next:null,err:null,q:'',grader:'',sort:'low',max:''};
+async function loadListings(offset){
+  MK.state='loading';MK.err=null;rerender();
+  try{const r=await fetch('/api/listings?offset='+(offset||0));const j=await r.json().catch(()=>({}));
+    if(!r.ok){MK.state='error';MK.err=j.error||'We couldn’t connect to the network. Please try again.';rerender();return}
+    MK.items=j.listings||[];MK.offset=offset||0;MK.next=j.nextOffset;MK.state='ready';rerender();
+  }catch(e){MK.state='error';MK.err='We couldn’t connect to the network. Please try again.';rerender()}
 }
+function mkFiltered(){
+  let L=MK.items.filter(x=>(!MK.q||((x.title||'')+' '+(x.name||'')+' '+(x.set||'')).toLowerCase().includes(MK.q.toLowerCase()))&&(!MK.grader||String(x.grader||'').toUpperCase().includes(MK.grader))&&(!MK.max||x.price<=+MK.max));
+  const by={low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price,grade:(a,b)=>(parseFloat(b.grade)||0)-(parseFloat(a.grade)||0),insured:(a,b)=>(b.insured||0)-(a.insured||0)}[MK.sort];
+  return L.sort(by);
+}
+function mgrid(){
+  if(MK.state==='idle'||MK.state==='loading')return `<div class="empty"><h3>Loading listings…</h3></div>`;
+  if(MK.state==='error')return `<div class="empty"><h3>${esc(MK.err)}</h3><button class="btn" data-act="mk-retry">Try again</button></div>`;
+  const L=mkFiltered();
+  if(!L.length)return `<div class="empty"><h3>No cards found.</h3><p>Try widening your filters, or load more listings.</p>${MK.next!=null?`<button class="btn" data-act="mk-page" data-v="${MK.next}">Load more listings</button>`:''}</div>`;
+  return `<p class="count" style="margin-bottom:14px">${L.length} POKÉMON SLABS LISTED · LIVE FROM MAGIC EDEN</p><div class="grid-cards">${L.map(x=>slabCard(x,{price:x.price,url:x.url})).join('')}</div>
+   <div style="display:flex;gap:10px;justify-content:center;margin-top:24px"><button class="btn" data-act="mk-page" data-v="${Math.max(0,MK.offset-100)}" ${MK.offset<=0?'disabled':''}>Previous</button><button class="btn" data-act="mk-page" data-v="${MK.next}" ${MK.next==null?'disabled':''}>Next</button></div>`;
+}
+
+/* ---------------- MONDEX Pass (0.5 SOL, one-time, per wallet) ----------------
+   The visitor's own wallet sends SOL straight to the treasury. /api/pass confirms
+   the payment on Solana before anything unlocks. */
+const TREASURY='CPsky2ChMspRoXScoPHhCmUMF7Ac7ACAD4Tjv2JhScQr';
+const PASS_SOL=0.5;
+const PASS={checking:false,paying:false};
+S.pass=S.pass||{};
+const hasPass=()=>!!(W.address&&S.pass[W.address]);
+async function checkPass(silent){
+  if(!W.address||hasPass())return;
+  PASS.checking=true;if(!silent)rerender();
+  try{const r=await fetch('/api/pass?wallet='+encodeURIComponent(W.address));const j=await r.json().catch(()=>({}));
+    if(r.ok&&j.active){S.pass[W.address]=j.signature||true;save();toast('MONDEX Pass found for this wallet.','ok')}
+    else if(!silent)toast(r.ok?'No pass payment found for this wallet yet.':(j.error||'We couldn’t connect to the network. Please try again.'),r.ok?'':'err');
+  }catch(e){if(!silent)toast('We couldn’t connect to the network. Please try again.','err')}
+  PASS.checking=false;rerender();
+}
+function loadWeb3(){
+  if(window.solanaWeb3)return Promise.resolve();
+  return new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js';s.onload=ok;s.onerror=()=>no(new Error('web3 failed to load'));document.head.appendChild(s)});
+}
+function passReview(){
+  if(!W.address){connectModal();return}
+  modal(`<span class="chip proto">Review before signing</span><h3 style="margin-top:12px">MONDEX Pass</h3>
+  <dl class="kv"><dt>Amount</dt><dd>${PASS_SOL} SOL</dd><dt>From</dt><dd>${esc(W.address)}</dd><dt>To (MONDEX)</dt><dd>${TREASURY}</dd><dt>Network fee</dt><dd>about 0.000005 SOL</dd><dt>What it does</dt><dd>One SOL transfer. No token approvals.</dd></dl>
+  <p class="muted" style="font-size:.84rem">Your wallet will show this same transfer for you to approve. Payments on Solana are final, so check the amount and address before you sign.</p>
+  <div class="acts"><button class="btn primary" data-act="pass-pay">Continue in ${esc(W.name||'wallet')}</button><button class="btn ghost" data-act="close">Cancel</button></div>`);
+}
+async function payPass(){
+  if(PASS.paying)return;PASS.paying=true;closeModal();toast('Approve the payment in your wallet…');
+  try{
+    await loadWeb3();
+    const meta=await fetch('/api/pass?blockhash=1').then(r=>r.ok?r.json():Promise.reject(new Error('blockhash')));
+    if(meta.treasury!==TREASURY)throw new Error('Treasury mismatch');
+    const w3=window.solanaWeb3,from=new w3.PublicKey(W.address);
+    const tx=new w3.Transaction({feePayer:from,recentBlockhash:meta.blockhash}).add(w3.SystemProgram.transfer({fromPubkey:from,toPubkey:new w3.PublicKey(TREASURY),lamports:Math.round(PASS_SOL*1e9)}));
+    let sig=null;const p=W.provider;
+    if(p.signAndSendTransaction){const r=await p.signAndSendTransaction(tx);sig=(r&&(r.signature||r))||null;if(sig&&typeof sig!=='string')sig=w3.bs58?w3.bs58.encode(sig):null}
+    if(!sig){const signed=await p.signTransaction(tx);const raw=signed.serialize();let bin='';raw.forEach(b=>bin+=String.fromCharCode(b));
+      const r=await fetch('/api/pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tx:btoa(bin)})});const j=await r.json();if(!r.ok)throw new Error(j.error||'send failed');sig=j.signature}
+    toast('Payment sent. Confirming on Solana…');
+    for(let i=0;i<30;i++){await new Promise(r=>setTimeout(r,2000));
+      const r=await fetch('/api/pass?wallet='+encodeURIComponent(W.address)+'&sig='+encodeURIComponent(sig));const j=await r.json().catch(()=>({}));
+      if(j.active){S.pass[W.address]=sig;save();PASS.paying=false;toast('MONDEX Pass unlocked. Welcome in.','ok');rerender();return}
+      if(j.pending===false&&!j.active)break;}
+    toast('We couldn’t confirm the payment yet. If it went through, use "Check for my pass" in a minute.','err');
+  }catch(e){
+    const m=(e&&e.message)||'';
+    toast(e&&(e.code===4001||/reject|cancel|denied/i.test(m))?'Transaction cancelled. No changes were made.':'We couldn’t connect to the network. Please try again.','err');
+  }
+  PASS.paying=false;rerender();
+}
+function paywall(what){
+  return `<div class="panel" style="display:grid;gap:18px;max-width:760px;margin:0 auto;background:linear-gradient(135deg,rgba(233,199,123,.08),rgba(181,123,255,.05)),var(--panel)">
+   <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="eyebrow">MONDEX Pass</span><span class="chip proto">${PASS_SOL} SOL · one-time</span></div>
+   <h2 style="font-size:clamp(2rem,5vw,3rem)">Unlock ${what}.</h2>
+   <ul style="margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px"><li>Your collection dashboard with Collector Score and level</li><li>Achievements from the slabs you hold</li><li>Look up any wallet's slabs</li><li>On-chain achievement badges as they launch</li></ul>
+   ${!W.address?`<div class="acts" style="margin:0"><button class="btn primary" data-act="connect">Connect wallet to continue</button></div>`
+    :`<div class="acts" style="margin:0"><button class="btn primary" data-act="pass-buy" ${PASS.paying?'disabled':''}>${PASS.paying?'Waiting for payment…':'Get MONDEX Pass · '+PASS_SOL+' SOL'}</button><button class="btn ghost" data-act="pass-check" ${PASS.checking?'disabled':''}>${PASS.checking?'Checking…':'Check for my pass'}</button></div>`}
+   <p class="muted" style="font-size:.8rem">The pass is tied to the wallet that pays. Payment goes from your wallet straight to MONDEX at <span class="mono" style="word-break:break-all">${TREASURY}</span>. You can also send exactly ${PASS_SOL} SOL to that address yourself, then choose "Check for my pass".</p>
+  </div>`;
+}
+
+/* ---------------- Pages ---------------- */
+const head=(eyebrow,title,lede,chips='')=>`<div class="page-head"><div class="wrap"><div class="row"><span class="eyebrow">${eyebrow}</span>${chips}</div><h1 style="font-size:clamp(2.6rem,8vw,5.6rem)">${title}</h1>${lede?`<p>${lede}</p>`:''}</div></div>`;
+const LIVEC='<span class="chip live">Live on Solana</span>';
+const pages={};
+
+pages.home=()=>`<div class="wrap"><section class="hero">
+  <div><span class="eyebrow">Graded Pokémon cards on Solana</span><h1>MONDEX</h1><div class="tag">COLLECT WHAT COMES NEXT.</div>
+    <p class="lede">Browse real graded Pokémon slabs held in Collector Crypt's vault, buy them on-chain, and build your collector profile. Every slab is a token on Solana backed by the physical card.</p>
+    <div class="ctas"><a class="btn primary" href="#marketplace">Shop slabs</a><a class="btn" href="#slabs">Browse the vault</a><button class="btn ghost" data-act="how">How it works</button></div>
+    <p class="muted" style="margin-top:22px;font-size:.84rem">Digital Cards. Real Ownership. &nbsp;·&nbsp; PSA · BGS · CGC &nbsp;·&nbsp; Settled on Solana</p></div>
+  <div class="hero-stage"><div class="ghost-card g1">${card(find('Lugia','Neo Genesis'),{noclick:true})}</div><div class="ghost-card g2">${card(find('Shining Charizard'),{noclick:true})}</div>${card(find('Charizard','Base Set',true),{tilt:true})}</div>
+</section></div>
+<section class="sec" id="how"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">How it works</span><h2 style="margin-top:10px">Pull. Collect. Trade.</h2></div><p class="lede">Every slab is a real graded card in an insured vault, owned through a token in your wallet.</p></div>
+  <div class="loop">${[['Browse','See every vaulted Collector Crypt slab with its photo, grade and insured value.'],['Buy','Buy listed slabs on Magic Eden, signed in your own wallet.'],['Collect','Connect your wallet to see your slabs and Collector Score.'],['Achieve','Unlock achievements from what you really hold.'],['Redeem','Want the physical slab? Redeem it with Collector Crypt.']].map((s,i)=>`<div><span class="n">0${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div></div></section>
+<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Tiers</span><h2 style="margin-top:10px">Five tiers, set by insured value.</h2></div><p class="lede">Each slab's tier comes from the insured value recorded on its token. Higher tiers earn more Collector Score.</p></div>
+  <div class="util-list" style="grid-template-columns:repeat(5,minmax(0,1fr))">${RARITIES.map(r=>`<div><span class="rb ${r}">${r}</span><div style="margin-top:10px">${TIER_BANDS[r]}</div><span style="margin-top:6px">${TIER_SCORE[r]} score</span></div>`).join('')}</div></div></section>
+<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Reference catalog</span><h2 style="margin-top:10px">Vintage icons. Modern alt arts.</h2></div><a class="btn" href="#explore">Browse all ${CARDS.length}</a></div>
+  <div class="grid-cards">${[['Charizard','Base Set',false],['Rayquaza VMAX'],['Dark Charizard'],['Giratina V'],['Gengar VMAX'],['Charizard ex','151']].map(a=>card(find(...a))).join('')}</div>
+  <p class="muted" style="margin-top:16px;font-size:.82rem">Card images and ungraded prices from the Pokémon TCG API and TCGplayer.</p></div></section>
+<section class="sec"><div class="wrap split">
+  <div class="panel feature"><span class="eyebrow">Live Slabs</span><h3>Every vaulted slab, on-chain.</h3><p class="muted">Read straight from Solana: the photo of each slab, its grade, cert, vault and insured value. Look up any wallet to see what it holds.</p><div><a class="btn" href="#slabs">Open Live Slabs</a></div></div>
+  <div class="panel feature"><span class="eyebrow">Collector Score</span><h3>Your collection, ranked.</h3><p class="muted">Connect your wallet and MONDEX scores the slabs you actually own: tier points, a bonus for every grade 10, and achievements to unlock.</p><div><button class="btn" data-act="connect">Connect wallet</button></div></div>
+</div></section>
+<section class="sec"><div class="wrap">${hasPass()?'':paywall('the full MONDEX experience')}</div></section>
+<section class="sec"><div class="wrap" style="text-align:center;display:grid;gap:18px;justify-items:center"><h2>Find your next grail.</h2><a class="btn primary" href="#marketplace">Shop slabs</a></div></section>`;
+
+let X={type:'All',era:'All',q:''};
+const xfilter=()=>CARDS.filter(c=>(X.type==='All'||c.type===X.type)&&(X.era==='All'||c.era===X.era)&&(!X.q||(c.name+' '+c.set+' '+c.number).toLowerCase().includes(X.q.toLowerCase())));
+const xgrid=list=>list.length?`<div class="grid-cards">${list.map(c=>`<div class="cell">${card(c)}<div class="cell-meta"><span class="mono">${esc(c.set)} ${esc(c.number)}</span><button class="fav" data-act="wish" data-cid="${c.id}" aria-pressed="${S.wishlist.includes(c.id)}" aria-label="Wishlist ${esc(c.name)}">${ICON.heart}</button></div></div>`).join('')}</div>`:`<div class="empty"><h3>No cards found.</h3><p>Try a different type or search.</p></div>`;
+const liveChip=()=>LIVE.prices?`<span class="chip live">Live prices${LIVE.updated?' · '+esc(LIVE.updated):''}</span>`:'<span class="chip">Loading prices…</span>';
+pages.explore=()=>{const list=xfilter();return head('Reference catalog','Explore','Key vintage and modern cards with live ungraded prices from TCGplayer. Open a card to find graded copies for sale.',liveChip())+
+ `<div class="wrap"><div class="filters"><div class="row"><input class="field search" id="xq" type="search" placeholder="Search name, set or number (e.g. 4/102)" value="${esc(X.q)}" aria-label="Search cards"><span class="count" id="xcount">${list.length} OF ${CARDS.length}</span></div>
+  <div class="seg" role="group" aria-label="Era">${['All','Vintage','Modern'].map(e=>`<button data-act="x-era" data-v="${e}" aria-pressed="${X.era===e}">${e==='All'?'All eras':e}</button>`).join('')}</div>
+  <div class="seg" role="group" aria-label="Type">${['All',...TYPES].map(e=>`<button data-act="x-type" data-v="${e}" aria-pressed="${X.type===e}">${e==='All'?'All types':e}</button>`).join('')}</div>
+ </div><div id="xgrid">${xgrid(list)}</div></div>`};
+
 pages.slabs=()=>{
   if(SL.state==='idle')setTimeout(()=>loadSlabs(1,''),0);
   const body=SL.state==='loading'||SL.state==='idle'?`<div class="empty"><h3>Loading slabs…</h3></div>`
-   :SL.state==='setup'?`<div class="empty"><h3>Live slabs aren't connected yet.</h3><p style="max-width:56ch;margin:0 auto">This page reads real Collector Crypt card tokens from Solana. It works on the deployed site once <span class="mono">HELIUS_API_KEY</span> and <span class="mono">CC_COLLECTION</span> are set in Vercel.${SL.missing?` Missing: ${Object.keys(SL.missing).filter(k=>SL.missing[k]).join(', ')}.`:''}</p></div>`
+   :SL.state==='setup'?`<div class="empty"><h3>Live slabs aren't connected yet.</h3><p>Add HELIUS_API_KEY and CC_COLLECTION in Vercel, then redeploy.</p></div>`
    :SL.state==='error'?`<div class="empty"><h3>${esc(SL.err)}</h3><button class="btn" data-act="sl-retry">Try again</button></div>`
-   :SL.slabs.length?`<p class="count" style="margin-bottom:14px">${SL.owner?'WALLET '+esc(SL.owner.slice(0,4))+'…'+esc(SL.owner.slice(-4))+' · ':''}${SL.slabs.length} SLABS${SL.total&&!SL.owner?' · PAGE '+SL.page:''}</p><div class="grid-cards">${SL.slabs.map(slabCard).join('')}</div>
+   :SL.slabs.length?`<p class="count" style="margin-bottom:14px">${SL.owner?'WALLET '+esc(short(SL.owner))+' · ':''}${SL.slabs.length} SLABS${!SL.owner?' · PAGE '+SL.page:''}</p><div class="grid-cards">${SL.slabs.map(x=>slabCard(x)).join('')}</div>
      ${SL.owner?'':`<div style="display:flex;gap:10px;justify-content:center;margin-top:24px"><button class="btn" data-act="sl-page" data-v="${SL.page-1}" ${SL.page<=1?'disabled':''}>Previous</button><button class="btn" data-act="sl-page" data-v="${SL.page+1}" ${SL.slabs.length<48?'disabled':''}>Next</button></div>`}`
    :`<div class="empty"><h3>No cards found.</h3><p>${SL.owner?'This wallet holds no Collector Crypt slabs.':'The collection returned no slabs.'}</p></div>`;
-  return head('Real vaulted cards','Live Slabs','Real graded cards held in Collector Crypt’s vault, read live from Solana. Photos are scans of each actual slab.','<span class="chip live">Live on-chain data</span><span class="chip proposed">Read-only · not affiliated with Collector Crypt</span>')+
-  `<div class="wrap"><form id="slOwner" class="filters" style="grid-template-columns:1fr"><div class="row"><input class="field search" id="slAddr" placeholder="Look up a wallet address (optional)" value="${esc(SL.owner)}" aria-label="Wallet address" style="max-width:480px"><button class="btn sm" type="submit">Look up</button>${SL.owner?'<button class="btn sm ghost" type="button" data-act="sl-all">Show all slabs</button>':''}</div></form>${body}</div>`;
+  return head('Collector Crypt vault','Live Slabs','Real graded cards held in Collector Crypt’s vault, read live from Solana. Photos are scans of each actual slab.',LIVEC+'<span class="chip">Not affiliated with Collector Crypt</span>')+
+  `<div class="wrap"><form id="slOwner" class="filters" style="grid-template-columns:1fr"><div class="row"><input class="field search" id="slAddr" placeholder="Look up a wallet address" value="${esc(SL.owner)}" aria-label="Wallet address" style="max-width:480px"><button class="btn sm" type="submit">Look up</button>${SL.owner?'<button class="btn sm ghost" type="button" data-act="sl-all">Show all slabs</button>':''}</div></form>${body}</div>`;
 };
-document.addEventListener('submit',e=>{if(e.target.id==='slOwner'){e.preventDefault();const v=$('#slAddr').value.trim();if(v&&!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v)){toast('That doesn’t look like a Solana wallet address.','err');return}loadSlabs(1,v)}});
-document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;
-  if(t.dataset.act==='sl-page')loadSlabs(+t.dataset.v,'');if(t.dataset.act==='sl-all')loadSlabs(1,'');if(t.dataset.act==='sl-retry')loadSlabs(SL.page,SL.owner)});
+
+pages.marketplace=()=>{
+  if(MK.state==='idle')setTimeout(()=>loadListings(0),0);
+  return head('Buy on-chain','Marketplace','Pokémon slabs from Collector Crypt listed for sale right now. Buying opens the slab on Magic Eden, where you sign the purchase in your own wallet.',LIVEC+'<span class="chip">Listings via Magic Eden</span>')+
+ `<div class="wrap"><div class="mk-layout"><aside class="mk-filters panel">
+  <label>Search<input class="field" id="mq" type="search" placeholder="Card or set" value="${esc(MK.q)}"></label>
+  <label>Grader<select class="field" id="mg"><option value="">Any grader</option>${['PSA','BGS','CGC'].map(r=>`<option ${MK.grader===r?'selected':''}>${r}</option>`).join('')}</select></label>
+  <label>Max price (SOL)<input class="field" id="mp" type="number" min="0" step="0.1" placeholder="Any" value="${esc(MK.max)}"></label>
+  <label>Sort<select class="field" id="ms">${[['low','Price: lowest'],['high','Price: highest'],['grade','Highest grade'],['insured','Highest insured value']].map(([v,l])=>`<option value="${v}" ${MK.sort===v?'selected':''}>${l}</option>`).join('')}</select></label>
+  <p class="muted" style="font-size:.78rem">Prices in SOL. Check the final price and fees on Magic Eden before you sign.</p>
+ </aside><div id="mgrid" style="min-width:0">${mgrid()}</div></div></div>`;
+};
+
+pages.collect=()=>{
+  if(!W.address)return head('My collection','Collect','')+`<div class="wrap"><div class="empty"><h3>Connect your wallet to begin building your collection.</h3><p>MONDEX reads the Collector Crypt slabs in your wallet. It only needs your public address.</p><button class="btn primary" data-act="connect">Connect wallet</button></div></div>`;
+  if(!hasPass())return head('My collection · '+esc(short(W.address)),'Collect','')+`<div class="wrap">${paywall('your collection')}</div>`;
+  if(W.state==='loading'||W.state==='idle')return head('My collection · '+esc(short(W.address)),'Collect','')+`<div class="wrap"><div class="empty"><h3>Loading your slabs…</h3></div></div>`;
+  if(W.state==='error')return head('My collection · '+esc(short(W.address)),'Collect','')+`<div class="wrap"><div class="empty"><h3>${esc(W.err)}</h3><button class="btn" data-act="mine-retry">Try again</button></div></div>`;
+  const s=W.slabs,sc=scoreOf(s),lv=levelOf(sc),val=s.reduce((a,x)=>a+(x.insured||0),0),gems=s.filter(x=>parseFloat(x.grade)>=10).length,top=s.slice().sort((a,b)=>(b.insured||0)-(a.insured||0))[0];
+  const items=s.slice().sort((a,b)=>(b.insured||0)-(a.insured||0));
+  return head('My collection · '+esc(short(W.address)),'Collect','The Collector Crypt slabs in your wallet, read live from Solana. Collector Score is a game metric with no monetary value.',LIVEC)+
+  `<div class="wrap"><div class="level">${badgeSvg('Dragon',76,'LV '+lv.level)}<div style="flex:1;min-width:220px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong style="font:800 1.8rem var(--f-display);text-transform:uppercase">Level ${lv.level} · ${lv.title}</strong><span class="mono muted tnum" style="font-size:.8rem">${n(sc)} / ${n(lv.next)} to level ${Math.min(100,lv.level+1)}</span></div><div class="bar" style="margin-top:8px"><i style="width:${lv.pct}%"></i></div></div></div>
+  <div class="stats" style="grid-template-columns:repeat(6,minmax(0,1fr))">${[['Collector level',lv.level],['Collector score',n(sc)],['Slabs',s.length],['Insured value',usd(val)],['Grade 10s',gems],['Top slab',top?usd(top.insured||0):'—']].map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>
+  ${items.length?`<div class="grid-cards">${items.map(x=>slabCard(x)).join('')}</div>`:`<div class="empty"><h3>Your collection is waiting.</h3><p>This wallet doesn't hold any Collector Crypt slabs yet.</p><a class="btn primary" href="#marketplace">Shop slabs</a></div>`}</div>`;
+};
+
+pages.rewards=()=>{
+  if(!hasPass())return head('Achievements','Rewards','Achievements unlock from the slabs your wallet really holds.')+`<div class="wrap">${paywall('your achievements')}</div>`;
+  const s=W.slabs,got=ACHIEVEMENTS.filter(a=>W.address&&a.f(s));
+  return head('Achievements','Rewards','Achievements unlock from the slabs your wallet really holds. On-chain badges for each achievement are coming next.',W.address?LIVEC:'')+
+  `<div class="wrap">${!W.address?`<div class="empty" style="margin-bottom:24px"><h3>No rewards yet.</h3><p>Start collecting to unlock your first achievement.</p><button class="btn primary" data-act="connect">Connect wallet</button></div>`
+   :!got.length?`<div class="empty" style="margin-bottom:24px"><h3>No rewards yet.</h3><p>Start collecting to unlock your first achievement.</p><a class="btn primary" href="#marketplace">Shop slabs</a></div>`
+   :`<p class="count" style="margin-bottom:16px">${got.length} OF ${ACHIEVEMENTS.length} UNLOCKED</p>`}
+  <div class="rewards">${ACHIEVEMENTS.map(a=>{const u=W.address&&a.f(s);return `<div class="reward ${u?'':'locked'}">${badgeSvg(a.type,52)}<div><h4>${a.name}</h4><p class="muted" style="font-size:.84rem">${a.desc}</p></div><div style="display:flex;justify-content:space-between;gap:6px;align-items:center;margin-top:auto"><span class="chip">Achievement</span>${u?'<span class="chip live">Unlocked</span>':'<span class="chip">Locked</span>'}</div></div>`}).join('')}</div></div>`;
+};
+
+pages['collector-crypt']=()=>head('About the vault','Collector Crypt','The slabs on MONDEX are Collector Crypt tokens: each one is backed by a physical graded card stored in an insured vault.','<span class="chip">Not affiliated with Collector Crypt</span>')+
+ `<div class="wrap"><div class="split" style="margin-bottom:40px"><div class="panel"><span class="eyebrow">How a slab token works</span><h3 style="margin:10px 0 14px">Backed by the real card</h3><p class="muted">Collector Crypt stores each graded card in an insured vault and issues one token for it on Solana. Whoever holds the token owns the card. Selling it moves the token in seconds; the card stays safe in the vault.</p></div>
+ <div class="panel"><span class="eyebrow">Getting the card</span><h3 style="margin:10px 0 14px">Redeem and ship</h3><p class="muted">To get the physical slab, redeem the token through Collector Crypt. The token is burned and the card ships to you. Fees and terms are set by Collector Crypt.</p><div style="margin-top:14px"><a class="btn" href="https://collectorcrypt.com" target="_blank" rel="noopener">Visit Collector Crypt</a></div></div></div>
+ <div class="flow">${['Graded slab vaulted','Token minted on Solana','Bought and traded on-chain','Shown in your MONDEX collection','Redeemed for the physical card'].map((s,i,a)=>`<div class="step ${i===3?'hl':''}">${s.toUpperCase()}</div>${i<a.length-1?'<div class="arrow"></div>':''}`).join('')}</div></div>`;
+
+pages.roadmap=()=>head('Where MONDEX is going','Roadmap','')+
+ `<div class="wrap"><div class="road">${[['Real data','now','Live',['Live Slabs from Solana','Card images and TCGplayer prices','Wallet lookup']],['Real wallets','now','Live',['Connect Phantom, Solflare or Backpack','Your slabs and Collector Score','Achievements']],['Real buying','now','Live',['Live Magic Eden listings','Buy in your own wallet']],['On-chain rewards','','Next',['Achievement badges sent as tokens','Season leaderboard']],['More','','Later',['Sets and collections','Price history','Mobile polish']]]
+ .map(([t,c,s,items],i)=>`<div class="phase ${c}"><div class="pn">0${i+1}</div><div><h3>${t} <span class="chip ${s==='Live'?'live':''}">${s}</span></h3><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`).join('')}</div></div>`;
+
+pages.guide=()=>head('Collector guide','Grading guide','What the numbers on a slab mean.')+
+ `<div class="wrap"><div class="split" style="margin-bottom:20px"><div class="panel"><span class="eyebrow">Grading scale</span><h3 style="margin:10px 0 14px">PSA grades</h3>
+ <table class="odds"><tbody>${[['10','Gem Mint'],['9','Mint'],['8','Near Mint–Mint'],['7','Near Mint'],['6','Excellent–Mint']].map(([g,d])=>`<tr><td>${d}</td><td>${g}</td></tr>`).join('')}</tbody></table>
+ <p class="muted" style="font-size:.84rem;margin-top:12px">BGS and CGC use similar 1–10 scales with half grades, like 9.5.</p></div>
+ <div class="panel"><span class="eyebrow">Graders</span><h3 style="margin:10px 0 14px">Who grades the slabs</h3><div style="display:grid;gap:12px" class="muted"><p><strong style="color:var(--fg)">PSA</strong> is the most common grader for Pokémon cards.</p><p><strong style="color:var(--fg)">BGS (Beckett)</strong> adds subgrades for centering, corners, edges and surface.</p><p><strong style="color:var(--fg)">CGC</strong> grades with half points and is common on modern cards.</p></div></div></div></div>`;
+
+pages.faq=()=>{const Q=[
+ ['What is MONDEX?','<p>A fan-built collector site for graded Pokémon cards on Solana. It shows real Collector Crypt slabs, real listings, and your real collection when you connect a wallet.</p>'],
+ ['Are the cards real?','<p>Yes. Every slab shown is a Collector Crypt token backed by a physical graded card in an insured vault. Data is read live from Solana.</p>'],
+ ['How do I buy a slab?','<p>Open the Marketplace and choose Buy on Magic Eden. You review and sign the purchase in your own wallet on Magic Eden. MONDEX never holds your funds or cards.</p>'],
+ ['Is it safe to connect my wallet?','<p>MONDEX only reads your public address. It never asks for your seed phrase or private key and never requests token approvals.</p>'],
+ ['What are tiers?','<p>Common, Rare, Epic, Legendary and Mythic are set by the insured value on each slab’s token, from under $60 to $2,500+.</p>'],
+ ['What is Collector Score?','<p>A game metric from the slabs you hold: Common 1, Rare 5, Epic 15, Legendary 50, Mythic 250, plus 50% for a grade 10. It has no monetary value.</p>'],
+ ['Is MONDEX affiliated with Pokémon, Collector Crypt or Magic Eden?','<p>No. MONDEX is an independent fan project. Pokémon is a trademark of Nintendo, Creatures Inc. and GAME FREAK inc.</p>'],
+ ['What is the MONDEX Pass?','<p>A one-time payment of 0.5 SOL, sent from your wallet straight to MONDEX, that unlocks your collection dashboard, achievements and wallet lookups for that wallet. Solana payments are final.</p>'],
+ ['Is there a MONDEX token?','<p>No. There is no MONDEX token.</p>']];
+ return head('Questions','FAQ','')+`<div class="wrap"><div class="faq" style="max-width:860px">${Q.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}</summary><div class="ans">${a}</div></details>`).join('')}</div></div>`};
+pages.terms=()=>head('Legal','Terms','')+`<div class="wrap"><div class="legal">
+ <h3>About MONDEX</h3><p>MONDEX is an independent fan project that displays public Solana data about Collector Crypt tokens and links to listings on Magic Eden. MONDEX does not sell cards or take custody of anyone's cards or funds.</p>
+ <h3>MONDEX Pass</h3><p>The MONDEX Pass is a one-time payment of 0.5 SOL for access to site features for the paying wallet. It is not an investment and has no resale value. Solana payments are final; check the amount and address before you sign.</p>
+ <h3>Purchases</h3><p>Purchases happen on Magic Eden under its terms, signed in your own wallet. Check every transaction before you sign it.</p>
+ <h3>Your wallet</h3><p>MONDEX never asks for your seed phrase or private key and never requests token approvals.</p>
+ <h3>Trademarks</h3><p>Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. PSA, Beckett/BGS, CGC, Collector Crypt and Magic Eden are trademarks of their owners. MONDEX is not affiliated with or endorsed by any of them.</p>
+ <h3 id="risk">Risk</h3><p>Collectible values can fall and slabs can be hard to resell. Blockchain transactions are final. Nothing on this website is financial, investment or legal advice.</p></div></div>`;
+pages.privacy=()=>head('Legal','Privacy','')+`<div class="wrap"><div class="legal">
+ <h3>What we read</h3><p>When you connect a wallet, MONDEX reads your public address to look up your slabs. Wallet addresses are public on Solana.</p>
+ <h3>What we store</h3><p>Your wishlist, card photos you add and your last-used wallet name are kept in your own browser. Nothing is sent to a MONDEX database.</p>
+ <h3>Clearing your data</h3><p>Disconnect your wallet, or clear this site's data in your browser.</p></div></div>`;
 
 /* ---------------- Router ---------------- */
 function route(){const h=(location.hash||'').slice(1);return pages[h]?h:'home'}
 let lastRoute=null;
 function render(){const r=route();$('#view').innerHTML=pages[r]();
   document.querySelectorAll('.nav-links a,.mnav a,.nav-right .rewards').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#'+r?'page':'false'));
-  walletBtn();if(r==='packs')renderStage();if(r!==lastRoute){window.scrollTo(0,0);lastRoute=r}bindInputs()}
+  walletBtn();if(r!==lastRoute){window.scrollTo(0,0);lastRoute=r}bindInputs()}
 function rerender(){const y=scrollY;render();window.scrollTo(0,y)}
 addEventListener('hashchange',()=>{$('#mnav').classList.remove('open');$('#burger').setAttribute('aria-expanded','false');closeModal();render()});
 function bindInputs(){
   const xq=$('#xq');if(xq)xq.oninput=()=>{X.q=xq.value;const l=xfilter();$('#xgrid').innerHTML=xgrid(l);$('#xcount').textContent=l.length+' OF '+CARDS.length};
-  const upd=()=>{M={q:$('#mq').value,rar:$('#mr').value,type:$('#me').value,grader:$('#mg').value,fe:$('#mfe').checked,max:+$('#mp').value||0,sort:$('#ms').value};$('#mgrid').innerHTML=mgrid()};
-  ['#mq','#mr','#me','#mg','#mfe','#mp','#ms'].forEach(s=>{const e=$(s);if(e){e.oninput=upd;e.onchange=upd}});
+  const upd=()=>{MK.q=$('#mq').value;MK.grader=$('#mg').value;MK.max=$('#mp').value;MK.sort=$('#ms').value;$('#mgrid').innerHTML=mgrid()};
+  ['#mq','#mg','#mp','#ms'].forEach(s=>{const e=$(s);if(e){e.oninput=upd;e.onchange=upd}});
 }
 document.addEventListener('change',e=>{if(e.target.id==='photoIn'&&e.target.files[0])addPhoto(e.target.files[0],e.target.dataset.cid)});
+document.addEventListener('submit',e=>{if(e.target.id==='slOwner'){e.preventDefault();const v=$('#slAddr').value.trim();if(v&&!hasPass()){modal(paywall('wallet lookups'));return}if(v&&!isAddr(v)){toast('That doesn’t look like a Solana wallet address.','err');return}loadSlabs(1,v)}});
 
-/* ---------------- Events ---------------- */
-const itemOf=u=>S.collection.find(x=>x.uid===u);
 document.addEventListener('click',ev=>{
   const t=ev.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;if(a==='bg'&&ev.target!==t)return;
   switch(a){
     case 'bg':case 'close':closeModal();break;
     case 'connect':connectModal();break;
-    case 'do-connect':doConnect();break;
-    case 'sim-reject':closeModal();toast('Transaction cancelled. No changes were made.','err');break;
-    case 'sim-network':closeModal();toast('We couldn’t connect to the network. Please try again.','err');break;
+    case 'use-wallet':useWallet(t.dataset.v,false);break;
     case 'wallet':walletModal();break;
-    case 'disconnect':S.wallet=null;save();closeModal();toast('Demo wallet disconnected.');render();break;
-    case 'reset':S=blank();save();closeModal();P={phase:'sealed',items:[],shown:0,claimed:false};toast('Demo data reset.');render();break;
+    case 'disconnect':disconnect(false);break;
+    case 'mine-retry':loadMine();break;
     case 'detail':detail(t.dataset.cid);break;
     case 'wish':{const id=t.dataset.cid,i=S.wishlist.indexOf(id);i>=0?S.wishlist.splice(i,1):S.wishlist.push(id);save();if($('#modal').innerHTML)detail(id);else t.setAttribute('aria-pressed',i<0);toast(i>=0?'Removed from wishlist.':'Added to wishlist.');break}
     case 'rm-photo':delete S.photos[t.dataset.cid];save();detail(t.dataset.cid);rerender();break;
-    case 'to-market':closeModal();M={q:BY[t.dataset.cid].name,rar:'',type:'',grader:'',fe:false,max:0,sort:'low'};location.hash='marketplace';if(route()==='marketplace')render();break;
-    case 'copy-c':{const c=BY[t.dataset.cid];copy(`${c.name} — ${c.set} ${c.number} (${c.variant}) on MONDEX.`);break}
-    case 'share':{const it=itemOf(t.dataset.uid);if(it)sharePull(it);break}
-    case 'share-pull':sharePull(P.items[+t.dataset.i]);break;
-    case 'copy':copy(t.dataset.text);break;
-    case 'dl-tip':{const d=$('#dlTip');if(d)d.hidden=false;break}
+    case 'to-market':closeModal();MK.q=BY[t.dataset.cid].name;location.hash='marketplace';if(route()==='marketplace')render();break;
     case 'how':document.getElementById('how').scrollIntoView({behavior:reduce?'auto':'smooth'});break;
     case 'risk':setTimeout(()=>{const r=document.getElementById('risk');if(r)r.scrollIntoView()},60);break;
     case 'x-type':X.type=t.dataset.v;rerender();break;
     case 'x-era':X.era=t.dataset.v;rerender();break;
-    case 'x-rar':X.rar=X.rar===t.dataset.v?null:t.dataset.v;rerender();break;
-    case 'ctab':CT=t.dataset.v;rerender();break;
-    case 'ltab':LT=t.dataset.v;rerender();break;
-    case 'fav':{const e=itemOf(t.dataset.uid);if(e){e.fav=!e.fav;save();t.setAttribute('aria-pressed',e.fav);if(CT==='Favorites')rerender()}break}
-    case 'open':startPack();break;
-    case 'reveal-one':case 'reveal-all':revealAll();break;
-    case 'claim':claim();break;
-    case 'buyback':buybackAll();break;
-    case 'again':{clearTimeout(P.timer);P={phase:'sealed',items:[],shown:0,claimed:false};renderStage();break}
-    case 'buy':{const l=S.listings.find(x=>x.lid===t.dataset.lid);if(!l)break;
-      const go=()=>{const c=BY[l.cid];reviewTx({rows:[['Action','Buy listing'],['Card',`${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${l.grader} ${l.grade}`],['Seller',esc(l.seller)+' (demo)'],['Price',n(l.price)+' USDC'],['Marketplace fee','2.0% (prototype)']],perm:`Transfer exactly ${n(l.price)} USDC. No unlimited approval.`},()=>{
-        if(l.gone){toast('This listing is no longer available.','err');S.listings=S.listings.filter(x=>x!==l);save();rerender();return}
-        S.collection.push(mkItem(c,l.grade,l.grader,'market'));S.listings=S.listings.filter(x=>x!==l);S.trades++;save();toast('Demo purchase complete. The slab is in your vault. No funds moved.','ok');rerender()})};
-      S.wallet?go():connectModal(go);break}
-    case 'offer':{const l=S.listings.find(x=>x.lid===t.dataset.lid);if(!l)break;
-      const go=()=>{const c=BY[l.cid];modal(`<h3>Make an offer</h3><p class="muted">${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${l.grader} ${l.grade} · listed at ${n(l.price)} USDC</p><label style="display:grid;gap:6px;margin-top:16px" class="mono muted" for="offerAmt">Your offer (USDC)<input class="field" id="offerAmt" type="number" min="1" step="1" value="${Math.round(l.price*.85)}"></label><p id="offerErr" style="color:var(--bad);font-size:.84rem;margin-top:8px" hidden>Enter an amount above 0.</p><div class="acts"><button class="btn primary" data-act="offer-send" data-lid="${l.lid}">Review offer</button><button class="btn ghost" data-act="close">Cancel</button></div>`)};
-      S.wallet?go():connectModal(go);break}
-    case 'offer-send':{const v=+$('#offerAmt').value;if(!(v>0)){$('#offerErr').hidden=false;break}const l=S.listings.find(x=>x.lid===t.dataset.lid),c=BY[l.cid];
-      reviewTx({rows:[['Action','Make offer'],['Card',`${esc(c.name)} · ${l.grader} ${l.grade}`],['Offer',n(v)+' USDC'],['Expires','7 days']],perm:`Hold exactly ${n(v)} USDC in escrow until accepted or cancelled.`},()=>toast(`Demo offer of ${n(v)} USDC sent to ${l.seller}. Demo sellers don’t respond.`,'ok'));break}
-    case 'tx-ok':{const f=txOk;closeModal();if(f)f();break}
-    case 'tx-reject':closeModal();toast('Transaction cancelled. No changes were made.','err');break;
-    case 'ship':{const e=itemOf(t.dataset.uid);if(!e)break;const c=BY[e.cid];
-      modal(`<h3>Ship to me</h3><p class="muted">${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${e.grader} ${e.grade} · ${e.vid}</p>
-      <form id="shipForm" style="display:grid;gap:10px;margin-top:16px"><input class="field" id="sh-name" placeholder="Full name" required autocomplete="name" aria-label="Full name"><input class="field" id="sh-addr" placeholder="Street address" required autocomplete="street-address" aria-label="Street address"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input class="field" id="sh-city" placeholder="City" required autocomplete="address-level2" aria-label="City"><input class="field" id="sh-zip" placeholder="Postal code" required autocomplete="postal-code" aria-label="Postal code"></div><input class="field" id="sh-country" placeholder="Country" required autocomplete="country-name" aria-label="Country">
-      <p class="muted" style="font-size:.8rem">Demo only: this address isn't saved or sent anywhere.</p><div class="acts" style="margin-top:4px"><button class="btn primary" type="submit">Review shipment</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>`);
-      $('#shipForm').onsubmit=ev2=>{ev2.preventDefault();reviewTx({rows:[['Action','Redeem & ship'],['Card',`${esc(c.name)} · ${e.grader} ${e.grade}`],['Token','Burned on redemption'],['Redemption fee',REDEEM_FEE+' USDC (placeholder)'],['Shipping','Insured, tracked']],perm:'Burn this one card token. No other assets affected.'},()=>{e.status='shipping';S.shipped++;save();toast('Shipping request recorded (demo). Nothing will ship.','ok');rerender()})};break}
-    case 'sellback':{const e=itemOf(t.dataset.uid);if(!e)break;const c=BY[e.cid],v=value(c,e.grade);
-      reviewTx({rows:[['Action','Instant buyback'],['Card',`${esc(c.name)} · ${e.grader} ${e.grade}`],['Insured value',usd(v)+' (demo)'],['You receive',usd(v*BUYBACK)+' USDC (demo)']],perm:'Transfer only this card token.'},()=>{S.collection=S.collection.filter(x=>x!==e);S.buybacks++;save();toast(`Sold back for ${usd(v*BUYBACK)} USDC (demo). No funds moved.`,'ok');rerender()});break}
-    case 'deposit':modal(`<h3>Send cards to the vault</h3><p class="muted">Tell us what you're sending. At launch you'll get a prepaid insured label, and the slab is tokenized to your wallet after verification.</p>
-      <form id="depForm" style="display:grid;gap:10px;margin-top:16px"><input class="field" id="dp-card" placeholder="Card (e.g. Charizard, Base Set 4/102)" required aria-label="Card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><select class="field" id="dp-grader" aria-label="Grader"><option>PSA</option><option>BGS</option><option>CGC</option></select><input class="field" id="dp-grade" placeholder="Grade" required aria-label="Grade"></div><input class="field" id="dp-cert" placeholder="Cert number" aria-label="Cert number">
-      <div class="acts" style="margin-top:4px"><button class="btn primary" type="submit">Save deposit request</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>`);
-      $('#depForm').onsubmit=ev2=>{ev2.preventDefault();closeModal();toast('Deposit request saved (demo). Vault intake isn’t open yet.','ok')};break;
-    case 'list-help':modal(`<h3>Sell a card</h3><p class="muted">Listing from your vault arrives in the Trade phase. For now you can sell any vaulted slab back instantly from The Vault.</p><div class="acts"><a class="btn primary" href="#vault">Go to The Vault</a></div>`);break;
+    case 'sl-page':loadSlabs(+t.dataset.v,'');break;
+    case 'sl-all':loadSlabs(1,'');break;
+    case 'sl-retry':loadSlabs(SL.page,SL.owner);break;
+    case 'mk-page':loadListings(+t.dataset.v);break;
+    case 'mk-retry':loadListings(MK.offset);break;
+    case 'pass-buy':passReview();break;
+    case 'pass-pay':payPass();break;
+    case 'pass-check':checkPass(false);break;
   }
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal').innerHTML)closeModal();if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-act][role="button"]')){e.preventDefault();e.target.click()}});
@@ -1160,5 +1005,7 @@ document.addEventListener('pointermove',e=>{if(reduce)return;const c=e.target.cl
   if(!c)return;const b=c.getBoundingClientRect(),px=(e.clientX-b.left)/b.width-.5,py=(e.clientY-b.top)/b.height-.5;c.style.setProperty('--ry',(px*14).toFixed(1)+'deg');c.style.setProperty('--rx',(-py*14).toFixed(1)+'deg')});
 
 render();probeImages();loadLive();
+// Reconnect a wallet the visitor already trusted, without a popup
+setTimeout(()=>{if(S.lastWallet)useWallet(S.lastWallet,true)},400);
 })();
 </script></body></html>
