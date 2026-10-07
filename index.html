@@ -502,13 +502,13 @@ table.lb.scr{min-width:860px}
       <a href="#screener">Screener</a><a href="#trending">Trending</a><a href="#marketplace">Marketplace</a><a href="#slabs">Vault</a><a href="#collect">Collect</a><a href="#leaderboard">Leaderboard</a>
     </nav>
     <div class="nav-right">
-      <form class="navsearch" id="navSearch" role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="navq" type="search" placeholder="Search cards" aria-label="Search cards" autocomplete="off"></form><a class="iconbtn msearch" href="#search" aria-label="Search cards"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a><a class="iconbtn mwatch" href="#watchlist" aria-label="Watchlist" title="Watchlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .7-4.4 4.1 1.1 6L12 16.6l-5.3 2.9 1.1-6L3.4 9.4l6-.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+      <form class="navsearch" id="navSearch" role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="navq" type="search" placeholder="Search cards" aria-label="Search cards" autocomplete="off"></form><a class="iconbtn msearch" href="#search" aria-label="Search cards"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a><a class="iconbtn" href="https://x.com/MondexSolana" target="_blank" rel="noopener" aria-label="MONDEX on X" title="Follow @MondexSolana on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.9 3h6.4l4.4 5.9zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg></a><a class="iconbtn mwatch" href="#watchlist" aria-label="Watchlist" title="Watchlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .7-4.4 4.1 1.1 6L12 16.6l-5.3 2.9 1.1-6L3.4 9.4l6-.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
       <span id="walletSlot"></span>
       <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
   <nav class="mnav" id="mnav" aria-label="Mobile">
-    <a href="#screener">Screener</a><a href="#search">Search</a><a href="#trending">Trending</a><a href="#marketplace">Marketplace</a><a href="#slabs">Vault</a><a href="#watchlist">Watchlist</a><a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#leaderboard">Leaderboard</a><a href="#rewards">Rewards</a><a href="#guide">Guide</a><a href="#faq">FAQ</a>
+    <a href="#screener">Screener</a><a href="#search">Search</a><a href="#trending">Trending</a><a href="#marketplace">Marketplace</a><a href="#slabs">Vault</a><a href="#watchlist">Watchlist</a><a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#leaderboard">Leaderboard</a><a href="#rewards">Rewards</a><a href="#guide">Guide</a><a href="#faq">FAQ</a><a href="https://x.com/MondexSolana" target="_blank" rel="noopener">Follow on X</a>
   </nav>
 </header>
 <main id="view"></main>
@@ -658,7 +658,8 @@ async function loadLive(){
 const find=(name,set,fe)=>CARDS.find(c=>c.name===name&&(!set||c.set===set)&&(fe===undefined||c.fe===fe));
 /* ---------------- Helpers ---------------- */
 const $=s=>document.querySelector(s);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const img=(u,w)=>String(u||'').replace('/cdn-cgi/image//','/cdn-cgi/image/width='+w+',quality=80,format=auto/');
+const esc=s=>String(s).replace(/Pok\uFFFDmon/g,'Pokémon').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const n=x=>Number(x).toLocaleString('en-US');
 const usd=x=>'$'+n(Math.round(x));
 const glyph=(t)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${GLYPH[t]}</svg>`;
@@ -797,7 +798,7 @@ function slabCard(x,o={}){
   const v=x.insured,tier=tierOf(v);
   return `<div class="listing"><div class="card ${tier}" style="cursor:default" role="img" aria-label="${esc(x.title||x.name)}, ${esc(x.grader||'')} ${esc(x.grade||'')}"><div class="card-in">
     <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(x.title||x.name)}</div><div class="sl-sub">${esc([x.year,x.set].filter(Boolean).join(' · ')||'Vaulted slab')}</div></div><div class="sl-g"><div class="sl-grader">${esc(x.grader||'GRADE')}</div><div class="sl-num">${esc(x.grade||'—')}</div></div></div>
-    <div class="art">${x.image?`<img src="${esc(x.image)}" loading="lazy" alt="${esc(x.title||x.name)} slab photo">`:''}</div>
+    <div class="art">${x.image?`<img src="${esc(img(x.image,480))}" loading="lazy" alt="${esc(x.title||x.name)} slab photo">`:''}</div>
     <div class="card-bot"><span class="rb ${tier}">${tier}</span><span class="serial">${v!=null?'$'+n(v)+' insured':'Vaulted'}</span></div></div></div>
     ${o.sold?`<div style="display:grid;gap:6px;justify-items:start"><span class="price tnum">${(+o.sold).toLocaleString('en-US',{maximumFractionDigits:3})}<small>SOL</small> <small style="color:var(--dim)">${usdOf(+o.sold)}</small></span><span class="chip live">Sold ${ago(o.time)}</span></div>`:''}
     ${o.bids?`<div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span class="chip proto">${o.bids} bid${o.bids>1?'s':''} recently</span><a class="btn sm" href="${esc(o.url)}" target="_blank" rel="noopener">View</a></div>`:''}
@@ -985,7 +986,7 @@ ${homeScreener()}<section class="sec" id="how"><div class="wrap"><div class="sec
   <div class="panel feature"><span class="eyebrow">Collector Score</span><h3>Your collection, ranked.</h3><p class="muted">Connect your wallet and MONDEX scores the slabs you actually own: tier points, a bonus for every grade 10, and achievements to unlock.</p><div><button class="btn" data-act="connect">Connect wallet</button></div></div>
 </div></section>
 <section class="sec"><div class="wrap">${hasPass()?'':paywall('the full MONDEX experience')}</div></section>
-<section class="sec"><div class="wrap" style="text-align:center;display:grid;gap:18px;justify-items:center"><h2>Find your next grail.</h2><a class="btn primary" href="#marketplace">Shop slabs</a></div></section>`;
+<section class="sec"><div class="wrap" style="text-align:center;display:grid;gap:18px;justify-items:center"><h2>Find your next grail.</h2><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a class="btn primary" href="#screener">Open the screener</a><a class="btn" href="https://x.com/MondexSolana" target="_blank" rel="noopener">Follow @MondexSolana</a></div></div></section>`;
 
 let X={type:'All',era:'All',q:''};
 const xfilter=()=>CARDS.filter(c=>(X.type==='All'||c.type===X.type)&&(X.era==='All'||c.era===X.era)&&(!X.q||(c.name+' '+c.set+' '+c.number).toLowerCase().includes(X.q.toLowerCase())));
@@ -1159,7 +1160,7 @@ function scRows(rows,opts={}){
   return `<div class="tbl-wrap"><table class="lb scr"><thead><tr><th style="width:36px"></th><th>Card</th><th class="num">Last sale</th><th class="num">7d change</th><th class="num">7d volume</th><th class="num">Sales</th><th class="num">Cheapest listed</th><th class="num">Listed</th><th>Trend</th>${opts.alerts?'<th>Alert at</th>':''}</tr></thead><tbody>
   ${rows.map(r=>`<tr data-act="open-card" data-k="${esc(r.k)}">
     <td>${starBtn(r.k,r.t)}</td>
-    <td><div class="cardcell">${r.i?`<img class="thumb" src="${esc(r.i)}" alt="" loading="lazy">`:'<span class="thumb"></span>'}<div><div class="nm"><a href="${cardHref(r.k)}">${esc(r.t||'Graded card')}</a></div><div class="sub">${gradeTag(r)}${esc([r.y,r.s].filter(Boolean).join(' · '))}</div></div></div></td>
+    <td><div class="cardcell">${r.i?`<img class="thumb" src="${esc(img(r.i,120))}" alt="" loading="lazy">`:'<span class="thumb"></span>'}<div><div class="nm"><a href="${cardHref(r.k)}">${esc(r.t||'Graded card')}</a></div><div class="sub">${gradeTag(r)}${esc([r.y,r.s].filter(Boolean).join(' · '))}</div></div></div></td>
     <td class="num">${r.last!=null?`${sol(r.last)}<div class="sub">${ago(r.lastT)}</div>`:'<span class="muted">No sales yet</span>'}</td>
     <td class="num">${chg(r.ch7)}</td>
     <td class="num">${r.vol7?sol(r.vol7):'—'}</td>
@@ -1258,7 +1259,7 @@ pages.card=()=>{
     ['7d volume',wk.length?solU(wk.reduce((a,s)=>a+s.p,0)):'—'],['Sales recorded',sales.length],['All-time high',ps.length?solU(Math.max(...ps)):'—'],['All-time low',ps.length?solU(Math.min(...ps)):'—']];
   const w=S.watch[d.k];
   return `<div class="page-head"><div class="wrap"><div class="row"><a class="eyebrow" href="#screener" style="text-decoration:none">← Screener</a>${LIVEC}</div></div></div>
-  <div class="wrap"><div class="cardhero"><div>${c.i?`<img class="slabimg" src="${esc(c.i)}" alt="${esc(c.t||'Card')} slab photo">`:''}</div>
+  <div class="wrap"><div class="cardhero"><div>${c.i?`<img class="slabimg" src="${esc(img(c.i,640))}" alt="${esc(c.t||'Card')} slab photo">`:''}</div>
    <div><div style="display:flex;gap:12px;align-items:start;justify-content:space-between"><div><span class="eyebrow">${esc([c.y,c.s].filter(Boolean).join(' · ')||'Collector Crypt slab')}${c.no?' · #'+esc(c.no):''}</span>
     <h1 style="font-size:clamp(2.2rem,6vw,4rem);margin-top:10px">${esc(c.t||'Graded card')}</h1>
     <div style="margin-top:12px">${gradeTag(c)}${c.v!=null?`<span class="chip">$${n(c.v)} insured value</span>`:''}</div></div>${starBtn(d.k,c.t)}</div>
