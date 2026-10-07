@@ -28,8 +28,12 @@ export default async function handler(req, res) {
     const r = await fetch(`https://mainnet.helius-rpc.com/?api-key=${key}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     });
-    const j = await r.json();
-    if (!r.ok || j.error) return res.status(502).json({ error: "We couldn't connect to the network. Please try again." });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.error) {
+      const detail = (j && j.error && j.error.message) || `HTTP ${r.status}`;
+      console.error('Helius error:', detail);
+      return res.status(502).json({ error: "We couldn't connect to the network. Please try again.", detail });
+    }
 
     let items = (j.result && j.result.items) || [];
     if (owner) items = items.filter((a) => (a.grouping || []).some((g) => g.group_key === 'collection' && g.group_value === collection));
@@ -57,6 +61,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', owner ? 'no-store' : 's-maxage=300, stale-while-revalidate=3600');
     return res.status(200).json({ page, total: j.result && j.result.total, slabs });
   } catch (e) {
-    return res.status(502).json({ error: "We couldn't connect to the network. Please try again." });
+    console.error('slabs failed:', e && e.message);
+    return res.status(502).json({ error: "We couldn't connect to the network. Please try again.", detail: String(e && e.message || e) });
   }
 }
