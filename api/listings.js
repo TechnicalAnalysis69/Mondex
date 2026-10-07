@@ -1,5 +1,5 @@
 // Vercel serverless function: live Collector Crypt Pokémon listings from Magic Eden.
-// GET /api/listings?offset=0 → up to 100 listings per page, Pokémon cards only.
+// GET /api/listings?offset=0 → up to 500 listings per request, Pokémon cards only.
 // "2022 #182 Galarian Zapdos V CGC 9 Brilliant Stars - English" -> "Galarian Zapdos V"
 // "2021 #175 Full Art/Celebi V CGC" -> "Celebi V"
 function cleanTitle(raw) {
@@ -17,10 +17,17 @@ export default async function handler(req, res) {
   const url = `https://api-mainnet.magiceden.dev/v2/collections/collector_crypt/listings?offset=${offset}&limit=100`;
   const headers = process.env.MAGICEDEN_API_KEY ? { Authorization: `Bearer ${process.env.MAGICEDEN_API_KEY}` } : {};
   try {
-    const r = await fetch(url, { headers });
-    if (!r.ok) return res.status(502).json({ error: "We couldn't connect to the network. Please try again.", detail: `HTTP ${r.status}` });
-    const data = await r.json();
-    const rows = Array.isArray(data) ? data : [];
+    // Pull up to 500 listings (5 pages of 100) per request so more Pokémon slabs show.
+    let rows = [], lastPage = 0;
+    for (let i = 0; i < 5; i++) {
+      const r = await fetch(url.replace(`offset=${offset}`, `offset=${offset + i * 100}`), { headers });
+      if (!r.ok) { if (i === 0) return res.status(502).json({ error: "We couldn't connect to the network. Please try again.", detail: `HTTP ${r.status}` }); break; }
+      const data = await r.json();
+      const page = Array.isArray(data) ? data : [];
+      rows = rows.concat(page); lastPage = page.length;
+      if (page.length < 100) break;
+      await new Promise((ok) => setTimeout(ok, 250));
+    }
     const listings = rows.map((l) => {
       const t = l.token || {};
       const attrs = {};
@@ -52,7 +59,7 @@ export default async function handler(req, res) {
     }).filter((x) => /pok[eé]mon/i.test(x.category || '') && (!x.type || /card/i.test(x.type)));
 
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-    return res.status(200).json({ offset, nextOffset: rows.length === 100 ? offset + 100 : null, listings });
+    return res.status(200).json({ offset, nextOffset: lastPage === 100 ? offset + rows.length : null, listings });
   } catch (e) {
     return res.status(502).json({ error: "We couldn't connect to the network. Please try again.", detail: String((e && e.message) || e) });
   }
