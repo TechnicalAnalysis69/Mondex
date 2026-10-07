@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html{color-scheme:dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>MONDEX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+</head><body>
+<style>
+/* Layout: card-first product shell. Sticky header, 1200px column, every page is a stack of sections where the cards are the objects of desire. Single committed dark world (vault ink + brass foil); rarity colors are the only other hues. */
+:root{
+  --ink:#0C0A16; --panel:#15122A; --panel2:#1D1938; --line:#2D2850; --fg:#EFEBF9; --muted:#A29BC2; --dim:#6E6890;
+  --foil:#E9C77B; --foil2:#B4873A;
+  --c-common:#B9B3D0; --c-rare:#5AA9FF; --c-epic:#B57BFF; --c-legendary:#F3B53F; --c-mythic:#FF7AD9;
+  --ok:#5BD69A; --bad:#FF6F7D;
+  --f-display:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;
+  --f-body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--fg);font:15px/1.55 var(--f-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(60rem 40rem at 85% -10%,rgba(181,123,255,.10),transparent 60%),radial-gradient(50rem 30rem at -10% 20%,rgba(233,199,123,.06),transparent 60%)}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--foil);outline-offset:3px;border-radius:6px}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:800;letter-spacing:.01em;line-height:.95;margin:0;text-wrap:balance;text-transform:uppercase}
+h1{font-size:clamp(3.4rem,10vw,7.5rem)}
+h2{font-size:clamp(2.2rem,5vw,3.4rem)}
+h3{font-size:1.6rem}
+p{margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:20px}
+.eyebrow{font:600 .72rem/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--foil)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono)}
+.tnum{font-variant-numeric:tabular-nums}
+section.sec{padding-block:72px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px;margin-bottom:28px}
+.sec-head .lede{max-width:56ch;color:var(--muted);margin-top:10px}
+
+/* ---------- Buttons / chips ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--panel2);padding:11px 18px;border-radius:999px;font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:transform .15s,background .15s,border-color .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);border-color:var(--muted)}
+.btn.primary{background:linear-gradient(180deg,#F4D896,var(--foil) 45%,var(--foil2));color:#1A1206;border-color:transparent;box-shadow:0 6px 24px -8px rgba(233,199,123,.6)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:7px 12px;font-size:.72rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font:600 .68rem/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.proto{color:var(--foil);border-color:rgba(233,199,123,.4);background:rgba(233,199,123,.07)}
+.chip.proposed{color:#FFB4E8;border-color:rgba(255,122,217,.45);background:rgba(255,122,217,.08)}
+.chip.live{color:var(--ok);border-color:rgba(91,214,154,.4)}
+.chip svg{width:12px;height:12px}
+.rb{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font:700 .64rem/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--rc)}
+.rb.Mythic{background:linear-gradient(90deg,#FF7AD9,#9C8CFF,#6BE3FF)}
+.Common{--rc:var(--c-common)} .Rare{--rc:var(--c-rare)} .Epic{--rc:var(--c-epic)} .Legendary{--rc:var(--c-legendary)} .Mythic{--rc:var(--c-mythic)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:transparent;padding:7px 13px;border-radius:999px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--ink);border-color:var(--fg)}
+.field{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--fg);font:inherit;width:100%}
+select.field{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+
+/* ---------- Header ---------- */
+.banner{background:repeating-linear-gradient(-45deg,rgba(233,199,123,.08) 0 10px,transparent 10px 20px);border-bottom:1px solid var(--line);font:600 .7rem/1.4 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--foil);text-align:center;padding:7px 16px}
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(12,10,22,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;gap:20px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:900 1.6rem/1 var(--f-display);letter-spacing:.06em}
+.logo-mark{width:26px;height:26px}
+.nav-links{display:flex;gap:2px;flex:1}
+.nav-links a{white-space:nowrap;text-decoration:none;padding:8px 10px;border-radius:8px;font-weight:600;font-size:.9rem;color:var(--muted)}
+.nav-links a:hover{color:var(--fg)}
+.nav-links a[aria-current="page"]{color:var(--fg);background:var(--panel2)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-right .rewards{text-decoration:none;font-weight:600;font-size:.9rem;color:var(--muted);padding:8px 10px}
+.nav-right .rewards[aria-current="page"]{color:var(--fg)}
+.burger{display:none;background:transparent;border:1px solid var(--line);border-radius:10px;width:42px;height:42px}
+.burger span{display:block;width:18px;height:2px;background:var(--fg);margin:4px auto;border-radius:2px}
+.mnav{display:none}
+@media (max-width:1060px){
+  .nav-links,.nav-right .rewards{display:none}
+  .burger{display:block}
+  .nav-in{justify-content:space-between}
+  .mnav.open{display:grid;gap:2px;padding:10px 20px 18px;border-top:1px solid var(--line)}
+  .mnav a{text-decoration:none;padding:12px 6px;font:800 1.5rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}
+}
+.wallet-btn{font-size:.74rem}
+main{overflow-x:clip}
+.hero-stage{overflow:visible}
+@media (max-width:860px){.hero-stage{overflow:hidden;padding-block:28px}}
+@media (max-width:520px){.logo{font-size:1.3rem;gap:8px}.logo-mark{width:22px;height:22px}.nav-in{gap:10px}.wallet-btn{padding:7px 10px;font-size:.66rem}.wallet-btn .long{display:none}}
+.wallet-btn .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+
+/* ---------- Cards ---------- */
+.card{--rc:var(--c-common);position:relative;aspect-ratio:5/8;max-width:100%;border-radius:var(--r);padding:3px;isolation:isolate;overflow:hidden;background:linear-gradient(160deg,#4a4566,#25213d);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s;cursor:pointer;container-type:inline-size;transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.card:hover{transform:perspective(900px) translateY(-6px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.card.Rare{background:linear-gradient(160deg,#8CC8FF,#2B5FA8 50%,#5AA9FF);box-shadow:0 0 22px -6px rgba(90,169,255,.55)}
+.card.Epic,.card.Legendary,.card.Mythic{background:#000}
+.card.Epic::before,.card.Legendary::before,.card.Mythic::before{content:"";position:absolute;inset:-60%;z-index:-1;animation:spin 7s linear infinite}
+.card.Epic::before{background:conic-gradient(from 0deg,#4B2A86,#B57BFF,#4B2A86 30%,#7E4FD0 60%,#E3CCFF 70%,#4B2A86)}
+.card.Epic{box-shadow:0 0 26px -6px rgba(181,123,255,.6)}
+.card.Legendary::before{background:conic-gradient(from 0deg,#6B4510,#FFE29A,#B87A1C 25%,#FFF3CF 40%,#8A5A14 55%,#F3B53F 75%,#6B4510);animation-duration:4.5s}
+.card.Legendary{padding:4px;box-shadow:0 0 34px -4px rgba(243,181,63,.6)}
+.card.Mythic::before{background:conic-gradient(from 0deg,#FF7AD9,#FFD27A,#6BE3FF,#9C8CFF,#FF7AD9);animation-duration:3.5s}
+.card.Mythic{padding:4px;box-shadow:0 0 44px -2px rgba(255,122,217,.55),0 0 80px -20px rgba(107,227,255,.6)}
+@keyframes spin{to{transform:rotate(1turn)}}
+.card-in{position:relative;height:100%;border-radius:calc(var(--r) - 3px);background:linear-gradient(180deg,#1B1733,#100E1E);display:flex;flex-direction:column;overflow:hidden}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7cqw 7cqw 4cqw}
+.cname{font:900 11cqw/1 var(--f-display);letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.el{display:inline-grid;place-items:center;width:12cqw;height:12cqw;border-radius:50%;background:var(--e1);color:var(--ink);flex:none}
+.el svg{width:62%;height:62%}
+.art{margin:4cqw 10cqw 0;border-radius:4px;overflow:hidden;aspect-ratio:63/88;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 6px 18px rgba(0,0,0,.5)}
+.art img{display:block;width:100%;height:100%;object-fit:cover}
+.slab-label{margin:5cqw 5cqw 0;border-radius:4px;background:linear-gradient(180deg,#F5F2FB,#D8D2EA);color:#17132C;padding:3cqw 3.6cqw;display:flex;justify-content:space-between;gap:3cqw;align-items:center;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.sl-l{min-width:0}
+.sl-name{font:900 7.6cqw/1 var(--f-display);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
+.sl-sub{font:600 3.9cqw/1.3 var(--f-mono);color:#4E4870;margin-top:1.2cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sl-g{text-align:right;flex:none;border-left:1px solid rgba(0,0,0,.15);padding-left:3cqw}
+.sl-grader{font:700 3.9cqw/1 var(--f-mono);letter-spacing:.08em;color:#4E4870}
+.sl-num{font:900 12cqw/.9 var(--f-display);margin-top:.6cqw}
+.art svg{display:block;width:100%;height:100%}
+.card-bot{margin-top:auto;padding:4cqw 7cqw 3cqw;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.card .rb{font-size:5.4cqw;padding:1.2cqw 3.4cqw}
+.serial{font:600 5.6cqw/1 var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.cmeta{display:flex;justify-content:space-between;padding:0 7cqw 6cqw;font:500 4.8cqw/1 var(--f-mono);color:var(--dim);letter-spacing:.06em}
+.fe-tag{position:absolute;bottom:17cqw;left:-1px;z-index:3;background:linear-gradient(90deg,#F4D896,var(--foil2));color:#1A1206;font:800 5cqw/1 var(--f-mono);letter-spacing:.1em;padding:1.8cqw 3cqw;border-radius:0 6px 6px 0}
+.card.Mythic .card-in::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;mix-blend-mode:color-dodge;opacity:.5;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,122,217,.55) 35%,rgba(255,226,140,.5) 45%,rgba(107,227,255,.55) 55%,transparent 70%);background-size:250% 250%;animation:holo 5s ease-in-out infinite}
+.card.Legendary .card-in::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;mix-blend-mode:overlay;opacity:.5;background:linear-gradient(115deg,transparent 35%,rgba(255,240,200,.7) 50%,transparent 65%);background-size:300% 300%;animation:holo 6s ease-in-out infinite}
+@keyframes holo{0%,100%{background-position:0% 0%}50%{background-position:100% 100%}}
+.sparks{position:absolute;inset:0;pointer-events:none;z-index:3}
+.sparks i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff,0 0 12px var(--c-mythic);animation:twinkle 2.4s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1)}}
+.card.Epic .art::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 120%,rgba(181,123,255,.35),transparent 60%);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.4}}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:20px}
+@media (max-width:520px){.grid-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
+.cell{display:flex;flex-direction:column;gap:8px;min-width:0}
+.cell-meta{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--muted);gap:6px}
+.fav{background:none;border:0;padding:2px;color:var(--dim)}
+.fav[aria-pressed="true"]{color:var(--c-mythic)}
+.fav svg{width:18px;height:18px}
+
+/* card back */
+.cback{position:absolute;inset:0;border-radius:var(--r);background:
+  radial-gradient(circle at 50% 50%,rgba(233,199,123,.25),transparent 45%),
+  repeating-conic-gradient(from 0deg at 50% 50%,#1D1938 0 10deg,#15122A 10deg 20deg);
+  border:3px solid #3a3360;display:grid;place-items:center}
+.cback svg{width:38%;opacity:.9}
+
+/* ---------- Hero ---------- */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding-block:56px 40px}
+.hero h1{background:linear-gradient(180deg,#FFF6DE,var(--foil) 55%,var(--foil2));-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.02em}
+.hero .tag{font:800 clamp(1.4rem,3vw,2.1rem)/1 var(--f-display);letter-spacing:.06em;margin-top:6px}
+.hero p.lede{max-width:46ch;color:var(--muted);font-size:1.08rem;margin-top:18px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.hero-stage{position:relative;display:grid;place-items:center;padding:20px}
+.hero-stage .card{width:min(320px,78vw);animation:float 6s ease-in-out infinite}
+.hero-stage .ghost-card{position:absolute;width:min(240px,58vw);opacity:.45;filter:blur(1px)}
+.hero-stage .g1{transform:translate(-46%,8%) rotate(-12deg)}
+.hero-stage .g2{transform:translate(46%,10%) rotate(11deg)}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -12px}}
+.hero-caption{margin-top:16px;text-align:center;font:600 .7rem/1.4 var(--f-mono);letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-top:32px}.hero-stage{order:-1}}
+
+/* ---------- Generic panels ---------- */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px}
+.loop{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.loop>div{padding:24px 20px;border-right:1px solid var(--line);background:var(--panel);min-width:0}
+.loop>div:last-child{border-right:0}
+.loop .n{font:600 .75rem var(--f-mono);color:var(--foil);letter-spacing:.14em}
+.loop h3{margin:10px 0 8px;font-size:1.9rem}
+.loop p{color:var(--muted);font-size:.92rem}
+@media (max-width:860px){.loop{grid-template-columns:1fr}.loop>div{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:44px 1fr;column-gap:12px}.loop>div:last-child{border-bottom:0}.loop .n{grid-row:span 2;padding-top:6px}.loop h3{margin:0 0 4px}}
+.tiers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.tier{display:flex;flex-direction:column;gap:12px;min-width:0}
+.tier dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0;font-size:.82rem}
+.tier dt{color:var(--dim)} .tier dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+@media (max-width:1060px){.tiers{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.tiers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.feature{display:flex;flex-direction:column;gap:12px}
+.feature h3{font-size:2rem}
+.notice{border:1px dashed rgba(233,199,123,.4);border-radius:12px;padding:12px 16px;color:var(--muted);font-size:.86rem;background:rgba(233,199,123,.04)}
+.notice strong{color:var(--foil)}
+.util-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.util-list div{background:var(--panel);padding:16px;font-weight:600}
+.util-list span{display:block;font:500 .7rem var(--f-mono);color:var(--dim);letter-spacing:.1em;margin-bottom:6px}
+@media (max-width:640px){.util-list{grid-template-columns:1fr 1fr}}
+
+/* ---------- Page heads ---------- */
+.page-head{padding-block:48px 28px;border-bottom:1px solid var(--line);margin-bottom:32px}
+.page-head .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.page-head p{max-width:62ch;color:var(--muted);margin-top:14px;font-size:1.02rem}
+
+/* ---------- Explore / filters ---------- */
+.filters{display:grid;gap:12px;margin-bottom:24px}
+.filters .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.filters .search{flex:1 1 240px;max-width:360px}
+.count{font:600 .74rem var(--f-mono);color:var(--dim);letter-spacing:.08em}
+.empty{text-align:center;padding:64px 20px;border:1px dashed var(--line);border-radius:18px;color:var(--muted)}
+.empty h3{color:var(--fg);margin-bottom:10px}
+.empty .btn{margin-top:18px}
+
+/* ---------- Stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:28px}
+.stats>div{background:var(--panel);padding:16px 14px;min-width:0}
+.stats .k{font:600 .64rem/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.stats .v{font:800 2rem/1.1 var(--f-display);margin-top:6px;font-variant-numeric:tabular-nums}
+@media (max-width:1060px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.level{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-bottom:20px}
+.level-badge{width:76px;height:76px;flex:none}
+.bar{height:8px;border-radius:99px;background:var(--panel2);overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--foil2),var(--foil));border-radius:99px;transition:width .6s}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto}
+.tabs button{background:none;border:0;padding:12px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--fg);border-color:var(--foil)}
+
+/* ---------- Pack ---------- */
+.pack-wrap{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
+@media (max-width:900px){.pack-wrap{grid-template-columns:1fr}}
+.stage{position:relative;min-height:540px;border-radius:22px;border:1px solid var(--line);background:radial-gradient(ellipse at 50% 30%,#2A2150,#0E0B1C 70%);display:grid;place-items:center;padding:28px 16px;overflow:hidden}
+.pack{position:relative;width:min(260px,64vw);aspect-ratio:5/8;border-radius:12px;cursor:pointer;animation:float 5s ease-in-out infinite;filter:drop-shadow(0 30px 40px rgba(0,0,0,.5))}
+.pack-body,.pack-top{position:absolute;left:0;right:0;border-radius:12px;overflow:hidden;
+  background:linear-gradient(135deg,#2B1F4F,#4A2F7D 40%,#22183E),#2B1F4F}
+.pack-body{top:14%;bottom:0;border-top-left-radius:0;border-top-right-radius:0}
+.pack-top{top:0;height:14%;border-bottom-left-radius:0;border-bottom-right-radius:0;transition:transform .7s cubic-bezier(.3,.7,.2,1),opacity .7s}
+.pack-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(0,0,0,.35) 6px 8px)}
+.pack-foil{position:absolute;inset:0;background:linear-gradient(115deg,transparent 25%,rgba(233,199,123,.35) 40%,rgba(255,122,217,.25) 50%,rgba(107,227,255,.25) 58%,transparent 72%);background-size:250% 250%;animation:holo 4s ease-in-out infinite;mix-blend-mode:screen}
+.pack-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16px}
+.pack-face .wm{font:900 2.6rem/1 var(--f-display);letter-spacing:.08em;background:linear-gradient(180deg,#FFF6DE,var(--foil));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pack-face .sub{font:600 .66rem var(--f-mono);letter-spacing:.2em;color:var(--foil)}
+.pack-face svg{width:46%}
+.pack.opening .pack-top{transform:translate(30%,-120%) rotate(18deg);opacity:0}
+.pack.opening{animation:shake .5s ease-in-out}
+@keyframes shake{20%{rotate:-2deg}40%{rotate:2deg}60%{rotate:-1deg}80%{rotate:1deg}}
+.stage-hint{position:absolute;bottom:18px;left:0;right:0;text-align:center;font:600 .72rem var(--f-mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;width:100%;max-width:900px}
+@media (max-width:700px){.slots{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}}
+@media (max-width:420px){.slots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.flip{perspective:1000px;aspect-ratio:5/8;animation:deal .5s backwards cubic-bezier(.2,.8,.2,1)}
+@keyframes deal{from{transform:translateY(60px) scale(.8);opacity:0}}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip .f{transform:rotateY(180deg)}
+.flip .f .card{width:100%;height:100%}
+.flip.hl .f .card{animation:pop .6s}
+@keyframes pop{40%{transform:scale(1.08)}}
+.flip .b{cursor:pointer}
+.reveal-label{text-align:center;margin-top:8px;font:700 .68rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;min-height:1.2em}
+.summary{margin-top:24px;width:100%;max-width:900px;display:grid;gap:16px;justify-items:center;text-align:center}
+.summary .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.odds{width:100%;border-collapse:collapse;font-size:.88rem}
+.odds td{padding:9px 0;border-bottom:1px solid var(--line)}
+.odds td:last-child{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:80;width:100%;height:100%}
+
+/* ---------- Tables ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+table.lb{width:100%;border-collapse:collapse;min-width:620px;font-variant-numeric:tabular-nums}
+.lb th{text-align:left;font:600 .66rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:14px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.lb td{padding:13px 16px;border-bottom:1px solid var(--line)}
+.lb tr:last-child td{border-bottom:0}
+.lb td.num,.lb th.num{text-align:right;font-family:var(--f-mono)}
+.lb tr.me td{background:rgba(233,199,123,.08)}
+.rank{font:800 1.3rem var(--f-display);width:48px}
+.rank.top{color:var(--foil)}
+.who{display:flex;align-items:center;gap:10px;font-weight:600}
+.avatar{width:30px;height:30px;border-radius:8px;flex:none}
+.delta{font:600 .7rem var(--f-mono);margin-left:6px}
+.delta.up{color:var(--ok)} .delta.down{color:var(--bad)}
+.lb tbody tr{animation:rowin .4s backwards}
+@keyframes rowin{from{opacity:0;transform:translateY(6px)}}
+
+/* ---------- Marketplace ---------- */
+.mk-layout{display:grid;grid-template-columns:250px 1fr;gap:28px;align-items:start}
+@media (max-width:860px){.mk-layout{grid-template-columns:1fr}}
+.mk-filters{display:grid;gap:16px;position:sticky;top:84px}
+@media (max-width:860px){.mk-filters{position:static}}
+.mk-filters label{display:grid;gap:6px;font:600 .66rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.check{display:flex!important;align-items:center;gap:10px;font:600 .86rem var(--f-body)!important;letter-spacing:0!important;text-transform:none!important;color:var(--fg)!important}
+.check input{accent-color:var(--foil);width:18px;height:18px}
+.listing{display:flex;flex-direction:column;gap:10px;min-width:0}
+.listing .price{font:800 1.5rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.listing .price small{font:600 .7rem var(--f-mono);color:var(--muted);margin-left:4px}
+.listing .acts{display:flex;gap:6px}
+.listing .acts .btn{flex:1;padding-inline:8px}
+
+/* ---------- Vault ---------- */
+.recipe{display:grid;grid-template-columns:1fr 200px;gap:24px;align-items:center}
+@media (max-width:720px){.recipe{grid-template-columns:1fr}.recipe .card{max-width:220px;margin:0 auto}}
+.reqs{display:grid;gap:10px;margin:16px 0}
+.req{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;font-size:.9rem}
+.req .bar{grid-column:1/-1}
+.req.done .bar i{background:linear-gradient(90deg,#2f9e6c,var(--ok))}
+.vault-door{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(circle at 50% 50%,#2a2148,#0d0b19 70%);min-height:240px;display:grid;place-items:center}
+.vault-door svg{width:200px;animation:spin 60s linear infinite}
+.forging .vault-door svg{animation-duration:1.2s}
+.recipes{display:grid;gap:18px}
+
+/* ---------- Quests / rewards ---------- */
+.quests{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:720px){.quests{grid-template-columns:1fr}}
+.quest{display:grid;grid-template-columns:40px 1fr auto;gap:6px 14px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.quest .ic{grid-row:span 2;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--panel2);color:var(--foil)}
+.quest .ic svg{width:20px;height:20px}
+.quest.done .ic{background:rgba(91,214,154,.15);color:var(--ok)}
+.quest .bar{grid-column:2/-1}
+.quest h4{font:700 .98rem var(--f-body);text-transform:none;letter-spacing:0}
+.quest .rw{font:600 .68rem var(--f-mono);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.rewards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.reward{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:flex;flex-direction:column;gap:10px}
+.reward.locked{opacity:.62}
+.reward .emb{width:52px;height:52px}
+.reward h4{font:700 1rem var(--f-body);text-transform:none;letter-spacing:0}
+.season-ranks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.season-ranks{grid-template-columns:1fr}}
+.season-ranks>div{padding:18px;border-radius:14px;border:1px solid var(--line);background:var(--panel2)}
+.season-ranks .pl{font:800 1.8rem var(--f-display)}
+
+/* ---------- CC flow / roadmap / lore / faq ---------- */
+.flow{display:grid;gap:0;justify-items:center;max-width:520px;margin:0 auto}
+.flow .step{width:100%;text-align:center;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);font:800 1.3rem var(--f-display);letter-spacing:.05em}
+.flow .step.hl{border-color:rgba(233,199,123,.5);color:var(--foil)}
+.flow .arrow{width:2px;height:28px;background:linear-gradient(var(--line),var(--foil));position:relative}
+.flow .arrow::after{content:"";position:absolute;bottom:-2px;left:-4px;border:5px solid transparent;border-top-color:var(--foil)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.feat-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:460px){.feat-grid{grid-template-columns:1fr}}
+.feat-grid>div{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.feat-grid h4{font:700 1rem var(--f-body);text-transform:none;letter-spacing:0;margin-bottom:6px}
+.feat-grid p{color:var(--muted);font-size:.9rem}
+.road{display:grid;gap:0;position:relative}
+.phase{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:26px 0;border-bottom:1px solid var(--line)}
+@media (max-width:600px){.phase{grid-template-columns:1fr;gap:8px}}
+.phase .pn{font:900 3.4rem/1 var(--f-display);color:var(--dim)}
+.phase.now .pn{color:var(--foil)}
+.phase h3{font-size:2.2rem;margin-bottom:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.phase ul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.phase li{padding:5px 12px;border-radius:999px;background:var(--panel2);font-size:.85rem}
+.realm{display:grid;grid-template-columns:150px 1fr;gap:28px;padding:32px 0;border-bottom:1px solid var(--line)}
+@media (max-width:700px){.realm{grid-template-columns:1fr;gap:14px}}
+.realm .badge{width:130px;height:130px}
+.realm h3{font-size:2.4rem}
+.realm .sw{display:flex;gap:6px;margin:12px 0}
+.realm .sw i{width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,.12)}
+.realm .mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:16px;max-width:760px}
+.realm p{max-width:64ch}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 0;display:flex;justify-content:space-between;gap:16px;align-items:center;font:800 1.5rem/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 1.6rem var(--f-body);color:var(--foil);flex:none}
+.faq details[open] summary::after{content:"−"}
+.faq .ans{padding:0 0 22px;color:var(--muted);max-width:70ch;display:grid;gap:10px}
+.legal{max-width:72ch;display:grid;gap:16px;color:var(--muted)}
+.legal h3{color:var(--fg);font-size:1.6rem;margin-top:16px}
+
+/* ---------- Modal / toast ---------- */
+.modal-bg{position:fixed;inset:0;z-index:60;background:rgba(5,4,12,.72);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.modal{width:min(560px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px;position:relative;animation:rise .25s cubic-bezier(.2,.8,.2,1)}
+.modal.wide{width:min(900px,100%)}
+@keyframes rise{from{transform:translateY(16px);opacity:0}}
+.modal .x{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);font-size:1.1rem;line-height:1}
+.modal h3{font-size:2rem;margin-bottom:10px;padding-right:40px}
+.modal .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:16px 0;font-size:.9rem}
+.kv dt{color:var(--dim)} .kv dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;word-break:break-all}
+.detail{display:grid;grid-template-columns:300px 1fr;gap:28px}
+@media (max-width:720px){.detail{grid-template-columns:1fr}.detail .card{max-width:260px;margin:0 auto}}
+.traits{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.safety{display:grid;gap:6px;margin-top:14px;font-size:.84rem;color:var(--muted)}
+.safety div{display:flex;gap:8px}
+.safety svg{width:16px;height:16px;flex:none;color:var(--ok);margin-top:2px}
+.share-img{width:100%;max-width:360px;border-radius:14px;display:block;margin:0 auto;border:1px solid var(--line)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;display:grid;gap:8px;width:min(440px,calc(100% - 32px))}
+.t{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--foil);padding:12px 16px;border-radius:12px;font-size:.9rem;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:rise .25s}
+.t.err{border-left-color:var(--bad)} .t.ok{border-left-color:var(--ok)}
+
+/* ---------- Footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:80px;padding-block:48px 32px;background:linear-gradient(180deg,transparent,rgba(181,123,255,.04))}
+.foot{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:28px}
+@media (max-width:760px){.foot{grid-template-columns:1fr 1fr}}
+.foot h5{font:600 .68rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 12px}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.foot a{text-decoration:none;color:var(--muted)} .foot a:hover{color:var(--fg)}
+.foot .big{font:900 2.4rem/1 var(--f-display);letter-spacing:.06em}
+.disclaim{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);font-size:.8rem;color:var(--dim);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+.soon{color:var(--dim);font-size:.85rem}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+
+<div class="banner">Prototype · Cards, prices, users and balances are demo data · No live blockchain activity · Not affiliated with Nintendo or The Pokémon Company</div>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#home" aria-label="MONDEX home"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6DE"/><stop offset="1" stop-color="#B4873A"/></linearGradient></defs><path d="M16 1 30 9v14L16 31 2 23V9z" fill="none" stroke="url(#lg)" stroke-width="2.4"/><path d="M9 22V11l7 7 7-7v11" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linejoin="round"/></svg>MONDEX</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#packs">Packs</a><a href="#marketplace">Marketplace</a><a href="#leaderboard">Leaderboard</a><a href="#vault">Vault</a>
+    </nav>
+    <div class="nav-right">
+      <a class="rewards" href="#rewards">Rewards</a>
+      <span id="walletSlot"></span>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Mobile">
+    <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#packs">Packs</a><a href="#marketplace">Marketplace</a><a href="#leaderboard">Leaderboard</a><a href="#vault">Vault</a><a href="#rewards">Rewards</a><a href="#guide">Guide</a><a href="#faq">FAQ</a>
+  </nav>
+</header>
+<main id="view"></main>
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="big">MONDEX</div>
+        <p class="eyebrow" style="margin-top:10px">Collect what comes next.</p>
+        <p class="muted" style="margin-top:14px;font-size:.88rem;max-width:34ch">Real graded Pokémon cards, vaulted and traded on Solana. Pull them, trade them, or ship them home.</p>
+      </div>
+      <div><h5>Collect</h5><ul><li><a href="#collect">My Collection</a></li><li><a href="#explore">Explore</a></li><li><a href="#packs">Packs</a></li><li><a href="#marketplace">Marketplace</a></li><li><a href="#vault">The Vault</a></li></ul></div>
+      <div><h5>Community</h5><ul><li><a href="#leaderboard">Leaderboard</a></li><li><a href="#rewards">Rewards</a></li><li><a href="#guide">Grading guide</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#collector-crypt">Collector Crypt</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h5>Social</h5><ul><li><span class="soon">X · coming soon</span></li><li><span class="soon">Discord · coming soon</span></li><li><span class="soon">Telegram · coming soon</span></li></ul>
+        <h5 style="margin-top:20px">Legal</h5><ul><li><a href="#terms">Terms</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#terms" data-act="risk">Risk Disclosure</a></li></ul></div>
+    </div>
+    <div class="disclaim"><span style="max-width:80ch">MONDEX is a digital collectible project. Nothing on this website constitutes financial, investment, or legal advice. Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. MONDEX is not affiliated with, sponsored or endorsed by Nintendo, The Pokémon Company, Collector Crypt, PSA, Beckett or CGC.</span><span>© 2026 MONDEX · Prototype build</span></div>
+  </div>
+</footer>
+<div id="modal"></div>
+<div id="toast" aria-live="polite"></div>
+<canvas id="fx"></canvas>
+<script>
+/* =====================================================================
+   MONDEX — prototype front end (real graded Pokémon cards, vaulted on Solana)
+   Model: each physical graded card sits in an insured vault and is represented
+   1:1 by a token. Users pull packs, trade 24/7, take instant buyback, or burn
+   the token to have the physical card shipped.
+   Everything here runs on demo data. Search "INTEGRATION POINT" for where real
+   Solana, marketplace, vault/custody, randomness, pricing and metadata services
+   connect. Secrets belong in server-side env vars, never in this file.
+   ===================================================================== */
+(function(){
+'use strict';
+
+/* ---------------- Config (prototype, configurable) ---------------- */
+const RARITIES=['Common','Rare','Epic','Legendary','Mythic'];
+// Pull tiers are value bands, not printed rarities.
+const R={
+  Common:{score:1,odds:62,band:'$15–60'},
+  Rare:{score:5,odds:25,band:'$60–200'},
+  Epic:{score:15,odds:9.5,band:'$200–600'},
+  Legendary:{score:50,odds:3,band:'$600–2,500'},
+  Mythic:{score:250,odds:0.5,band:'$2,500+'},
+};
+const PACK_PRICE=100;       // USDC, demo
+const BUYBACK=0.85;         // instant buyback share of insured value, demo
+const REDEEM_FEE=15;        // USDC, demo
+const BONUS={firstEdition:0.5,completedSet:100,season:500};
+const LEVELS=[[1,'Novice'],[5,'Explorer'],[10,'Collector'],[20,'Hunter'],[30,'Elite'],[50,'Master'],[75,'Legend'],[100,'Mythic']];
+
+/* Energy-type colors and simple glyphs (generic shapes, not official symbols) */
+const GLYPH={
+  Fire:'<path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2.5 1.2-3.8 2.4-5 .2 1.6 1 2.6 2 3-.6-3.2-.2-6.2.6-9z" fill="currentColor"/>',
+  Water:'<path d="M12 2.5S5 10 5 14.5a7 7 0 0 0 14 0C19 10 12 2.5 12 2.5z" fill="currentColor"/>',
+  Grass:'<path d="M5 19C5 9 12 4 20 4c0 9-5 15-13 15m-2 2 9-9" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+  Lightning:'<path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor"/>',
+  Psychic:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/>',
+  Fighting:'<path d="M2 20 9 7l4 6 3-4 6 11z" fill="currentColor"/>',
+  Darkness:'<path d="M15 3a9 9 0 1 0 6 15.5A8 8 0 0 1 15 3z" fill="currentColor"/>',
+  Dragon:'<path d="M12 1.5 14 10l8.5 2-8.5 2-2 8.5-2-8.5-8.5-2L10 10z" fill="currentColor"/>',
+  Colorless:'<circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 1.5v3.5M12 19v3.5M1.5 12H5M19 12h3.5M4.6 4.6l2.4 2.4M17 17l2.4 2.4M4.6 19.4 7 17M17 7l2.4-2.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+};
+const TY={
+  Fire:{c1:'#FF6A3D',c2:'#FFC15E',bg:'#2A0E07'},Water:{c1:'#2BB7F0',c2:'#9AE8F7',bg:'#061F33'},Grass:{c1:'#5BC46A',c2:'#C6F0A0',bg:'#0C2410'},
+  Lightning:{c1:'#F5D93A',c2:'#FFF6A6',bg:'#262106'},Psychic:{c1:'#C86BF0',c2:'#F0C4FF',bg:'#200C2E'},Fighting:{c1:'#D08A4E',c2:'#F2CDA0',bg:'#2A1608'},
+  Darkness:{c1:'#5B6B8C',c2:'#B9C6E6',bg:'#0C1020'},Dragon:{c1:'#D8B24A',c2:'#FFE9A8',bg:'#1E1A08'},Colorless:{c1:'#C9C4D8',c2:'#FFFFFF',bg:'#1C1A26'},
+};
+const TYPES=Object.keys(TY);
+
+/* ---------------- Card catalog (real cards; names identify the cards) ----------------
+   INTEGRATION POINT (metadata): replace with the vault inventory API / token metadata
+   (name, set, number, grader, grade, cert, image, insured value). */
+const SETS_INFO={
+  'Base Set':1999,'Jungle':1999,'Fossil':1999,'Team Rocket':2000,'Neo Genesis':2000,'Neo Destiny':2002,
+  'Vivid Voltage':2020,"Champion's Path":2020,'Evolving Skies':2021,'Fusion Strike':2021,'Lost Origin':2022,'Silver Tempest':2022,'151':2023,'Obsidian Flames':2023,
+};
+// [name, set, number, type, tier, variant, firstEdition]
+const RAW=[
+['Charizard','Base Set','4/102','Fire','Mythic','Holo · 1st Edition',true],
+['Shining Charizard','Neo Destiny','107/105','Fire','Mythic','Shining · Secret',false],
+['Umbreon VMAX','Evolving Skies','215/203','Darkness','Mythic','Alternate Art',false],
+['Lugia','Neo Genesis','9/111','Psychic','Mythic','Holo · 1st Edition',true],
+['Charizard','Base Set','4/102','Fire','Legendary','Holo · Unlimited',false],
+['Blastoise','Base Set','2/102','Water','Legendary','Holo · Unlimited',false],
+['Rayquaza VMAX','Evolving Skies','218/203','Dragon','Legendary','Alternate Art',false],
+['Charizard ex','151','199/165','Fire','Legendary','Special Illustration Rare',false],
+['Charizard ex','Obsidian Flames','223/197','Darkness','Legendary','Special Illustration Rare',false],
+['Dark Charizard','Team Rocket','4/82','Fire','Legendary','Holo',false],
+['Giratina V','Lost Origin','186/196','Dragon','Legendary','Alternate Art',false],
+['Gengar VMAX','Fusion Strike','271/264','Darkness','Legendary','Alternate Art',false],
+['Venusaur','Base Set','15/102','Grass','Epic','Holo · Unlimited',false],
+['Mewtwo','Base Set','10/102','Psychic','Epic','Holo · Unlimited',false],
+['Lugia V','Silver Tempest','186/195','Colorless','Epic','Alternate Art',false],
+['Charizard VMAX',"Champion's Path",'074/073','Fire','Epic','Secret Rare',false],
+['Mew ex','151','205/165','Psychic','Epic','Hyper Rare',false],
+['Gyarados','Base Set','6/102','Water','Epic','Holo · Unlimited',false],
+['Dark Blastoise','Team Rocket','3/82','Water','Epic','Holo',false],
+['Gengar','Fossil','5/62','Psychic','Epic','Holo · 1st Edition',true],
+['Dragonite','Fossil','4/62','Colorless','Epic','Holo',false],
+['Pikachu VMAX','Vivid Voltage','188/185','Lightning','Epic','Secret Rare',false],
+['Alakazam','Base Set','1/102','Psychic','Rare','Holo · Unlimited',false],
+['Machamp','Base Set','8/102','Fighting','Rare','Holo · 1st Edition',true],
+['Zapdos','Base Set','16/102','Lightning','Rare','Holo · Unlimited',false],
+['Raichu','Base Set','14/102','Lightning','Rare','Holo · Unlimited',false],
+['Ninetales','Base Set','12/102','Fire','Rare','Holo · Unlimited',false],
+['Chansey','Base Set','3/102','Colorless','Rare','Holo · Unlimited',false],
+['Snorlax','Jungle','11/64','Colorless','Rare','Holo',false],
+['Vaporeon','Jungle','12/64','Water','Rare','Holo',false],
+['Jolteon','Jungle','4/64','Lightning','Rare','Holo',false],
+['Flareon','Jungle','3/64','Fire','Rare','Holo',false],
+['Scyther','Jungle','10/64','Grass','Rare','Holo',false],
+['Articuno','Fossil','2/62','Water','Rare','Holo',false],
+['Moltres','Fossil','12/62','Fire','Rare','Holo',false],
+['Zapdos','Fossil','15/62','Lightning','Rare','Holo',false],
+['Lapras','Fossil','10/62','Water','Rare','Holo',false],
+['Aerodactyl','Fossil','1/62','Fighting','Rare','Holo',false],
+['Pikachu','Base Set','58/102','Lightning','Common','Common',false],
+['Clefairy','Base Set','5/102','Colorless','Common','Holo · Unlimited',false],
+['Hitmonchan','Base Set','7/102','Fighting','Common','Holo · Unlimited',false],
+['Nidoking','Base Set','11/102','Grass','Common','Holo · Unlimited',false],
+['Poliwrath','Base Set','13/102','Water','Common','Holo · Unlimited',false],
+['Magneton','Base Set','9/102','Lightning','Common','Holo · Unlimited',false],
+['Kangaskhan','Jungle','5/64','Colorless','Common','Holo',false],
+['Mr. Mime','Jungle','6/64','Psychic','Common','Holo',false],
+['Pidgeot','Jungle','8/64','Colorless','Common','Holo',false],
+['Wigglytuff','Jungle','16/64','Colorless','Common','Holo',false],
+['Ditto','Fossil','3/62','Colorless','Common','Holo',false],
+['Haunter','Fossil','6/62','Psychic','Common','Holo',false],
+['Hitmonlee','Fossil','7/62','Fighting','Common','Holo',false],
+['Kabutops','Fossil','9/62','Fighting','Common','Holo',false],
+];
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const TIER_BASE={Common:22,Rare:85,Epic:290,Legendary:950,Mythic:4200};
+const CARDS=RAW.map((r,i)=>{
+  const [name,set,number,type,rarity,variant,fe]=r;
+  return {id:'MX-'+String(i+1).padStart(3,'0'),name,set,number,type,rarity,variant,fe,year:SETS_INFO[set],era:SETS_INFO[set]<2010?'Vintage':'Modern',k:0.8+rng(hash(name+set+variant))()*0.5};
+});
+/* Pokémon TCG API ids (pokemontcg.io): set code + collector number, e.g. base1-4 */
+const SETCODE={'Base Set':'base1','Jungle':'base2','Fossil':'base3','Team Rocket':'base5','Neo Genesis':'neo1','Neo Destiny':'neo4','Vivid Voltage':'swsh4',"Champion's Path":'swsh35','Evolving Skies':'swsh7','Fusion Strike':'swsh8','Lost Origin':'swsh11','Silver Tempest':'swsh12','151':'sv3pt5','Obsidian Flames':'sv3'};
+CARDS.forEach(c=>{const num=parseInt(c.number,10),code=SETCODE[c.set];c.ptcg=code+'-'+num;c.img=`https://images.pokemontcg.io/${code}/${num}.png`;c.imgLg=`https://images.pokemontcg.io/${code}/${num}_hires.png`});
+const BY=Object.fromEntries(CARDS.map(c=>[c.id,c]));
+
+/* ---------------- Live card data ----------------
+   Real card images and TCGplayer market prices from the Pokémon TCG API.
+   On your own domain, /api/cards (see api/cards.js) proxies the API with the
+   POKEMONTCG_API_KEY env var; without it the page calls the public API directly.
+   Inside the claude.ai preview, outside hosts are blocked, so the page falls back
+   to placeholders there. */
+const LIVE={images:false,prices:false,updated:null,byId:{}};
+function probeImages(){const im=new Image();im.onload=()=>{LIVE.images=true;rerender()};im.onerror=()=>{};im.src=CARDS[0].img}
+async function loadLive(){
+  const ids=[...new Set(CARDS.map(c=>c.ptcg))];
+  const direct='https://api.pokemontcg.io/v2/cards?pageSize=250&select=id,images,tcgplayer&q='+encodeURIComponent(ids.map(i=>'id:'+i).join(' OR '));
+  for(const url of ['/api/cards?ids='+ids.join(','),direct]){
+    try{const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),8000);
+      const r=await fetch(url,{signal:ctl.signal});clearTimeout(tm);if(!r.ok)continue;const j=await r.json();if(!j||!Array.isArray(j.data))continue;
+      j.data.forEach(d=>{const p=d.tcgplayer&&d.tcgplayer.prices||{},k=p.holofoil||p['1stEditionHolofoil']||p.unlimitedHolofoil||p.normal||Object.values(p)[0]||{};
+        LIVE.byId[d.id]={img:d.images&&d.images.small,imgLg:d.images&&d.images.large,market:k.market||k.mid||null,url:d.tcgplayer&&d.tcgplayer.url,updated:d.tcgplayer&&d.tcgplayer.updatedAt}});
+      CARDS.forEach(c=>{const L=LIVE.byId[c.ptcg];if(L&&L.img){c.img=L.img;c.imgLg=L.imgLg||c.imgLg}});
+      LIVE.prices=Object.values(LIVE.byId).some(x=>x.market);LIVE.updated=(Object.values(LIVE.byId).find(x=>x.updated)||{}).updated||null;
+      rerender();return;
+    }catch(e){}
+  }
+}
+const find=(name,set,fe)=>CARDS.find(c=>c.name===name&&(!set||c.set===set)&&(fe===undefined||c.fe===fe));
+const GMULT={10:3.2,9.5:2,9:1.4,8.5:1.15,8:1,7:.7};
+// INTEGRATION POINT (pricing): insured value should come from the custodian's appraisal
+// or a pricing oracle. These figures are generated demo values, not market data.
+const value=(c,grade)=>Math.round(TIER_BASE[c.rarity]*c.k*(GMULT[grade]||1)*(c.fe?1.6:1));
+
+const SETS=[
+  {id:'big3',name:'Base Set Big Three',ids:[find('Charizard','Base Set',false).id,find('Blastoise').id,find('Venusaur').id]},
+  {id:'birds',name:'Fossil Legendary Birds',ids:[find('Articuno').id,find('Zapdos','Fossil').id,find('Moltres').id]},
+  {id:'eevee',name:'Jungle Eeveelutions',ids:[find('Flareon').id,find('Jolteon').id,find('Vaporeon').id]},
+  {id:'fight',name:'Base Set Fighters',ids:[find('Hitmonchan').id,find('Machamp').id]},
+  {id:'skies',name:'Evolving Skies Alt Arts',ids:[find('Umbreon VMAX').id,find('Rayquaza VMAX').id]},
+  {id:'zard',name:'Charizard Collection',ids:CARDS.filter(c=>c.name.includes('Charizard')).map(c=>c.id)},
+];
+
+/* ---------------- Demo data ---------------- */
+const SAMPLE=[['Pikachu','Base Set',9,'PSA'],['Pikachu','Base Set',8,'PSA'],['Clefairy','Base Set',8,'PSA'],['Hitmonchan','Base Set',9,'PSA'],['Machamp','Base Set',9,'PSA'],['Nidoking','Base Set',8.5,'CGC'],['Kangaskhan','Jungle',9,'PSA'],['Ditto','Fossil',9,'BGS'],['Haunter','Fossil',8,'PSA'],['Flareon','Jungle',9,'PSA'],['Jolteon','Jungle',8,'PSA'],['Vaporeon','Jungle',9,'PSA'],['Snorlax','Jungle',10,'PSA'],['Lapras','Fossil',9,'CGC'],['Gyarados','Base Set',8,'PSA'],['Gengar','Fossil',9,'PSA'],['Mew ex','151',10,'PSA'],['Charizard VMAX',"Champion's Path",10,'PSA'],['Charizard ex','151',10,'PSA'],['Umbreon VMAX','Evolving Skies',10,'PSA']];
+const DEMO_USERS=['SlabHunter','vintage_val','Base1Ben','gem.mint.gina','PullPilot','holo_harper','graded_greg','neo.nadia','VaultVic','1stEdEddie','sleeve_sage','popreport_pat','chase.chloe','tcg_theo','mintcondition','BoosterBree','PSA10Pete','swirl_seeker','alt.art.ali','ShadowlessSam'];
+const LB=DEMO_USERS.map((u,i)=>{const r=rng(hash(u)),score=Math.round(48200*Math.pow(.84,i)*(0.96+r()*.08));
+  return {user:u,score,level:levelOf(score).level,mythics:Math.max(0,Math.round(score/9000+r()*1.2-.4)),sets:Math.min(6,Math.round(score/8000+r()*2)),hue:Math.floor(r()*360),weekly:Math.round(score*(0.04+r()*.12)),season:Math.round(score*(0.35+r()*.4)),delta:Math.round((r()-.4)*4)}});
+const LISTINGS_SEED=[
+  ['Charizard','Base Set',false,9,'PSA',2,'SlabHunter'],['Blastoise','Base Set',undefined,8,'PSA',5,'vintage_val'],['Umbreon VMAX','Evolving Skies',undefined,10,'PSA',9,'alt.art.ali'],['Lugia V','Silver Tempest',undefined,10,'PSA',1,'neo.nadia'],
+  ['Dark Charizard','Team Rocket',undefined,8,'BGS',20,'Base1Ben'],['Venusaur','Base Set',undefined,9,'CGC',30,'gem.mint.gina'],['Charizard ex','151',undefined,10,'PSA',44,'PullPilot'],['Machamp','Base Set',undefined,10,'PSA',3,'1stEdEddie'],
+  ['Pikachu','Base Set',undefined,9,'PSA',6,'sleeve_sage'],['Gengar VMAX','Fusion Strike',undefined,10,'PSA',12,'holo_harper'],['Lugia','Neo Genesis',undefined,8,'PSA',50,'ShadowlessSam'],['Snorlax','Jungle',undefined,9,'PSA',15,'tcg_theo'],
+];
+const QUESTS=[
+  {id:'q1',name:'Open 1 Pack',goal:1,rw:'+100 XP',f:s=>s.packsOpened},
+  {id:'q2',name:'Open 5 Packs',goal:5,rw:'+300 XP · Pack Opener badge',f:s=>s.packsOpened},
+  {id:'q3',name:'Collect 3 New Cards',goal:3,rw:'+150 XP',f:s=>s.newFromPacks.length},
+  {id:'q4',name:'Complete a Set',goal:1,rw:'Set Collector badge',f:s=>completedSets(s).length},
+  {id:'q5',name:'Trade 1 Card',goal:1,rw:'+200 XP · Trader badge',f:s=>s.trades},
+  {id:'q6',name:'Pull an Epic',goal:1,rw:'+150 XP',f:s=>countR(s,'Epic')},
+  {id:'q7',name:'Collect Every Charizard',goal:SETS[5].ids.length,rw:'Flame Frame cosmetic',f:s=>uniq(s).filter(id=>SETS[5].ids.includes(id)).length},
+  {id:'q8',name:'Wishlist 5 Cards',goal:5,rw:'+50 XP',f:s=>s.wishlist.length},
+  {id:'q9',name:'Pull a Legendary',goal:1,rw:'+400 XP',f:s=>countR(s,'Legendary')},
+  {id:'q10',name:'Ship a Card Home',goal:1,rw:'Collector Box badge',f:s=>s.shipped},
+];
+const REWARDS=[
+  {cat:'Collector',name:'First Pull',kind:'Badge',desc:'Open your first MONDEX pack.',f:s=>s.packsOpened>=1},
+  {cat:'Collector',name:'Level 10 Frame',kind:'Special frame',desc:'Reach Collector Level 10.',f:s=>levelOf(score(s)).level>=10},
+  {cat:'Collector',name:'Chase Hunter',kind:'Badge',desc:'Hold a Mythic-tier card.',f:s=>countR(s,'Mythic')>=1},
+  {cat:'Collection',name:'Eeveelution Frame',kind:'Special frame',desc:'Complete the Jungle Eeveelutions set.',f:s=>completedSets(s).some(x=>x.id==='eevee')},
+  {cat:'Collection',name:'Fighters Badge',kind:'Badge',desc:'Complete the Base Set Fighters set.',f:s=>completedSets(s).some(x=>x.id==='fight')},
+  {cat:'Collection',name:'Big Three Showcase',kind:'Profile cosmetic',desc:'Complete the Base Set Big Three.',f:s=>completedSets(s).some(x=>x.id==='big3')},
+  {cat:'Community',name:'Genesis Supporter',kind:'Early access',desc:'Early access to Season 02. Opens when the community launches.',f:()=>false},
+  {cat:'Community',name:'First Trade',kind:'Badge',desc:'Complete one marketplace trade.',f:s=>s.trades>=1},
+  {cat:'Seasonal',name:'Season Champion Slab',kind:'Vaulted graded card',desc:'Finish Season 01 at rank #1.',f:()=>false},
+  {cat:'Seasonal',name:'Free Pack Credit',kind:'Pack access',desc:'Complete 5 quests this season.',f:s=>QUESTS.filter(q=>q.f(s)>=q.goal).length>=5},
+];
+
+/* ---------------- State (demo, per browser) ----------------
+   INTEGRATION POINT (indexer): replace with reads from an indexer/DAS API keyed by wallet. */
+const KEY='mondex-proto-v2';
+let vidc=184000;
+const vid=()=>'VLT-'+(vidc+=Math.floor(Math.random()*97)+1);
+let uidc=Date.now();
+function uid(){return 'u'+(uidc++).toString(36)}
+const mkItem=(c,grade,grader,src)=>({uid:uid(),cid:c.id,grade,grader,vid:vid(),status:'vaulted',fav:false,src});
+const blank=()=>({wallet:null,collection:[],wishlist:[],packsOpened:0,newFromPacks:[],trades:0,shipped:0,buybacks:0,photos:{},
+  listings:LISTINGS_SEED.map((l,i)=>{const c=find(l[0],l[1],l[2]);return {lid:'L'+(i+1),cid:c.id,grade:l[3],grader:l[4],price:Math.round(value(c,l[3])*(1.02+((i*7)%10)/100)),hours:l[5],seller:l[6],gone:i===7}}),seeded:false});
+let S=blank();
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(blank(),JSON.parse(raw))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Your browser storage is full. Remove a photo to keep saving.','err')}}
+
+/* ---------------- Scoring ---------------- */
+function cardScore(e){const c=BY[e.cid];return R[c.rarity].score*(c.fe?1+BONUS.firstEdition:1)}
+function mine(s){return s.collection.filter(e=>e.status==='vaulted')}
+function uniq(s){return [...new Set(s.collection.map(e=>e.cid))]}
+function completedSets(s){const u=new Set(uniq(s));return SETS.filter(x=>x.ids.every(id=>u.has(id)))}
+function countR(s,r){return s.collection.filter(e=>BY[e.cid].rarity===r).length}
+function score(s){const base=s.collection.reduce((a,e)=>a+cardScore(e),0),cs=completedSets(s).length;return Math.round(base+cs*BONUS.completedSet+(cs===SETS.length?BONUS.season:0))}
+function levelOf(sc){const level=Math.min(100,Math.floor(Math.sqrt(sc/3))+1);let title='Novice';LEVELS.forEach(([l,t])=>{if(level>=l)title=t});
+  const cur=3*Math.pow(level-1,2),next=3*Math.pow(level,2);return {level,title,pct:level>=100?100:Math.round((sc-cur)/(next-cur)*100),next}}
+
+/* ---------------- Helpers ---------------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n=x=>Number(x).toLocaleString('en-US');
+const usd=x=>'$'+n(Math.round(x));
+const glyph=(t)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${GLYPH[t]}</svg>`;
+const ICON={
+  heart:'<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.3C1 8.2 3.4 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.6 0 6 3.7 4.5 7.2C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>',
+  check:'<svg viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  pack:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 7h14" stroke="currentColor" stroke-width="2"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M12 2.5 14.8 9l7 .6-5.3 4.6 1.6 6.8L12 17.4 5.9 21l1.6-6.8L2.2 9.6l7-.6z" fill="currentColor"/></svg>',
+  shield:'<svg viewBox="0 0 24 24"><path d="M12 2 4 5v7c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+};
+
+/* ---------------- Card face placeholder ----------------
+   No Pokémon artwork is drawn. Each slab shows a typed placeholder until a real photo
+   of the graded card is added. INTEGRATION POINT (images): use the vault's front/back
+   scans from token metadata (`image`). */
+let svgc=0;
+function face(c){
+  const T=TY[c.type],id='p'+(svgc++),holo=c.variant!=='Common';
+  let lines='';if(holo)for(let i=-8;i<16;i++)lines+=`<path d="M${i*28} 0 L${i*28+220} 352" stroke="#fff" stroke-width="10" opacity=".05"/>`;
+  return `<svg viewBox="0 0 252 352" role="img" aria-label="${esc(c.name)} card placeholder"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${T.c2}"/><stop offset=".5" stop-color="${T.c1}"/><stop offset="1" stop-color="${T.bg}"/></linearGradient>
+  <radialGradient id="r${id}" cx="50%" cy="38%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+  <rect width="252" height="352" fill="#E9E3C8"/><rect x="10" y="10" width="232" height="332" rx="10" fill="url(#${id})"/>${lines}
+  <rect x="24" y="44" width="204" height="150" rx="4" fill="${T.bg}" opacity=".55"/><rect x="24" y="44" width="204" height="150" rx="4" fill="url(#r${id})"/>
+  <g transform="translate(96 89) scale(2.5)" style="color:${T.c2}" opacity=".9">${GLYPH[c.type]}</g>
+  <text x="24" y="33" font-family="Big Shoulders Display,Impact,sans-serif" font-weight="800" font-size="20" fill="#fff">${esc(c.name.toUpperCase())}</text>
+  <rect x="24" y="208" width="204" height="88" rx="4" fill="#000" opacity=".22"/>
+  <text x="126" y="240" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff" opacity=".85">${esc(c.set.toUpperCase())}</text>
+  <text x="126" y="262" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#fff" opacity=".7">${esc(c.number)} · ${c.year}</text>
+  <text x="126" y="284" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="2" fill="#fff" opacity=".55">PHOTO PENDING</text>
+  <text x="126" y="326" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#fff" opacity=".6">${esc(c.variant.toUpperCase())}</text></svg>`;
+}
+const faceOrPhoto=c=>S.photos[c.id]?`<img src="${S.photos[c.id]}" alt="Photo of ${esc(c.name)} ${esc(c.set)} ${esc(c.number)}">`
+  :LIVE.images?`<img src="${c.img}" loading="lazy" decoding="async" alt="${esc(c.name)} — ${esc(c.set)} ${esc(c.number)}" data-fallback="${c.id}">`:face(c);
+// a single card image that fails to load falls back to the placeholder face
+document.addEventListener('error',e=>{const t=e.target;if(t.tagName==='IMG'&&t.dataset.fallback){const c=BY[t.dataset.fallback];t.outerHTML=face(c)}},true);
+
+/* ---------------- Slab component ---------------- */
+function card(c,o={}){
+  const sparks=c.rarity==='Mythic'?`<div class="sparks">${Array.from({length:8},(_,i)=>`<i style="left:${(i*37+11)%92+4}%;top:${(i*53+7)%88+6}%;animation-delay:${(i*.3).toFixed(1)}s"></i>`).join('')}</div>`:'';
+  const g=o.grade!=null?o.grade:'—',gr=o.grader||'GRADE';
+  return `<div class="card ${c.rarity}" ${o.noclick?'':`data-act="detail" data-cid="${c.id}"`} ${o.tilt?'data-tilt':''} tabindex="${o.noclick?-1:0}" role="${o.noclick?'img':'button'}" aria-label="${esc(c.name)}, ${esc(c.set)} ${esc(c.number)}${o.grade!=null?', '+gr+' '+g:''}, ${c.rarity} tier">
+  <div class="card-in">${c.fe?'<span class="fe-tag">1ST ED</span>':''}
+    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(c.name)}</div><div class="sl-sub">${c.year} · ${esc(c.set)} · ${esc(c.number)}</div></div><div class="sl-g"><div class="sl-grader">${gr}</div><div class="sl-num">${g}</div></div></div>
+    <div class="art">${faceOrPhoto(c)}</div>
+    <div class="card-bot"><span class="rb ${c.rarity}">${c.rarity}</span><span class="serial">${o.vid||c.id}</span></div>
+    ${sparks}
+  </div></div>`;
+}
+const cardBack=()=>`<div class="cback"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 1 30 9v14L16 31 2 23V9z" fill="none" stroke="#E9C77B" stroke-width="1.6"/><path d="M9 22V11l7 7 7-7v11" fill="none" stroke="#E9C77B" stroke-width="2" stroke-linejoin="round"/></svg></div>`;
+function badgeSvg(t,size=52,label=''){
+  const T=TY[t],id='bd'+(svgc++);
+  return `<svg viewBox="0 0 120 120" width="${size}" height="${size}" role="img" aria-label="badge"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${T.c2}"/><stop offset="1" stop-color="${T.c1}"/></linearGradient></defs>
+  <path d="M60 4 108 32v56L60 116 12 88V32z" fill="${T.bg}" stroke="url(#${id})" stroke-width="4"/><g transform="translate(36 ${label?26:34}) scale(2)" style="color:${T.c2}">${GLYPH[t]}</g>${label?`<text x="60" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="${T.c2}">${label}</text>`:''}</svg>`;
+}
+
+/* ---------------- Wallet (mock) ----------------
+   INTEGRATION POINT (Solana): @solana/wallet-adapter-react. Read publicKey only.
+   Never request seed phrases/private keys or unlimited approvals. Show every tx in
+   reviewTx() before wallet.signTransaction(). RPC from NEXT_PUBLIC_SOLANA_RPC_URL. */
+function walletBtn(){
+  $('#walletSlot').innerHTML=S.wallet
+    ?`<button class="btn sm wallet-btn" data-act="wallet"><span class="dot"></span><span class="long">Demo · </span>${S.wallet.slice(0,4)}…${S.wallet.slice(-4)}</button>`
+    :`<button class="btn sm primary wallet-btn" data-act="connect">Connect<span class="long">&nbsp;Wallet</span></button>`;
+}
+let pendingAfter=null,txOk=null;
+function connectModal(after){
+  modal(`<h3>Connect wallet</h3>
+  <p class="muted">Live wallet support isn't switched on yet. Connect a demo wallet to try the prototype. Demo wallets hold no funds and nothing is sent on-chain.</p>
+  <div class="safety"><div>${ICON.shield}<span>MONDEX will never ask for your seed phrase or private key.</span></div><div>${ICON.shield}<span>We never request unlimited token approvals.</span></div><div>${ICON.shield}<span>Every transaction is shown in full before you sign it.</span></div></div>
+  <div class="acts"><button class="btn primary" data-act="do-connect">Connect demo wallet</button><button class="btn ghost" data-act="sim-reject">Simulate a rejected request</button><button class="btn ghost" data-act="sim-network">Simulate a network issue</button></div>
+  <p class="muted" style="font-size:.8rem;margin-top:14px">New demo wallets start with 20 sample vaulted slabs so you can explore the dashboard, vault and rewards.</p>`);
+  pendingAfter=after||null;
+}
+function doConnect(){
+  const ch='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  S.wallet=Array.from({length:44},()=>ch[Math.floor(Math.random()*ch.length)]).join('');
+  if(!S.seeded){S.collection=SAMPLE.map(([nm,st,g,gr],i)=>{const it=mkItem(find(nm,st),g,gr,'sample');it.fav=i>=18;return it});S.seeded=true}
+  save();closeModal();walletBtn();toast('Demo wallet connected.','ok');const f=pendingAfter;pendingAfter=null;if(f)f();else render();
+}
+function walletModal(){modal(`<h3>Demo wallet</h3><dl class="kv"><dt>Address</dt><dd>${S.wallet}</dd><dt>Network</dt><dd>Prototype (no chain)</dd><dt>Slabs in vault</dt><dd>${mine(S).length}</dd><dt>Demo USDC</dt><dd>Unlimited (prototype)</dd></dl>
+  <p class="muted" style="font-size:.86rem">This address is randomly generated for the demo and does not exist on Solana.</p><div class="acts"><button class="btn" data-act="disconnect">Disconnect</button><button class="btn ghost" data-act="reset">Reset demo data</button></div>`)}
+function reviewTx(t,onOk){
+  modal(`<span class="chip proto">Demo transaction</span><h3 style="margin-top:12px">Review before signing</h3>
+  <dl class="kv">${t.rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}<dt>Network fee</dt><dd>~0.000005 SOL (estimate, demo)</dd><dt>Permissions</dt><dd>${t.perm}</dd></dl>
+  <p class="muted" style="font-size:.84rem">Prototype: approving updates your demo account only. Nothing is signed, paid or sent.</p>
+  <div class="acts"><button class="btn primary" data-act="tx-ok">Approve</button><button class="btn ghost" data-act="tx-reject">Reject</button></div>`);
+  txOk=onOk;
+}
+
+/* ---------------- Modal / toast ---------------- */
+function modal(html,wide){$('#modal').innerHTML=`<div class="modal-bg" data-act="bg"><div class="modal ${wide?'wide':''}" role="dialog" aria-modal="true"><button class="x" data-act="close" aria-label="Close">×</button>${html}</div></div>`;document.body.style.overflow='hidden';setTimeout(()=>{const b=$('#modal .modal button:not(.x)');if(b)b.focus()},30)}
+function closeModal(){$('#modal').innerHTML='';document.body.style.overflow='';txOk=null}
+function toast(msg,kind=''){const t=document.createElement('div');t.className='t '+kind;t.textContent=msg;$('#toast').appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3800)}
+
+/* ---------------- Card detail ---------------- */
+function detail(cid){
+  const c=BY[cid],owned=mine(S).filter(e=>e.cid===cid),wish=S.wishlist.includes(cid),f=owned[0];
+  modal(`<div class="detail"><div>${card(c,{grade:f&&f.grade,grader:f&&f.grader,vid:f&&f.vid,noclick:true,tilt:true})}</div>
+  <div style="min-width:0">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="rb ${c.rarity}">${c.rarity} tier</span><span class="chip">${glyph(c.type)} ${c.type}</span><span class="chip">${c.era}</span>${c.fe?'<span class="chip proto">1st Edition</span>':''}</div>
+    <h3 style="font-size:2.8rem;margin-top:14px">${esc(c.name)}</h3>
+    <p class="muted" style="margin-top:6px">${esc(c.set)} (${c.year}) · ${esc(c.number)} · ${esc(c.variant)}</p>
+    <dl class="kv">${(()=>{const L=LIVE.byId[c.ptcg];return L&&L.market?`<dt>TCGplayer market, raw (live)</dt><dd>${usd(L.market)}${L.url?` · <a href="${L.url}" target="_blank" rel="noopener">view</a>`:''}</dd>`:`<dt>Live price</dt><dd>${LIVE.prices?'Not listed':'Loads on the deployed site'}</dd>`})()}<dt>Est. insured value, grade 9</dt><dd>${usd(value(c,9))} (demo)</dd><dt>Est. insured value, grade 10</dt><dd>${usd(value(c,10))} (demo)</dd><dt>Collector Score</dt><dd>${cardScore({cid})}</dd>
+    <dt>You hold</dt><dd>${owned.length?owned.map(e=>`${e.grader} ${e.grade} · ${e.vid}`).join('<br>'):'—'}</dd>
+    ${owned.length?'<dt>Cert · custody history</dt><dd>Shown once cards are vaulted and tokenized</dd>':''}</dl>
+    <div class="acts" style="margin-top:8px">
+      <button class="btn ${wish?'':'primary'}" data-act="wish" data-cid="${cid}">${wish?'On wishlist ✓':'Add to wishlist'}</button><button class="btn" data-act="to-market" data-cid="${cid}">Find in marketplace</button>
+      ${owned.length&&['Epic','Legendary','Mythic'].includes(c.rarity)?`<button class="btn" data-act="share" data-uid="${f.uid}">Share pull</button>`:`<button class="btn ghost" data-act="copy-c" data-cid="${cid}">Share</button>`}
+      <label class="btn ghost" for="photoIn" style="cursor:pointer">${S.photos[cid]?'Replace photo':'Add photo'}</label><input id="photoIn" type="file" accept="image/*" data-cid="${cid}" hidden>
+      ${S.photos[cid]?`<button class="btn ghost" data-act="rm-photo" data-cid="${cid}">Remove photo</button>`:''}
+    </div>
+    <p class="muted" style="font-size:.78rem;margin-top:10px">Photos stay in your browser and replace the placeholder for this card everywhere on the site.</p>
+  </div></div>`,true);
+}
+function addPhoto(file,cid){
+  const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const W=420,H=Math.round(W*88/63),cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+    const s=Math.max(W/im.width,H/im.height);x.drawImage(im,(W-im.width*s)/2,(H-im.height*s)/2,im.width*s,im.height*s);
+    S.photos[cid]=cv.toDataURL('image/jpeg',.82);save();detail(cid);rerender();toast('Photo added.','ok')};im.onerror=()=>toast('That file isn’t an image we can read. Try a JPG or PNG.','err');im.src=fr.result};fr.readAsDataURL(file);
+}
+
+/* ---------------- Share pull ---------------- */
+async function sharePull(item){
+  const c=BY[item.cid],text=`I just pulled ${c.name} — ${c.set} ${c.number} · ${item.grader} ${item.grade} · ${c.rarity} tier on MONDEX (prototype). Collect what comes next.`;
+  modal(`<h3>Share your pull</h3><div id="shareImg" style="min-height:200px;display:grid;place-items:center" class="muted">Rendering…</div>
+  <div class="acts"><a class="btn primary" target="_blank" rel="noopener" href="https://x.com/intent/post?text=${encodeURIComponent(text)}">Share to X</a><button class="btn" data-act="copy" data-text="${esc(text)}">Copy text</button><button class="btn ghost" data-act="dl-tip">Download image</button></div>
+  <p class="muted" id="dlTip" style="font-size:.82rem;margin-top:10px" hidden>To save the image, right-click it (desktop) or press and hold it (mobile).</p>`);
+  try{await document.fonts.ready}catch(e){}
+  const W=900,H=1125,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d'),T=TY[c.type];
+  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1d1838');g.addColorStop(1,'#0c0a16');x.fillStyle=g;x.fillRect(0,0,W,H);
+  const rg=x.createRadialGradient(W/2,560,40,W/2,560,520);rg.addColorStop(0,T.c1+'55');rg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=rg;x.fillRect(0,0,W,H);
+  const ph='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(face(c).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="252" height="352" '));
+  const loadImg=src=>new Promise(r=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>r(im);im.onerror=()=>r(null);im.src=src});
+  // a remote image without CORS headers fails to load here (crossOrigin set), so the canvas never gets tainted
+  const img=(await loadImg(S.photos[c.id]||(LIVE.images?c.imgLg:ph)))||(await loadImg(ph));
+
+  const rc={Common:'#B9B3D0',Rare:'#5AA9FF',Epic:'#B57BFF',Legendary:'#F3B53F',Mythic:'#FF7AD9'}[c.rarity];
+  x.save();x.shadowColor=rc;x.shadowBlur=60;x.fillStyle='#2a2546';x.fillRect(W/2-170,300,340,500);x.restore();
+  x.fillStyle='#EEEAF7';x.fillRect(W/2-158,312,316,60);x.fillStyle='#17132C';x.font='800 30px "Big Shoulders Display", Impact, sans-serif';x.textAlign='left';x.fillText(c.name.toUpperCase().slice(0,16),W/2-146,352);
+  x.textAlign='right';x.font='900 40px "Big Shoulders Display", Impact, sans-serif';x.fillText(item.grader+' '+item.grade,W/2+146,356);
+  try{x.drawImage(img,W/2-138,384,276,386)}catch(e){}
+
+
+  x.textAlign='center';x.fillStyle='#A29BC2';x.font='600 30px "JetBrains Mono", monospace';x.fillText('I JUST PULLED',W/2,130);
+  x.fillStyle='#EFEBF9';x.font='900 '+(c.name.length>12?84:112)+'px "Big Shoulders Display", Impact, sans-serif';x.fillText(c.name.toUpperCase(),W/2,240);
+  x.fillStyle=rc;x.font='800 60px "Big Shoulders Display", Impact, sans-serif';x.fillText(c.rarity.toUpperCase()+' PULL',W/2,880);
+  x.fillStyle='#A29BC2';x.font='600 26px "JetBrains Mono", monospace';x.fillText(`${c.set.toUpperCase()} ${c.number}  ·  ${item.grader} ${item.grade}`,W/2,930);
+  x.fillStyle='#E9C77B';x.font='900 72px "Big Shoulders Display", Impact, sans-serif';x.fillText('MONDEX',W/2,1022);
+  x.fillStyle='#A29BC2';x.font='600 22px "JetBrains Mono", monospace';x.fillText('COLLECT WHAT COMES NEXT.',W/2,1060);
+  x.fillStyle='#6E6890';x.font='500 15px "JetBrains Mono", monospace';x.fillText('PROTOTYPE PULL · DEMO DATA',W/2,1098);
+  const el=$('#shareImg');if(el)el.innerHTML=`<img class="share-img" alt="Share image: I just pulled ${esc(c.name)}" src="${cv.toDataURL('image/png')}">`;
+}
+function copy(text){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>toast('Copied.','ok'),()=>toast('Copy failed. Select the text and copy it manually.','err'))}else toast('Copy is not available here.','err')}
+
+/* ---------------- Particle FX ---------------- */
+const fx=$('#fx'),fctx=fx.getContext('2d');let parts=[],fxOn=false;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function burst(x,y,colors,count=90){if(reduce)return;fx.width=innerWidth*devicePixelRatio;fx.height=innerHeight*devicePixelRatio;fctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=2+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,l:60+Math.random()*40,c:colors[i%colors.length],r:1.5+Math.random()*2.5})}if(!fxOn){fxOn=true;requestAnimationFrame(step)}}
+function step(){fctx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.l>0);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.vx*=.98;p.l--;fctx.globalAlpha=Math.min(1,p.l/40);fctx.fillStyle=p.c;fctx.beginPath();fctx.arc(p.x,p.y,p.r,0,7);fctx.fill()});if(parts.length)requestAnimationFrame(step);else{fxOn=false;fctx.clearRect(0,0,innerWidth,innerHeight)}}
+
+/* ---------------- Pack opening ----------------
+   INTEGRATION POINT (randomness + inventory): production pulls must draw from real vault
+   inventory using verifiable randomness (e.g. on-chain VRF), executed server-side/on-chain,
+   and return the token IDs actually transferred. Math.random() is prototype-only. */
+let P={phase:'sealed',items:[],shown:0,claimed:false,timer:null};
+function rollRarity(min){const pool=RARITIES.slice(RARITIES.indexOf(min||'Common'));const tot=pool.reduce((a,r)=>a+R[r].odds,0);let v=Math.random()*tot;for(const r of pool){v-=R[r].odds;if(v<=0)return r}return pool[pool.length-1]}
+function rollGrade(){const v=Math.random();return v<.22?10:v<.6?9:v<.72?8.5:v<.92?8:7}
+function rollGrader(){const v=Math.random();return v<.7?'PSA':v<.9?'CGC':'BGS'}
+function pull(i){const r=rollRarity(i===4?'Rare':'Common'),opts=CARDS.filter(c=>c.rarity===r),c=opts[Math.floor(Math.random()*opts.length)];return mkItem(c,rollGrade(),rollGrader(),'pack')}
+function startPack(){
+  if(P.phase!=='sealed')return;
+  if(!S.wallet){connectModal(startPack);return}
+  reviewTx({rows:[['Action','Open MONDEX Pack'],['Contents','5 vaulted graded cards'],['Price',PACK_PRICE+' USDC (demo)']],perm:`Transfer exactly ${PACK_PRICE} USDC. No unlimited approval.`},openPack);
+}
+function openPack(){
+  P={phase:'opening',items:[0,1,2,3,4].map(pull),shown:0,claimed:false,timer:null};
+  P.items.sort((a,b)=>RARITIES.indexOf(BY[a.cid].rarity)-RARITIES.indexOf(BY[b.cid].rarity));
+  S.packsOpened++;save();{const sp=$('#packsOpened');if(sp)sp.textContent=S.packsOpened}
+  const pk=$('.pack');if(pk)pk.classList.add('opening');
+  setTimeout(()=>{P.phase='reveal';renderStage();P.timer=setTimeout(revealNext,700)},reduce?50:750);
+}
+function labelFor(i,el){const it=P.items[i],c=BY[it.cid],lab=el.parentElement.querySelector('.reveal-label');if(lab){lab.textContent=`${c.rarity} · ${usd(value(c,it.grade))}`;lab.style.color=`var(--c-${c.rarity.toLowerCase()})`}}
+function revealNext(){
+  if(P.phase!=='reveal')return;const i=P.shown;if(i>=5){P.phase='summary';renderStage();return}
+  const el=document.querySelector(`.flip[data-i="${i}"]`);if(!el)return;el.classList.add('on');P.shown++;labelFor(i,el);
+  const c=BY[P.items[i].cid],big=['Epic','Legendary','Mythic'].includes(c.rarity);
+  if(big){el.classList.add('hl');setTimeout(()=>{const b=el.getBoundingClientRect(),cols={Epic:['#B57BFF','#E3CCFF'],Legendary:['#F3B53F','#FFF3CF','#FFE29A'],Mythic:['#FF7AD9','#6BE3FF','#FFD27A','#9C8CFF']}[c.rarity];burst(b.left+b.width/2,b.top+b.height/2,cols,c.rarity==='Mythic'?180:c.rarity==='Legendary'?120:60)},350)}
+  P.timer=setTimeout(revealNext,reduce?120:big?(c.rarity==='Mythic'?1900:1300):650);
+}
+function revealAll(){clearTimeout(P.timer);document.querySelectorAll('.flip').forEach((f,i)=>{f.classList.add('on');labelFor(i,f)});P.shown=5;P.phase='summary';setTimeout(renderStage,500)}
+function claim(){
+  if(P.claimed)return;const had=new Set(uniq(S));
+  P.items.forEach(it=>{S.collection.push(it);if(!had.has(it.cid)&&!S.newFromPacks.includes(it.cid))S.newFromPacks.push(it.cid)});
+  P.claimed=true;save();renderStage();toast('Five slabs added to your vault (demo).','ok');
+}
+function buybackAll(){
+  if(P.claimed)return;const tot=P.items.reduce((a,it)=>a+value(BY[it.cid],it.grade),0);
+  reviewTx({rows:[['Action','Instant buyback · 5 cards'],['Insured value',usd(tot)+' (demo)'],['Buyback rate',Math.round(BUYBACK*100)+'%'],['You receive',usd(tot*BUYBACK)+' USDC (demo)']],perm:'Transfer only these 5 card tokens.'},()=>{P.claimed='sold';S.buybacks++;save();renderStage();toast(`Sold back for ${usd(tot*BUYBACK)} USDC (demo). No funds moved.`,'ok')});
+}
+function renderStage(){
+  const st=$('#stage');if(!st)return;
+  if(P.phase==='sealed'||P.phase==='opening'){
+    st.innerHTML=`<div class="pack" data-act="open" role="button" tabindex="0" aria-label="Open a MONDEX pack"><div class="pack-top"><div class="pack-foil"></div></div><div class="pack-body"><div class="pack-foil"></div>
+      <div class="pack-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 1 30 9v14L16 31 2 23V9z" fill="none" stroke="#E9C77B" stroke-width="1.4"/><path d="M9 22V11l7 7 7-7v11" fill="none" stroke="#E9C77B" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <div class="wm">MONDEX</div><div class="sub">5 GRADED CARDS · ${PACK_PRICE} USDC</div><div class="sub" style="color:var(--muted)">SEASON 01</div></div></div></div><div class="stage-hint">Tap the pack to open</div>`;return;
+  }
+  const best=P.items.reduce((a,it)=>Math.max(a,RARITIES.indexOf(BY[it.cid].rarity)),0),bestI=P.items.length-1;
+  const tot=P.items.reduce((a,it)=>a+value(BY[it.cid],it.grade),0);
+  st.innerHTML=`<div style="width:100%;display:grid;justify-items:center">
+   <div class="slots">${P.items.map((it,i)=>{const on=P.phase==='summary'||i<P.shown,c=BY[it.cid];return `<div><div class="flip ${on?'on':''}" data-i="${i}" style="animation-delay:${i*90}ms"><div class="flip-in"><div class="b" data-act="reveal-one">${cardBack()}</div><div class="f">${card(c,{grade:it.grade,grader:it.grader,vid:it.vid})}</div></div></div><div class="reveal-label" style="${on?`color:var(--c-${c.rarity.toLowerCase()})`:''}">${on?`${c.rarity} · ${usd(value(c,it.grade))}`:''}</div></div>`}).join('')}</div>
+   ${P.phase==='reveal'?`<div class="summary"><button class="btn ghost sm" data-act="reveal-all">Reveal all</button></div>`:''}
+   ${P.phase==='summary'?`<div class="summary"><div><span class="eyebrow">Pull summary</span><h3 style="margin-top:8px">Best pull: <span style="color:var(--c-${RARITIES[best].toLowerCase()})">${RARITIES[best]}</span></h3>
+     <p class="muted tnum" style="margin-top:6px">Insured value ${usd(tot)} · pack ${PACK_PRICE} USDC · instant buyback ${usd(tot*BUYBACK)} (all demo figures)</p></div>
+     <div class="acts">${P.claimed==='sold'?'<button class="btn" disabled>Sold back ✓</button>':P.claimed?'<button class="btn" disabled>In your vault ✓</button>':`<button class="btn primary" data-act="claim">Keep in vault</button><button class="btn" data-act="buyback">Instant buyback ${Math.round(BUYBACK*100)}%</button>`}
+     <a class="btn" href="#collect">View collection</a>${best>=2?`<button class="btn" data-act="share-pull" data-i="${bestI}">Share pull</button>`:''}<button class="btn ghost" data-act="again">Open another</button></div></div>`:''}
+  </div>`;
+}
+
+/* ---------------- Pages ---------------- */
+const head=(eyebrow,title,lede,chips='')=>`<div class="page-head"><div class="wrap"><div class="row"><span class="eyebrow">${eyebrow}</span>${chips}</div><h1 style="font-size:clamp(2.6rem,8vw,5.6rem)">${title}</h1>${lede?`<p>${lede}</p>`:''}</div></div>`;
+const PROTO='<span class="chip proto">Prototype</span>',DEMO='<span class="chip proto">Demo data</span>',PROPOSED='<span class="chip proposed">Proposed · Coming soon</span>';
+const pages={};
+
+pages.home=()=>`<div class="wrap"><section class="hero">
+  <div><span class="eyebrow">Season 01 · Graded Pokémon cards on Solana</span><h1>MONDEX</h1><div class="tag">COLLECT WHAT COMES NEXT.</div>
+    <p class="lede">Pull, trade and collect real graded Pokémon cards. Every card sits in an insured vault and is yours on-chain. Trade it in seconds, sell it back instantly, or ship the slab home.</p>
+    <div class="ctas"><a class="btn primary" href="#packs">Start collecting</a><a class="btn" href="#explore">Explore cards</a><button class="btn ghost" data-act="how">How it works</button></div>
+    <p class="muted" style="margin-top:22px;font-size:.84rem">Digital Cards. Real Ownership. &nbsp;·&nbsp; PSA · BGS · CGC slabs &nbsp;·&nbsp; Pay in USDC</p></div>
+  <div class="hero-stage"><div class="ghost-card g1">${card(find('Lugia','Neo Genesis'),{grade:9,grader:'PSA',noclick:true})}</div><div class="ghost-card g2">${card(find('Shining Charizard'),{grade:9,grader:'BGS',noclick:true})}</div>${card(find('Charizard','Base Set',true),{grade:10,grader:'PSA',tilt:true})}<div class="hero-caption" style="position:absolute;bottom:-14px">${LIVE.images?'Mythic tier · 1st Edition':'Mythic tier · Real card images load on the deployed site'}</div></div>
+</section></div>
+<section class="sec" id="how"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">The collecting loop</span><h2 style="margin-top:10px">Pull. Collect. Trade.</h2></div><p class="lede">Every pull has a story. Each card is a real graded slab held in the vault.</p></div>
+  <div class="loop">${[['Open','Open a pack of five vaulted, graded cards.'],['Discover','See the card, its grade and insured value.'],['Collect','Keep it in the vault, or sell it back instantly.'],['Complete','Finish sets like the Base Set Big Three for rewards.'],['Compete','Climb the collector leaderboard each season.']].map((s,i)=>`<div><span class="n">0${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div></div></section>
+<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Pull tiers</span><h2 style="margin-top:10px">Five tiers. One chase in two hundred.</h2></div><p class="lede">Tiers are bands of insured value. Odds below are prototype values and will be published with live inventory before launch.</p></div>
+  <div class="tiers">${RARITIES.map(r=>{const c={Common:find('Pikachu','Base Set'),Rare:find('Snorlax'),Epic:find('Lugia V'),Legendary:find('Blastoise'),Mythic:find('Umbreon VMAX')}[r];return `<div class="tier">${card(c,{grade:r==='Common'?9:10,grader:'PSA'})}<dl><dt>Value band</dt><dd>${R[r].band}</dd><dt>Pack odds</dt><dd>${R[r].odds}%</dd><dt>Score</dt><dd>${R[r].score}</dd></dl></div>`}).join('')}</div></div></section>
+<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Chase cards</span><h2 style="margin-top:10px">Vintage icons. Modern alt arts.</h2></div><a class="btn" href="#explore">Browse all ${CARDS.length}</a></div>
+  <div class="grid-cards">${[['Charizard','Base Set',false],['Rayquaza VMAX'],['Dark Charizard'],['Giratina V'],['Gengar VMAX'],['Charizard ex','151']].map(a=>card(find(...a),{grade:10,grader:'PSA'})).join('')}</div>
+  <p class="muted" style="margin-top:16px;font-size:.82rem">${LIVE.images?'Card images from the Pokémon TCG API. Open any card to add a photo of your own slab.':'Real card images and live prices load on the deployed site. Open any card to add a photo of your own slab.'}</p></div></section>
+<section class="sec"><div class="wrap split">
+  <div class="panel feature"><span class="eyebrow">The Vault</span><h3>Stored, insured, tradeable.</h3><p class="muted">Each slab is held in an insured vault and backed 1:1 by a token in your wallet. Trades settle on Solana in seconds. When you want the physical card, request shipping and it comes to your door.</p><div><a class="btn" href="#vault">How the vault works</a></div></div>
+  <div class="panel feature"><span class="eyebrow">Instant buyback</span><h3>Don't want it? Sell it back.</h3><p class="muted">Any pulled card can be sold back on the spot for ${Math.round(BUYBACK*100)}% of its insured value, paid in USDC. Or list it on the marketplace and set your own price.</p><div><a class="btn" href="#marketplace">Visit the marketplace</a></div></div>
+</div></section>
+<section class="sec"><div class="wrap"><div class="panel" style="display:grid;gap:14px;background:linear-gradient(135deg,rgba(255,122,217,.08),rgba(107,227,255,.05)),var(--panel)">
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="eyebrow">MONDEX × Collector Crypt</span>${PROPOSED}</div>
+  <h2>Bring your collection into the digital world.</h2><p class="muted" style="max-width:62ch">A proposed integration that would recognize your Collector Crypt cards and activity with Collector Score, achievements and exclusive rewards. MONDEX is not currently affiliated with Collector Crypt.</p>
+  <div><a class="btn" href="#collector-crypt">Read the concept</a></div></div></div></section>
+<section class="sec"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">MONDEX Ecosystem</span><h2 style="margin-top:10px;font-size:2.2rem">Possible future utility</h2></div></div>
+  <div class="util-list">${['Marketplace utility','Pack access','Premium packs','Special events','Cosmetic upgrades','Community governance'].map((u,i)=>`<div><span>0${i+1} · UNDER REVIEW</span>${u}</div>`).join('')}</div>
+  <p class="notice" style="margin-top:14px"><strong>There is no MONDEX token today.</strong> Any future token functionality is subject to legal, regulatory and technical review. MONDEX makes no promise of price, returns or value.</p></div></section>
+<section class="sec"><div class="wrap" style="text-align:center;display:grid;gap:18px;justify-items:center"><h2>Your first pull is waiting.</h2><a class="btn primary" href="#packs">Open a pack</a></div></section>`;
+
+let X={type:'All',rar:null,era:'All',q:''};
+const xfilter=()=>CARDS.filter(c=>(X.type==='All'||c.type===X.type)&&(!X.rar||c.rarity===X.rar)&&(X.era==='All'||c.era===X.era)&&(!X.q||(c.name+' '+c.set+' '+c.number+' '+c.id).toLowerCase().includes(X.q.toLowerCase())));
+const xgrid=list=>list.length?`<div class="grid-cards">${list.map(c=>`<div class="cell">${card(c)}<div class="cell-meta"><span class="mono">${esc(c.set)} ${esc(c.number)}</span><button class="fav" data-act="wish" data-cid="${c.id}" aria-pressed="${S.wishlist.includes(c.id)}" aria-label="Wishlist ${esc(c.name)}">${ICON.heart}</button></div></div>`).join('')}</div>`:`<div class="empty"><h3>No cards found.</h3><p>Try a different type, tier or search.</p></div>`;
+const liveChip=()=>LIVE.prices?`<span class="chip live">Live card data${LIVE.updated?' · prices '+esc(LIVE.updated):''}</span>`:LIVE.images?'<span class="chip live">Real card images</span>':'<span class="chip">Card images load on the deployed site</span>';
+pages.explore=()=>{const list=xfilter();return head('Catalog · '+CARDS.length+' cards','Explore','Vintage and modern cards that can appear in packs and on the marketplace. Tap a card for its live TCGplayer price, graded estimates and your copies.',DEMO+liveChip())+
+ `<div class="wrap"><div class="filters"><div class="row"><input class="field search" id="xq" type="search" placeholder="Search name, set or number (e.g. 4/102)" value="${esc(X.q)}" aria-label="Search cards"><span class="count" id="xcount">${list.length} OF ${CARDS.length}</span></div>
+  <div class="seg" role="group" aria-label="Era">${['All','Vintage','Modern'].map(e=>`<button data-act="x-era" data-v="${e}" aria-pressed="${X.era===e}">${e==='All'?'All eras':e}</button>`).join('')}</div>
+  <div class="seg" role="group" aria-label="Type">${['All',...TYPES].map(e=>`<button data-act="x-type" data-v="${e}" aria-pressed="${X.type===e}">${e==='All'?'All types':e}</button>`).join('')}</div>
+  <div class="seg" role="group" aria-label="Tier">${RARITIES.map(r=>`<button data-act="x-rar" data-v="${r}" aria-pressed="${X.rar===r}">${r}</button>`).join('')}</div>
+ </div><div id="xgrid">${xgrid(list)}</div></div>`};
+
+let CT='All Cards';
+pages.collect=()=>{
+  if(!S.wallet)return head('My collection','Collect','')+`<div class="wrap"><div class="empty"><h3>Connect your wallet to begin building your collection.</h3><p>Use a demo wallet to try the prototype. It comes with 20 sample slabs.</p><button class="btn primary" data-act="connect">Connect wallet</button></div></div>`;
+  const held=mine(S),sc=score(S),lv=levelOf(sc),sets=completedSets(S),val=held.reduce((a,e)=>a+value(BY[e.cid],e.grade),0);
+  const counts={};held.forEach(e=>counts[e.cid]=(counts[e.cid]||0)+1);
+  let items=held.slice().reverse();
+  if(CT==='Favorites')items=items.filter(e=>e.fav);if(CT==='1st Editions')items=items.filter(e=>BY[e.cid].fe);if(CT==='Mythics')items=items.filter(e=>BY[e.cid].rarity==='Mythic');if(CT==='Duplicates')items=items.filter(e=>counts[e.cid]>1);if(CT==='Shipping')items=S.collection.filter(e=>e.status!=='vaulted');
+  return head('My collection · Demo wallet','Collect','Your vaulted slabs, score and progress. Collector Score is a game metric with no monetary value.',DEMO)+
+  `<div class="wrap"><div class="level">${badgeSvg('Dragon',76,'LV '+lv.level)}<div style="flex:1;min-width:220px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong style="font:800 1.8rem var(--f-display);text-transform:uppercase">Level ${lv.level} · ${lv.title}</strong><span class="mono muted tnum" style="font-size:.8rem">${n(sc)} / ${n(lv.next)} to level ${Math.min(100,lv.level+1)}</span></div><div class="bar" style="margin-top:8px"><i style="width:${lv.pct}%"></i></div></div></div>
+  <div class="stats">${[['Collector level',lv.level],['Collector score',n(sc)],['Slabs in vault',held.length],['Unique cards',uniq(S).length+' / '+CARDS.length],['Completed sets',sets.length+' / '+SETS.length],['1st Editions',held.filter(e=>BY[e.cid].fe).length],['Insured value (demo)',usd(val)]].map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>
+  ${sets.length?`<p class="muted" style="margin:-10px 0 24px;font-size:.86rem">Completed: ${sets.map(s=>esc(s.name)).join(' · ')} (+${BONUS.completedSet} score each)</p>`:''}
+  <div class="tabs" role="tablist">${['All Cards','Favorites','1st Editions','Mythics','Duplicates','Shipping'].map(t=>`<button role="tab" data-act="ctab" data-v="${t}" aria-selected="${CT===t}">${t}</button>`).join('')}</div>
+  ${S.collection.length===0?`<div class="empty"><h3>Your collection is waiting.</h3><p>Open a pack to pull your first five slabs.</p><a class="btn primary" href="#packs">Open a pack</a></div>`
+  :items.length?`<div class="grid-cards">${items.map(e=>{const c=BY[e.cid];return `<div class="cell">${card(c,{grade:e.grade,grader:e.grader,vid:e.vid})}<div class="cell-meta"><span class="mono tnum">${e.status==='vaulted'?usd(value(c,e.grade)):'<span class="chip proto">Shipping</span>'}${counts[e.cid]>1?' · ×'+counts[e.cid]:''}</span><button class="fav" data-act="fav" data-uid="${e.uid}" aria-pressed="${!!e.fav}" aria-label="Favorite">${ICON.star}</button></div></div>`}).join('')}</div>`
+  :`<div class="empty"><h3>Nothing here yet.</h3><p>No cards match this tab.</p></div>`}</div>`;
+};
+
+pages.packs=()=>head('Season 01','Packs','Five vaulted, graded cards per pack, revealed one at a time. The fifth card is always Rare tier or better. Keep them in the vault or sell them back instantly.',PROTO)+
+ `<div class="wrap"><div class="pack-wrap"><div class="stage" id="stage"></div>
+ <aside class="panel" style="display:grid;gap:16px"><div><span class="eyebrow">MONDEX Pack</span><h3 style="font-size:2.2rem;margin-top:8px">${PACK_PRICE} USDC · 5 cards</h3></div>
+  <table class="odds"><tbody>${RARITIES.map(r=>`<tr><td><span class="rb ${r}">${r}</span> <span class="muted" style="font-size:.78rem">${R[r].band}</span></td><td>${R[r].odds}%</td></tr>`).join('')}</tbody></table>
+  <p class="muted" style="font-size:.84rem">Prototype odds per card. At launch, pulls draw from live vault inventory using verifiable on-chain randomness, and odds are published with each pack.</p>
+  <dl class="kv" style="margin:0"><dt>Packs opened</dt><dd id="packsOpened">${S.packsOpened}</dd><dt>Instant buyback</dt><dd>${Math.round(BUYBACK*100)}%</dd></dl>
+  <p class="notice" style="font-size:.8rem"><strong>Prototype.</strong> No payment is taken. Paid packs and buyback will only launch where legally permitted.</p>
+ </aside></div></div>`;
+
+let M={q:'',rar:'',type:'',grader:'',fe:false,max:0,sort:'recent'};
+function mgrid(){
+  // INTEGRATION POINT (marketplace): fetch live listings from the marketplace program/API.
+  let L=S.listings.filter(l=>{const c=BY[l.cid];return (!M.q||(c.name+' '+c.set+' '+c.number).toLowerCase().includes(M.q.toLowerCase()))&&(!M.rar||c.rarity===M.rar)&&(!M.type||c.type===M.type)&&(!M.grader||l.grader===M.grader)&&(!M.fe||c.fe)&&(!M.max||l.price<=M.max)});
+  const ri=l=>RARITIES.indexOf(BY[l.cid].rarity);
+  L.sort({low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price,new:(a,b)=>BY[b.cid].year-BY[a.cid].year,recent:(a,b)=>a.hours-b.hours,rare:(a,b)=>ri(b)-ri(a)||b.grade-a.grade}[M.sort]);
+  if(!L.length)return `<div class="empty"><h3>No cards found.</h3><p>Try widening your filters.</p></div>`;
+  return `<p class="count" style="margin-bottom:14px">${L.length} LISTINGS · DEMO</p><div class="grid-cards">${L.map(l=>{const c=BY[l.cid];return `<div class="listing">${card(c,{grade:l.grade,grader:l.grader})}
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px"><span class="price tnum">${n(l.price)}<small>USDC</small></span><span class="mono muted" style="font-size:.7rem">${l.hours}h ago</span></div>
+    <div class="mono muted" style="font-size:.72rem">${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${l.grader} ${l.grade}</div>
+    <div class="acts"><button class="btn sm primary" data-act="buy" data-lid="${l.lid}">Buy</button><button class="btn sm" data-act="offer" data-lid="${l.lid}">Make offer</button></div></div>`}).join('')}</div>`;
+}
+pages.marketplace=()=>head('Secondary market','Marketplace','Buy vaulted slabs instantly or make an offer. Trades settle on-chain in seconds while the physical card stays safe in the vault.',DEMO+'<span class="chip">Mock listings</span>')+
+ `<div class="wrap"><div class="mk-layout"><aside class="mk-filters panel">
+  <label>Search<input class="field" id="mq" type="search" placeholder="Name, set or number" value="${esc(M.q)}"></label>
+  <label>Tier<select class="field" id="mr"><option value="">All tiers</option>${RARITIES.map(r=>`<option ${M.rar===r?'selected':''}>${r}</option>`).join('')}</select></label>
+  <label>Type<select class="field" id="me"><option value="">All types</option>${TYPES.map(r=>`<option ${M.type===r?'selected':''}>${r}</option>`).join('')}</select></label>
+  <label>Grader<select class="field" id="mg"><option value="">Any grader</option>${['PSA','BGS','CGC'].map(r=>`<option ${M.grader===r?'selected':''}>${r}</option>`).join('')}</select></label>
+  <label class="check"><input type="checkbox" id="mfe" ${M.fe?'checked':''}> 1st Edition only</label>
+  <label>Max price (USDC)<input class="field" id="mp" type="number" min="0" step="1" placeholder="Any" value="${M.max||''}"></label>
+  <label>Sort<select class="field" id="ms">${[['low','Price: lowest'],['high','Price: highest'],['new','Newest release'],['rare','Rarest'],['recent','Recently listed']].map(([v,l])=>`<option value="${v}" ${M.sort===v?'selected':''}>${l}</option>`).join('')}</select></label>
+  ${S.wallet?'<button class="btn sm" data-act="list-help">Sell a card</button>':''}
+ </aside><div id="mgrid" style="min-width:0">${mgrid()}</div></div></div>`;
+
+let LT='Global';
+pages.leaderboard=()=>{const key=LT==='Global'?'score':LT==='Weekly'?'weekly':'season';let rows=LB.map(u=>({...u,v:u[key]}));
+  if(S.wallet){const sc=score(S);rows.push({user:'You',me:true,v:LT==='Weekly'?Math.round(sc*.3):sc,level:levelOf(sc).level,mythics:countR(S,'Mythic'),sets:completedSets(S).length,hue:40,delta:1})}
+  rows.sort((a,b)=>b.v-a.v);
+  return head('Season 01','Leaderboard','Ranked by Collector Score. Scores reward pull tier, 1st Editions and completed sets, and have no monetary value.',DEMO)+
+  `<div class="wrap"><div class="tabs" role="tablist">${['Global','Weekly','Season'].map(t=>`<button role="tab" data-act="ltab" data-v="${t}" aria-selected="${LT===t}">${t}</button>`).join('')}</div>
+  <div class="tbl-wrap"><table class="lb"><thead><tr><th>Rank</th><th>Collector</th><th class="num">Level</th><th class="num">Score</th><th class="num">Mythics</th><th class="num">Completed sets</th></tr></thead><tbody>
+  ${rows.map((u,i)=>`<tr class="${u.me?'me':''}" style="animation-delay:${Math.min(i,20)*25}ms"><td class="rank ${i<3?'top':''}">${i+1}</td><td><div class="who"><span class="avatar" style="background:linear-gradient(135deg,hsl(${u.hue} 70% 60%),hsl(${(u.hue+60)%360} 60% 35%))"></span>${esc(u.user)}${u.me?' <span class="chip proto">Demo wallet</span>':''}${u.delta?`<span class="delta ${u.delta>0?'up':'down'}">${u.delta>0?'▲':'▼'}${Math.abs(u.delta)}</span>`:''}</div></td><td class="num">${u.level}</td><td class="num">${n(u.v)}</td><td class="num">${u.mythics}</td><td class="num">${u.sets}</td></tr>`).join('')}
+  </tbody></table></div><p class="muted" style="margin-top:12px;font-size:.82rem">All collectors shown are fictional demo users.${S.wallet?'':' Connect a demo wallet to see your own rank.'}</p></div>`};
+
+// INTEGRATION POINT (custody): deposit intake, cert verification, insurance and shipping
+// come from the vault/custodian API. Redemption burns the token on-chain, then ships.
+pages.vault=()=>{const held=mine(S);
+ return head('Storage & shipping','The Vault','Your graded cards are stored in an insured vault and backed 1:1 by tokens in your wallet, so you can trade them without shipping. Request delivery any time.',PROTO)+
+ `<div class="wrap"><div class="loop" style="margin-bottom:36px">${[['Send in','Mail your PSA, BGS or CGC slabs, or buy and pull them here.'],['Verify','Each slab is checked against its grading cert on arrival.'],['Vault','Stored in insured, climate-controlled storage.'],['Trade','A 1:1 token in your wallet moves instantly on Solana.'],['Ship','Burn the token and the slab ships to your door.']].map((s,i)=>`<div><span class="n">0${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div>
+ <div class="sec-head"><div><span class="eyebrow">Your vaulted slabs</span><h2 style="margin-top:10px">${S.wallet?held.length+' in the vault':'Your vault'}</h2></div>${S.wallet?`<button class="btn" data-act="deposit">Send cards to the vault</button>`:''}</div>
+ ${!S.wallet?`<div class="empty"><h3>Connect your wallet to begin building your collection.</h3><button class="btn primary" data-act="connect">Connect wallet</button></div>`
+ :held.length?`<div class="grid-cards">${held.slice().reverse().map(e=>{const c=BY[e.cid];return `<div class="listing">${card(c,{grade:e.grade,grader:e.grader,vid:e.vid})}<div class="mono muted" style="font-size:.72rem">${usd(value(c,e.grade))} insured (demo)</div><div class="acts"><button class="btn sm" data-act="ship" data-uid="${e.uid}">Ship to me</button><button class="btn sm ghost" data-act="sellback" data-uid="${e.uid}">Buyback</button></div></div>`}).join('')}</div>`
+ :`<div class="empty"><h3>Your collection is waiting.</h3><p>Open a pack or buy a slab to fill your vault.</p><a class="btn primary" href="#packs">Open a pack</a></div>`}
+ <p class="notice" style="margin-top:24px"><strong>Prototype.</strong> Vault location, custodian, insurance coverage and shipping fees will be published before launch. The redemption fee shown is a placeholder (${REDEEM_FEE} USDC).</p></div>`};
+
+pages.rewards=()=>{const st=S.wallet?S:blank();
+ return head('Season 01','Rewards','Earn badges, frames, profile cosmetics, pack credits and season prizes by collecting, completing sets and competing.',PROTO)+
+ `<div class="wrap"><section style="margin-bottom:48px"><div class="sec-head"><div><span class="eyebrow">Season 01</span><h2 style="margin-top:10px">Season rewards</h2></div><p class="lede">Goals: complete sets, pull Mythics, earn score and finish quests.</p></div>
+ <div class="season-ranks"><div><div class="pl" style="color:var(--foil)">#1</div><strong>Season Champion Slab</strong><p class="muted" style="font-size:.86rem">A vaulted graded chase card.</p></div><div><div class="pl">#2–10</div><strong>Legendary-tier slab</strong><p class="muted" style="font-size:.86rem">Delivered to your vault.</p></div><div><div class="pl">#11–100</div><strong>Epic-tier slab</strong><p class="muted" style="font-size:.86rem">Delivered to your vault.</p></div></div>
+ <p class="muted" style="margin-top:10px;font-size:.8rem">Prototype reward structure. Final prizes and official rules will be published before Season 01 begins.</p></section>
+ <section style="margin-bottom:48px"><div class="sec-head"><div><span class="eyebrow">Quests</span><h2 style="margin-top:10px">This season's quests</h2></div></div>
+ <div class="quests">${QUESTS.map(q=>{const v=Math.min(q.goal,q.f(st)),d=v>=q.goal;return `<div class="quest ${d?'done':''}"><span class="ic">${d?ICON.check:ICON.pack}</span><h4>${q.name}</h4><span class="mono tnum muted" style="font-size:.78rem">${v} / ${q.goal}</span><div class="rw" style="grid-column:2/-1">${q.rw}</div><div class="bar"><i style="width:${v/q.goal*100}%"></i></div></div>`}).join('')}</div></section>
+ <section><div class="sec-head"><div><span class="eyebrow">Rewards</span><h2 style="margin-top:10px">Your rewards</h2></div></div>
+ ${!S.wallet||!REWARDS.some(r=>r.f(st))?`<div class="empty" style="margin-bottom:24px"><h3>No rewards yet.</h3><p>Start collecting to unlock your first achievement.</p>${S.wallet?'<a class="btn primary" href="#packs">Open a pack</a>':'<button class="btn primary" data-act="connect">Connect wallet</button>'}</div>`:''}
+ ${['Collector','Collection','Community','Seasonal'].map(cat=>`<h3 style="margin:26px 0 14px;font-size:1.5rem">${cat} rewards</h3><div class="rewards">${REWARDS.filter(r=>r.cat===cat).map(r=>{const u=r.f(st);return `<div class="reward ${u?'':'locked'}">${badgeSvg(TYPES[(REWARDS.indexOf(r)*4)%9],52)}<div><h4>${r.name}</h4><p class="muted" style="font-size:.84rem">${r.desc}</p></div><div style="display:flex;justify-content:space-between;gap:6px;align-items:center;margin-top:auto"><span class="chip">${r.kind}</span>${u?'<span class="chip live">Unlocked</span>':'<span class="chip">Locked</span>'}</div></div>`}).join('')}</div>`).join('')}</section></div>`};
+
+pages['collector-crypt']=()=>head('MONDEX × Collector Crypt','Bring your collection into the digital world.','Collector Crypt vaults and tokenizes graded cards on Solana. MONDEX is designed to complement that with a collector identity, achievements, sets and exclusive rewards.',PROPOSED)+
+ `<div class="wrap"><p class="notice"><strong>Proposed integration.</strong> This page describes a concept. MONDEX is not currently affiliated with, endorsed by, or integrated with Collector Crypt, and none of the features below are live.</p>
+ <section class="sec"><div class="split" style="align-items:center"><div><span class="eyebrow">Concept flow</span><h2 style="margin-top:10px">From the slab to your score.</h2><p class="muted" style="margin-top:14px;max-width:48ch">If an integration goes ahead, verified cards and activity from a connected Collector Crypt wallet could count toward your MONDEX Collector Score, set completion and season rewards.</p></div>
+ <div class="flow">${['Physical collecting','Verified collector activity','MONDEX Collector Score','Exclusive digital rewards','Digital collection'].map((s,i,a)=>`<div class="step ${i===2?'hl':''}">${s.toUpperCase()}</div>${i<a.length-1?'<div class="arrow"></div>':''}`).join('')}</div></div></section>
+ <section style="padding-bottom:48px"><span class="eyebrow">Potential features</span><h2 style="margin:10px 0 22px">What it could include</h2>
+ <div class="feat-grid">${[['Verified collector rewards','Rewards for verified collecting milestones.'],['Collector Score','Cards held through Collector Crypt counted toward your score.'],['CC Vault Series','A concept reward series for verified collectors.'],['Digital achievements','Badges that recognize long-term collecting.'],['Special quests','Quests that span both platforms.'],['Collector identity','One profile for your whole collecting history.']].map(([t,d])=>`<div><h4>${t}</h4><p>${d}</p></div>`).join('')}</div></section>
+ <section class="panel recipe"><div><span class="eyebrow">CC Vault Series</span><h3 style="font-size:2.4rem;margin-top:8px">Vault Guardian</h3><p class="muted" style="margin-top:8px">Legendary · #001 / 500 · Prototype exclusive reward</p><p style="margin-top:14px"><span class="chip proposed">Concept — not currently available</span></p><p class="muted" style="margin-top:14px;font-size:.88rem">A MONDEX profile frame and badge that would be reserved for verified Collector Crypt collectors. It cannot be earned today.</p></div><div style="display:grid;place-items:center">${badgeSvg('Dragon',200,'#001/500')}</div></section>
+ <!-- INTEGRATION POINT (Collector Crypt): only after a signed agreement. Read public wallet holdings
+      via their API using a server-side key from env vars; never call it with secrets client-side. -->
+ </div>`;
+
+pages.roadmap=()=>head('Where MONDEX is going','Roadmap','Phases describe intent and order. Dates will be announced when each phase is ready.')+
+ `<div class="wrap"><div class="road">${[['Foundation','now','In progress',['Brand','Website prototype','Card catalog','Community']],['Collect','','Planned',['Packs','Collection dashboard','Collector Score','Leaderboards','Quests']],['Trade','','Planned',['Marketplace','Offers','Instant buyback','1st Edition tracking']],['Connect','','Proposed',['Proposed Collector Crypt integration','Verified activity','CC Vault Series']],['Expand','','Planned',['Vault deposits','Shipping and redemption','New seasons','Mobile']],['Ecosystem','','Subject to review',['Potential token utility, subject to legal, regulatory and technical review']]]
+ .map(([t,c,s,items],i)=>`<div class="phase ${c}"><div class="pn">0${i+1}</div><div><h3>${t} <span class="chip ${s==='In progress'?'live':s==='Proposed'?'proposed':''}">${s}</span></h3><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`).join('')}</div></div>`;
+
+pages.guide=()=>head('Collector guide','Grading & vault guide','What the numbers on a slab mean, how pull tiers work, and what happens when you ship a card home.')+
+ `<div class="wrap"><div class="split" style="margin-bottom:20px"><div class="panel"><span class="eyebrow">Grading scale</span><h3 style="margin:10px 0 14px">PSA grades</h3>
+ <table class="odds"><tbody>${[['10','Gem Mint'],['9','Mint'],['8','Near Mint–Mint'],['7','Near Mint'],['6','Excellent–Mint']].map(([g,d])=>`<tr><td>${d}</td><td>${g}</td></tr>`).join('')}</tbody></table>
+ <p class="muted" style="font-size:.84rem;margin-top:12px">BGS and CGC use similar 1–10 scales with half grades (for example 9.5). A higher grade usually means a much higher value for the same card.</p></div>
+ <div class="panel"><span class="eyebrow">Graders</span><h3 style="margin:10px 0 14px">Who grades the slabs</h3><div style="display:grid;gap:12px" class="muted"><p><strong style="color:var(--fg)">PSA</strong> is the most common grader for Pokémon cards and the reference for most price data.</p><p><strong style="color:var(--fg)">BGS (Beckett)</strong> adds subgrades for centering, corners, edges and surface.</p><p><strong style="color:var(--fg)">CGC</strong> grades with half points and is common on modern cards.</p></div></div></div>
+ <div class="split"><div class="panel"><span class="eyebrow">Eras</span><h3 style="margin:10px 0 14px">Vintage and modern</h3><p class="muted"><strong style="color:var(--fg)">Vintage</strong> means the Wizards of the Coast era sets from 1999–2003, such as Base Set, Jungle, Fossil, Team Rocket and Neo. A 1st Edition stamp marks the first print run. <strong style="color:var(--fg)">Modern</strong> covers recent sets, where alternate arts and special illustration rares are the chase cards.</p></div>
+ <div class="panel"><span class="eyebrow">Shipping home</span><h3 style="margin:10px 0 14px">Redeeming a card</h3><p class="muted">Choose "Ship to me" on any vaulted slab. You confirm your address, the card's token is burned, and the slab ships insured. Once shipped it leaves the marketplace and your on-chain collection, but it still counts toward your Collector Score history.</p></div></div></div>`;
+
+pages.faq=()=>{const Q=[
+ ['What is MONDEX?','<p>A platform for collecting real graded Pokémon cards on Solana: open packs, trade on the marketplace, complete sets and climb the leaderboard.</p><p><span class="chip proto">Prototype</span> This website is a working prototype. Every card, price and balance is demo data.</p>'],
+ ['Are the cards real?','<p>At launch, every card will be a physical PSA, BGS or CGC slab stored in an insured vault and represented 1:1 by a token in your wallet.</p><p><span class="chip proto">Prototype</span> Cards in this demo are not backed by real slabs and nothing is minted.</p>'],
+ ['How do packs and buyback work?','<p>A pack contains five vaulted cards drawn by tier. After the reveal you can keep the cards in your vault or sell them back instantly for a share of insured value (prototype: '+Math.round(BUYBACK*100)+'%). Packs and buyback will only launch where legally permitted.</p>'],
+ ['What are pull tiers?','<p>Common, Rare, Epic, Legendary and Mythic tiers are bands of insured value, from about $15 to $2,500+. They are MONDEX tiers, not the rarity printed on the card.</p>'],
+ ['What is Collector Score?','<p>A game metric: Common 1, Rare 5, Epic 15, Legendary 50, Mythic 250. 1st Editions add 50%, completed sets add 100, completing every set adds 500. It has no monetary value.</p>'],
+ ['Can I ship my card home?','<p>Yes. Request shipping from The Vault. The token is burned and the slab ships to you. Shipping and redemption fees will be published before launch.</p>'],
+ ['Is MONDEX connected to Collector Crypt?','<p>No. A Collector Crypt integration is a proposal only. MONDEX is not affiliated with or endorsed by Collector Crypt.</p>'],
+ ['Is MONDEX affiliated with Pokémon?','<p>No. Pokémon is a trademark of Nintendo, Creatures Inc. and GAME FREAK inc. MONDEX is an independent marketplace for graded cards and is not sponsored or endorsed by them. Card names are used only to identify the cards.</p>'],
+ ['Is there a MONDEX token?','<p>No. There is no MONDEX token today. Possible future utility is subject to legal, regulatory and technical review. MONDEX does not promise price, returns or income.</p>']];
+ return head('Questions','FAQ','What works today, and what is still a plan.')+`<div class="wrap"><div class="faq" style="max-width:860px">${Q.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}</summary><div class="ans">${a}</div></details>`).join('')}</div></div>`};
+pages.terms=()=>head('Legal','Terms','Draft terms for the prototype. Final terms will be reviewed by counsel before launch.')+`<div class="wrap"><div class="legal">
+ <h3>1. Prototype</h3><p>This website is a product prototype. Cards, users, listings, prices, insured values, balances and transactions shown are demo data. No payments are taken, no cards are vaulted or shipped, and no blockchain transactions occur.</p>
+ <h3>2. Cards and custody</h3><p>At launch, tokens will represent ownership of specific graded cards held by a third-party custodian. Custody, insurance and redemption terms will be published before launch.</p>
+ <h3>3. Packs and buyback</h3><p>Randomized packs and instant buyback may be regulated where you live and will be offered only where permitted, with odds published.</p>
+ <h3>4. Your wallet</h3><p>MONDEX will never ask for your seed phrase or private key and will never request unlimited approvals.</p>
+ <h3>5. Trademarks</h3><p>Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. PSA, Beckett/BGS and CGC are trademarks of their owners. MONDEX is not affiliated with or endorsed by any of them.</p>
+ <h3 id="risk">6. Risk disclosure</h3><p>Collectible values can fall. Graded cards can be hard to sell. Blockchain networks can fail or change, and smart contracts can contain bugs. Laws on digital assets vary and may change. Nothing on this website constitutes financial, investment, or legal advice, and nothing here is an offer of securities.</p></div></div>`;
+pages.privacy=()=>head('Legal','Privacy','Draft privacy notice for the prototype.')+`<div class="wrap"><div class="legal">
+ <h3>What we store</h3><p>The prototype keeps your demo collection, wishlist, quest progress and any card photos you add in your own browser's local storage. Nothing is sent to a MONDEX server.</p>
+ <h3>Shipping addresses</h3><p>Addresses typed into the demo shipping form are not saved or sent anywhere.</p>
+ <h3>Wallets</h3><p>Demo wallet addresses are randomly generated. When real wallet support launches, MONDEX will read only your public address.</p>
+ <h3>Clearing your data</h3><p>Use "Reset demo data" in the wallet menu, or clear this site's data in your browser.</p></div></div>`;
+
+/* ---------------- Live Slabs (real Collector Crypt tokens via /api/slabs) ---------------- */
+const SL={state:'idle',slabs:[],page:1,total:null,err:null,owner:'',missing:null};
+async function loadSlabs(page,owner){
+  SL.state='loading';SL.err=null;rerender();
+  try{const r=await fetch('/api/slabs?page='+page+(owner?'&owner='+encodeURIComponent(owner):''));const j=await r.json().catch(()=>({}));
+    if(!r.ok){SL.state=r.status===503?'setup':'error';SL.err=j.error||'We couldn’t connect to the network. Please try again.';SL.missing=j.missing||null;rerender();return}
+    SL.slabs=j.slabs||[];SL.total=j.total;SL.page=page;SL.owner=owner||'';SL.state='ready';rerender();
+  }catch(e){SL.state='setup';SL.err=null;rerender()}
+}
+function slabCard(x){
+  const tier=['Mythic','Legendary','Epic','Rare','Common'][0];
+  return `<div class="listing"><div class="card Rare" style="cursor:default" role="img" aria-label="${esc(x.name)}"><div class="card-in">
+    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(x.name)}</div><div class="sl-sub">${esc([x.year,x.set].filter(Boolean).join(' · ')||'Vaulted slab')}</div></div><div class="sl-g"><div class="sl-grader">${esc(x.grader||'GRADE')}</div><div class="sl-num">${esc(x.grade||'—')}</div></div></div>
+    <div class="art">${x.image?`<img src="${esc(x.image)}" loading="lazy" alt="${esc(x.name)} slab photo">`:''}</div>
+    <div class="card-bot"><span class="rb Rare">Vaulted</span><span class="serial">${esc(x.cert?'CERT '+x.cert:x.id.slice(0,4)+'…'+x.id.slice(-4))}</span></div></div></div>
+    <div class="mono muted" style="font-size:.72rem;word-break:break-all"><a href="https://solscan.io/token/${esc(x.id)}" target="_blank" rel="noopener">View token on Solscan</a></div></div>`;
+}
+pages.slabs=()=>{
+  if(SL.state==='idle')setTimeout(()=>loadSlabs(1,''),0);
+  const body=SL.state==='loading'||SL.state==='idle'?`<div class="empty"><h3>Loading slabs…</h3></div>`
+   :SL.state==='setup'?`<div class="empty"><h3>Live slabs aren't connected yet.</h3><p style="max-width:56ch;margin:0 auto">This page reads real Collector Crypt card tokens from Solana. It works on the deployed site once <span class="mono">HELIUS_API_KEY</span> and <span class="mono">CC_COLLECTION</span> are set in Vercel.${SL.missing?` Missing: ${Object.keys(SL.missing).filter(k=>SL.missing[k]).join(', ')}.`:''}</p></div>`
+   :SL.state==='error'?`<div class="empty"><h3>${esc(SL.err)}</h3><button class="btn" data-act="sl-retry">Try again</button></div>`
+   :SL.slabs.length?`<p class="count" style="margin-bottom:14px">${SL.owner?'WALLET '+esc(SL.owner.slice(0,4))+'…'+esc(SL.owner.slice(-4))+' · ':''}${SL.slabs.length} SLABS${SL.total&&!SL.owner?' · PAGE '+SL.page:''}</p><div class="grid-cards">${SL.slabs.map(slabCard).join('')}</div>
+     ${SL.owner?'':`<div style="display:flex;gap:10px;justify-content:center;margin-top:24px"><button class="btn" data-act="sl-page" data-v="${SL.page-1}" ${SL.page<=1?'disabled':''}>Previous</button><button class="btn" data-act="sl-page" data-v="${SL.page+1}" ${SL.slabs.length<48?'disabled':''}>Next</button></div>`}`
+   :`<div class="empty"><h3>No cards found.</h3><p>${SL.owner?'This wallet holds no Collector Crypt slabs.':'The collection returned no slabs.'}</p></div>`;
+  return head('Real vaulted cards','Live Slabs','Real graded cards held in Collector Crypt’s vault, read live from Solana. Photos are scans of each actual slab.','<span class="chip live">Live on-chain data</span><span class="chip proposed">Read-only · not affiliated with Collector Crypt</span>')+
+  `<div class="wrap"><form id="slOwner" class="filters" style="grid-template-columns:1fr"><div class="row"><input class="field search" id="slAddr" placeholder="Look up a wallet address (optional)" value="${esc(SL.owner)}" aria-label="Wallet address" style="max-width:480px"><button class="btn sm" type="submit">Look up</button>${SL.owner?'<button class="btn sm ghost" type="button" data-act="sl-all">Show all slabs</button>':''}</div></form>${body}</div>`;
+};
+document.addEventListener('submit',e=>{if(e.target.id==='slOwner'){e.preventDefault();const v=$('#slAddr').value.trim();if(v&&!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v)){toast('That doesn’t look like a Solana wallet address.','err');return}loadSlabs(1,v)}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;
+  if(t.dataset.act==='sl-page')loadSlabs(+t.dataset.v,'');if(t.dataset.act==='sl-all')loadSlabs(1,'');if(t.dataset.act==='sl-retry')loadSlabs(SL.page,SL.owner)});
+
+/* ---------------- Router ---------------- */
+function route(){const h=(location.hash||'').slice(1);return pages[h]?h:'home'}
+let lastRoute=null;
+function render(){const r=route();$('#view').innerHTML=pages[r]();
+  document.querySelectorAll('.nav-links a,.mnav a,.nav-right .rewards').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#'+r?'page':'false'));
+  walletBtn();if(r==='packs')renderStage();if(r!==lastRoute){window.scrollTo(0,0);lastRoute=r}bindInputs()}
+function rerender(){const y=scrollY;render();window.scrollTo(0,y)}
+addEventListener('hashchange',()=>{$('#mnav').classList.remove('open');$('#burger').setAttribute('aria-expanded','false');closeModal();render()});
+function bindInputs(){
+  const xq=$('#xq');if(xq)xq.oninput=()=>{X.q=xq.value;const l=xfilter();$('#xgrid').innerHTML=xgrid(l);$('#xcount').textContent=l.length+' OF '+CARDS.length};
+  const upd=()=>{M={q:$('#mq').value,rar:$('#mr').value,type:$('#me').value,grader:$('#mg').value,fe:$('#mfe').checked,max:+$('#mp').value||0,sort:$('#ms').value};$('#mgrid').innerHTML=mgrid()};
+  ['#mq','#mr','#me','#mg','#mfe','#mp','#ms'].forEach(s=>{const e=$(s);if(e){e.oninput=upd;e.onchange=upd}});
+}
+document.addEventListener('change',e=>{if(e.target.id==='photoIn'&&e.target.files[0])addPhoto(e.target.files[0],e.target.dataset.cid)});
+
+/* ---------------- Events ---------------- */
+const itemOf=u=>S.collection.find(x=>x.uid===u);
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;if(a==='bg'&&ev.target!==t)return;
+  switch(a){
+    case 'bg':case 'close':closeModal();break;
+    case 'connect':connectModal();break;
+    case 'do-connect':doConnect();break;
+    case 'sim-reject':closeModal();toast('Transaction cancelled. No changes were made.','err');break;
+    case 'sim-network':closeModal();toast('We couldn’t connect to the network. Please try again.','err');break;
+    case 'wallet':walletModal();break;
+    case 'disconnect':S.wallet=null;save();closeModal();toast('Demo wallet disconnected.');render();break;
+    case 'reset':S=blank();save();closeModal();P={phase:'sealed',items:[],shown:0,claimed:false};toast('Demo data reset.');render();break;
+    case 'detail':detail(t.dataset.cid);break;
+    case 'wish':{const id=t.dataset.cid,i=S.wishlist.indexOf(id);i>=0?S.wishlist.splice(i,1):S.wishlist.push(id);save();if($('#modal').innerHTML)detail(id);else t.setAttribute('aria-pressed',i<0);toast(i>=0?'Removed from wishlist.':'Added to wishlist.');break}
+    case 'rm-photo':delete S.photos[t.dataset.cid];save();detail(t.dataset.cid);rerender();break;
+    case 'to-market':closeModal();M={q:BY[t.dataset.cid].name,rar:'',type:'',grader:'',fe:false,max:0,sort:'low'};location.hash='marketplace';if(route()==='marketplace')render();break;
+    case 'copy-c':{const c=BY[t.dataset.cid];copy(`${c.name} — ${c.set} ${c.number} (${c.variant}) on MONDEX.`);break}
+    case 'share':{const it=itemOf(t.dataset.uid);if(it)sharePull(it);break}
+    case 'share-pull':sharePull(P.items[+t.dataset.i]);break;
+    case 'copy':copy(t.dataset.text);break;
+    case 'dl-tip':{const d=$('#dlTip');if(d)d.hidden=false;break}
+    case 'how':document.getElementById('how').scrollIntoView({behavior:reduce?'auto':'smooth'});break;
+    case 'risk':setTimeout(()=>{const r=document.getElementById('risk');if(r)r.scrollIntoView()},60);break;
+    case 'x-type':X.type=t.dataset.v;rerender();break;
+    case 'x-era':X.era=t.dataset.v;rerender();break;
+    case 'x-rar':X.rar=X.rar===t.dataset.v?null:t.dataset.v;rerender();break;
+    case 'ctab':CT=t.dataset.v;rerender();break;
+    case 'ltab':LT=t.dataset.v;rerender();break;
+    case 'fav':{const e=itemOf(t.dataset.uid);if(e){e.fav=!e.fav;save();t.setAttribute('aria-pressed',e.fav);if(CT==='Favorites')rerender()}break}
+    case 'open':startPack();break;
+    case 'reveal-one':case 'reveal-all':revealAll();break;
+    case 'claim':claim();break;
+    case 'buyback':buybackAll();break;
+    case 'again':{clearTimeout(P.timer);P={phase:'sealed',items:[],shown:0,claimed:false};renderStage();break}
+    case 'buy':{const l=S.listings.find(x=>x.lid===t.dataset.lid);if(!l)break;
+      const go=()=>{const c=BY[l.cid];reviewTx({rows:[['Action','Buy listing'],['Card',`${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${l.grader} ${l.grade}`],['Seller',esc(l.seller)+' (demo)'],['Price',n(l.price)+' USDC'],['Marketplace fee','2.0% (prototype)']],perm:`Transfer exactly ${n(l.price)} USDC. No unlimited approval.`},()=>{
+        if(l.gone){toast('This listing is no longer available.','err');S.listings=S.listings.filter(x=>x!==l);save();rerender();return}
+        S.collection.push(mkItem(c,l.grade,l.grader,'market'));S.listings=S.listings.filter(x=>x!==l);S.trades++;save();toast('Demo purchase complete. The slab is in your vault. No funds moved.','ok');rerender()})};
+      S.wallet?go():connectModal(go);break}
+    case 'offer':{const l=S.listings.find(x=>x.lid===t.dataset.lid);if(!l)break;
+      const go=()=>{const c=BY[l.cid];modal(`<h3>Make an offer</h3><p class="muted">${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${l.grader} ${l.grade} · listed at ${n(l.price)} USDC</p><label style="display:grid;gap:6px;margin-top:16px" class="mono muted" for="offerAmt">Your offer (USDC)<input class="field" id="offerAmt" type="number" min="1" step="1" value="${Math.round(l.price*.85)}"></label><p id="offerErr" style="color:var(--bad);font-size:.84rem;margin-top:8px" hidden>Enter an amount above 0.</p><div class="acts"><button class="btn primary" data-act="offer-send" data-lid="${l.lid}">Review offer</button><button class="btn ghost" data-act="close">Cancel</button></div>`)};
+      S.wallet?go():connectModal(go);break}
+    case 'offer-send':{const v=+$('#offerAmt').value;if(!(v>0)){$('#offerErr').hidden=false;break}const l=S.listings.find(x=>x.lid===t.dataset.lid),c=BY[l.cid];
+      reviewTx({rows:[['Action','Make offer'],['Card',`${esc(c.name)} · ${l.grader} ${l.grade}`],['Offer',n(v)+' USDC'],['Expires','7 days']],perm:`Hold exactly ${n(v)} USDC in escrow until accepted or cancelled.`},()=>toast(`Demo offer of ${n(v)} USDC sent to ${l.seller}. Demo sellers don’t respond.`,'ok'));break}
+    case 'tx-ok':{const f=txOk;closeModal();if(f)f();break}
+    case 'tx-reject':closeModal();toast('Transaction cancelled. No changes were made.','err');break;
+    case 'ship':{const e=itemOf(t.dataset.uid);if(!e)break;const c=BY[e.cid];
+      modal(`<h3>Ship to me</h3><p class="muted">${esc(c.name)} · ${esc(c.set)} ${esc(c.number)} · ${e.grader} ${e.grade} · ${e.vid}</p>
+      <form id="shipForm" style="display:grid;gap:10px;margin-top:16px"><input class="field" id="sh-name" placeholder="Full name" required autocomplete="name" aria-label="Full name"><input class="field" id="sh-addr" placeholder="Street address" required autocomplete="street-address" aria-label="Street address"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input class="field" id="sh-city" placeholder="City" required autocomplete="address-level2" aria-label="City"><input class="field" id="sh-zip" placeholder="Postal code" required autocomplete="postal-code" aria-label="Postal code"></div><input class="field" id="sh-country" placeholder="Country" required autocomplete="country-name" aria-label="Country">
+      <p class="muted" style="font-size:.8rem">Demo only: this address isn't saved or sent anywhere.</p><div class="acts" style="margin-top:4px"><button class="btn primary" type="submit">Review shipment</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>`);
+      $('#shipForm').onsubmit=ev2=>{ev2.preventDefault();reviewTx({rows:[['Action','Redeem & ship'],['Card',`${esc(c.name)} · ${e.grader} ${e.grade}`],['Token','Burned on redemption'],['Redemption fee',REDEEM_FEE+' USDC (placeholder)'],['Shipping','Insured, tracked']],perm:'Burn this one card token. No other assets affected.'},()=>{e.status='shipping';S.shipped++;save();toast('Shipping request recorded (demo). Nothing will ship.','ok');rerender()})};break}
+    case 'sellback':{const e=itemOf(t.dataset.uid);if(!e)break;const c=BY[e.cid],v=value(c,e.grade);
+      reviewTx({rows:[['Action','Instant buyback'],['Card',`${esc(c.name)} · ${e.grader} ${e.grade}`],['Insured value',usd(v)+' (demo)'],['You receive',usd(v*BUYBACK)+' USDC (demo)']],perm:'Transfer only this card token.'},()=>{S.collection=S.collection.filter(x=>x!==e);S.buybacks++;save();toast(`Sold back for ${usd(v*BUYBACK)} USDC (demo). No funds moved.`,'ok');rerender()});break}
+    case 'deposit':modal(`<h3>Send cards to the vault</h3><p class="muted">Tell us what you're sending. At launch you'll get a prepaid insured label, and the slab is tokenized to your wallet after verification.</p>
+      <form id="depForm" style="display:grid;gap:10px;margin-top:16px"><input class="field" id="dp-card" placeholder="Card (e.g. Charizard, Base Set 4/102)" required aria-label="Card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><select class="field" id="dp-grader" aria-label="Grader"><option>PSA</option><option>BGS</option><option>CGC</option></select><input class="field" id="dp-grade" placeholder="Grade" required aria-label="Grade"></div><input class="field" id="dp-cert" placeholder="Cert number" aria-label="Cert number">
+      <div class="acts" style="margin-top:4px"><button class="btn primary" type="submit">Save deposit request</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>`);
+      $('#depForm').onsubmit=ev2=>{ev2.preventDefault();closeModal();toast('Deposit request saved (demo). Vault intake isn’t open yet.','ok')};break;
+    case 'list-help':modal(`<h3>Sell a card</h3><p class="muted">Listing from your vault arrives in the Trade phase. For now you can sell any vaulted slab back instantly from The Vault.</p><div class="acts"><a class="btn primary" href="#vault">Go to The Vault</a></div>`);break;
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal').innerHTML)closeModal();if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-act][role="button"]')){e.preventDefault();e.target.click()}});
+$('#burger').onclick=()=>{const m=$('#mnav'),o=!m.classList.contains('open');m.classList.toggle('open',o);$('#burger').setAttribute('aria-expanded',o)};
+document.addEventListener('pointermove',e=>{if(reduce)return;const c=e.target.closest&&e.target.closest('[data-tilt]');
+  document.querySelectorAll('[data-tilt]').forEach(el=>{if(el!==c){el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')}});
+  if(!c)return;const b=c.getBoundingClientRect(),px=(e.clientX-b.left)/b.width-.5,py=(e.clientY-b.top)/b.height-.5;c.style.setProperty('--ry',(px*14).toFixed(1)+'deg');c.style.setProperty('--rx',(-py*14).toFixed(1)+'deg')});
+
+render();probeImages();loadLive();
+})();
+</script></body></html>
