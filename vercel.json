@@ -1,6 +1,9 @@
 {
   "rewrites": [
-    { "source": "/c/:key", "destination": "/api/share?k=:key" }
+    { "source": "/c/:key", "destination": "/api/market?fn=share&k=:key" },
+    { "source": "/api/card", "destination": "/api/market?fn=card" },
+    { "source": "/api/screener", "destination": "/api/market?fn=screener" },
+    { "source": "/api/search", "destination": "/api/market?fn=search" }
   ],
   "crons": [
     { "path": "/api/record?deep=1", "schedule": "17 6 * * *" }
