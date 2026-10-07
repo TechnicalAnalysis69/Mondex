@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       const rawName = m.name || 'Graded card';
       // "2021 #175 Full Art/Celebi V CGC" -> "Celebi V"
       let title = rawName.includes('/') ? rawName.split('/').slice(1).join('/') : rawName;
-      title = title.replace(/\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)\s*$/i, '').trim() || rawName;
+      title = title.replace(/\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)(\s+\d+(\.\d+)?)?\s*$/i, '').trim() || rawName;
       const insured = parseFloat(pick('insured value'));
       return {
         id: a.id,
