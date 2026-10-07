@@ -4,6 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script defer src="/_vercel/insights/script.js"></script>
 </head><body>
 <style>
 /* Layout: card-first product shell. Sticky header, 1200px column, every page is a stack of sections where the cards are the objects of desire. Single committed dark world (vault ink + brass foil); rarity colors are the only other hues. */
@@ -397,12 +398,11 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding-block:48px 32px;
 }
 </style>
 
-<div class="banner">Independent fan project · Not affiliated with Nintendo, The Pokémon Company, Collector Crypt or Magic Eden</div>
 <header class="nav">
   <div class="wrap nav-in">
     <a class="logo" href="#home" aria-label="MONDEX home"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6DE"/><stop offset="1" stop-color="#B4873A"/></linearGradient></defs><path d="M16 1 30 9v14L16 31 2 23V9z" fill="none" stroke="url(#lg)" stroke-width="2.4"/><path d="M9 22V11l7 7 7-7v11" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linejoin="round"/></svg>MONDEX</a>
     <nav class="nav-links" aria-label="Main">
-      <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#marketplace">Marketplace</a>
+      <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#marketplace">Marketplace</a><a href="#leaderboard">Leaderboard</a>
     </nav>
     <div class="nav-right">
       <a class="rewards" href="#rewards">Rewards</a>
@@ -411,7 +411,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding-block:48px 32px;
     </div>
   </div>
   <nav class="mnav" id="mnav" aria-label="Mobile">
-    <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#marketplace">Marketplace</a><a href="#rewards">Rewards</a><a href="#guide">Guide</a><a href="#faq">FAQ</a>
+    <a href="#collect">Collect</a><a href="#explore">Explore</a><a href="#slabs">Live Slabs</a><a href="#marketplace">Marketplace</a><a href="#leaderboard">Leaderboard</a><a href="#rewards">Rewards</a><a href="#guide">Guide</a><a href="#faq">FAQ</a>
   </nav>
 </header>
 <main id="view"></main>
@@ -421,14 +421,14 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding-block:48px 32px;
       <div>
         <div class="big">MONDEX</div>
         <p class="eyebrow" style="margin-top:10px">Collect what comes next.</p>
-        <p class="muted" style="margin-top:14px;font-size:.88rem;max-width:34ch">Real graded Pokémon cards, vaulted and traded on Solana. Pull them, trade them, or ship them home.</p>
+        <p class="muted" style="margin-top:14px;font-size:.88rem;max-width:34ch">Real graded Pokémon slabs on Solana. Browse the vault, shop on-chain, build your Collector Score.</p>
       </div>
       <div><h5>Collect</h5><ul><li><a href="#collect">My Collection</a></li><li><a href="#explore">Explore</a></li><li><a href="#slabs">Live Slabs</a></li><li><a href="#marketplace">Marketplace</a></li></ul></div>
-      <div><h5>More</h5><ul><li><a href="#rewards">Rewards</a></li><li><a href="#collector-crypt">About the vault</a></li><li><a href="#guide">Grading guide</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#faq">FAQ</a></li></ul></div>
-      <div><h5>Social</h5><ul><li><span class="soon">X · coming soon</span></li><li><span class="soon">Discord · coming soon</span></li><li><span class="soon">Telegram · coming soon</span></li></ul>
+      <div><h5>More</h5><ul><li><a href="#leaderboard">Leaderboard</a></li><li><a href="#rewards">Rewards</a></li><li><a href="#collector-crypt">About the vault</a></li><li><a href="#guide">Grading guide</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h5>Social</h5><ul><li><span class="soon">X · coming soon</span></li></ul>
         <h5 style="margin-top:20px">Legal</h5><ul><li><a href="#terms">Terms</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#terms" data-act="risk">Risk Disclosure</a></li></ul></div>
     </div>
-    <div class="disclaim"><span style="max-width:80ch">MONDEX is a digital collectible project. Nothing on this website constitutes financial, investment, or legal advice. Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. MONDEX is not affiliated with, sponsored or endorsed by Nintendo, The Pokémon Company, Collector Crypt, PSA, Beckett or CGC.</span><span>© 2026 MONDEX</span></div>
+    <div class="disclaim"><span style="max-width:80ch">Nothing on this website constitutes financial, investment, or legal advice. Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. MONDEX is not affiliated with, sponsored or endorsed by Nintendo, The Pokémon Company, Collector Crypt, PSA, Beckett or CGC.</span><span>© 2026 MONDEX</span></div>
   </div>
 </footer>
 <div id="modal"></div>
@@ -702,7 +702,7 @@ function slabCard(x,o={}){
     <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(x.title||x.name)}</div><div class="sl-sub">${esc([x.year,x.set].filter(Boolean).join(' · ')||'Vaulted slab')}</div></div><div class="sl-g"><div class="sl-grader">${esc(x.grader||'GRADE')}</div><div class="sl-num">${esc(x.grade||'—')}</div></div></div>
     <div class="art">${x.image?`<img src="${esc(x.image)}" loading="lazy" alt="${esc(x.title||x.name)} slab photo">`:''}</div>
     <div class="card-bot"><span class="rb ${tier}">${tier}</span><span class="serial">${v!=null?'$'+n(v)+' insured':'Vaulted'}</span></div></div></div>
-    ${o.price!=null?`<div style="display:grid;gap:8px"><span class="price tnum">${(+o.price).toLocaleString('en-US',{maximumFractionDigits:3})}<small>SOL</small></span><a class="btn sm primary" style="width:100%" href="${esc(o.url)}" target="_blank" rel="noopener">Buy on Magic Eden</a></div>`:''}
+    ${o.price!=null?`<div style="display:grid;gap:8px"><span class="price tnum">${(+o.price).toLocaleString('en-US',{maximumFractionDigits:3})}<small>SOL</small> <small style="color:var(--dim)">${usdOf(+o.price)}</small></span><a class="btn sm primary" style="width:100%" href="${esc(o.url)}" target="_blank" rel="noopener">Buy on Magic Eden</a></div>`:''}
     <div class="mono muted" style="font-size:.72rem;line-height:1.5">${x.gradeText?esc(x.gradeText)+' · ':''}${x.cert?'Cert '+esc(x.cert):''}<br>${esc(x.vault||'Collector Crypt vault')} · <a href="https://solscan.io/token/${esc(x.id)}" target="_blank" rel="noopener">Solscan</a></div></div>`;
 }
 
@@ -827,12 +827,45 @@ function paywall(what){
   return `<div class="panel" style="display:grid;gap:18px;max-width:760px;margin:0 auto;background:linear-gradient(135deg,rgba(233,199,123,.08),rgba(181,123,255,.05)),var(--panel)">
    <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="eyebrow">MONDEX Pass</span><span class="chip proto">${PASS_SOL} SOL · one-time</span></div>
    <h2 style="font-size:clamp(2rem,5vw,3rem)">Unlock ${what}.</h2>
-   <ul style="margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px"><li>Your collection dashboard with Collector Score and level</li><li>Achievements from the slabs you hold</li><li>Look up any wallet's slabs</li><li>On-chain achievement badges as they launch</li></ul>
+   <ul style="margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px"><li>Your collection dashboard with Collector Score and level</li><li>Achievements from the slabs you hold</li><li>Look up any wallet's slabs</li><li>A spot on the leaderboard</li><li>On-chain achievement badges as they launch</li></ul>
    ${!W.address?`<div class="acts" style="margin:0"><button class="btn primary" data-act="connect">Connect wallet to continue</button></div>`
     :`<div class="acts" style="margin:0"><button class="btn primary" data-act="pass-buy" ${PASS.paying?'disabled':''}>${PASS.paying?'Waiting for payment…':'Get MONDEX Pass · '+PASS_SOL+' SOL'}</button><button class="btn ghost" data-act="pass-check" ${PASS.checking?'disabled':''}>${PASS.checking?'Checking…':'Check for my pass'}</button></div>`}
    <p class="muted" style="font-size:.8rem">The pass is tied to the wallet that pays. Payment goes from your wallet straight to MONDEX at <span class="mono" style="word-break:break-all">${TREASURY}</span>. You can also send exactly ${PASS_SOL} SOL to that address yourself, then choose "Check for my pass".</p>
   </div>`;
 }
+
+/* ---------------- SOL → USD ---------------- */
+let SOLUSD=null;
+async function loadSolPrice(){try{const r=await fetch('/api/solprice');const j=await r.json();if(j.usd){SOLUSD=j.usd;rerender()}}catch(e){}}
+const usdOf=sol=>SOLUSD?'≈ $'+n(Math.round(sol*SOLUSD)):'';
+
+/* ---------------- Leaderboard (wallet sign-in) ----------------
+   Signing a message is free: no transaction, nothing approved. The server checks the
+   signature and recomputes the score from the wallet's real slabs. */
+const LBD={state:'idle',rows:[],err:null,joining:false,mine:null};
+async function loadLeaders(){
+  LBD.state='loading';rerender();
+  try{const r=await fetch('/api/leaderboard');const j=await r.json().catch(()=>({}));
+    if(!r.ok){LBD.state=r.status===503?'setup':'error';LBD.err=j.error;rerender();return}
+    LBD.rows=j.leaders||[];LBD.state='ready';rerender();
+  }catch(e){LBD.state='error';LBD.err='We couldn’t connect to the network. Please try again.';rerender()}
+}
+async function joinLeaderboard(){
+  if(!W.address){connectModal();return}
+  const p=W.provider;if(!p||!p.signMessage){toast('This wallet can’t sign messages. Try Phantom or Solflare.','err');return}
+  LBD.joining=true;rerender();
+  try{
+    const message=`MONDEX sign-in\nWallet: ${W.address}\nIssued: ${new Date().toISOString()}\nThis only proves you own this wallet. It costs nothing and approves nothing.`;
+    const out=await p.signMessage(new TextEncoder().encode(message),'utf8');
+    const sigBytes=out&&out.signature?out.signature:out;let bin='';new Uint8Array(sigBytes).forEach(b=>bin+=String.fromCharCode(b));
+    const r=await fetch('/api/leaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({wallet:W.address,message,signature:btoa(bin)})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(j.error||'failed');
+    LBD.mine=j;toast(j.rank?`You're #${j.rank} on the leaderboard.`:'Score saved.','ok');LBD.state='idle';
+  }catch(e){const m=(e&&e.message)||'';toast(e&&(e.code===4001||/reject|cancel|denied/i.test(m))?'Sign-in cancelled. No changes were made.':(m&&m!=='failed'?m:'We couldn’t connect to the network. Please try again.'),'err')}
+  LBD.joining=false;rerender();
+}
+const joinBtn=(label)=>`<button class="btn ${LBD.joining?'':'primary'}" data-act="lb-join" ${LBD.joining?'disabled':''}>${LBD.joining?'Check your wallet…':label}</button>`;
 
 /* ---------------- Pages ---------------- */
 const head=(eyebrow,title,lede,chips='')=>`<div class="page-head"><div class="wrap"><div class="row"><span class="eyebrow">${eyebrow}</span>${chips}</div><h1 style="font-size:clamp(2.6rem,8vw,5.6rem)">${title}</h1>${lede?`<p>${lede}</p>`:''}</div></div>`;
@@ -904,6 +937,7 @@ pages.collect=()=>{
   return head('My collection · '+esc(short(W.address)),'Collect','The Collector Crypt slabs in your wallet, read live from Solana. Collector Score is a game metric with no monetary value.',LIVEC)+
   `<div class="wrap"><div class="level">${badgeSvg('Dragon',76,'LV '+lv.level)}<div style="flex:1;min-width:220px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong style="font:800 1.8rem var(--f-display);text-transform:uppercase">Level ${lv.level} · ${lv.title}</strong><span class="mono muted tnum" style="font-size:.8rem">${n(sc)} / ${n(lv.next)} to level ${Math.min(100,lv.level+1)}</span></div><div class="bar" style="margin-top:8px"><i style="width:${lv.pct}%"></i></div></div></div>
   <div class="stats" style="grid-template-columns:repeat(6,minmax(0,1fr))">${[['Collector level',lv.level],['Collector score',n(sc)],['Slabs',s.length],['Insured value',usd(val)],['Grade 10s',gems],['Top slab',top?usd(top.insured||0):'—']].map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:-8px 0 24px">${joinBtn(LBD.mine?'Update my rank':'Join the leaderboard')}${LBD.mine&&LBD.mine.rank?`<span class="chip live">Rank #${LBD.mine.rank}</span>`:''}<a class="btn ghost sm" href="#leaderboard">View leaderboard</a></div>
   ${items.length?`<div class="grid-cards">${items.map(x=>slabCard(x)).join('')}</div>`:`<div class="empty"><h3>Your collection is waiting.</h3><p>This wallet doesn't hold any Collector Crypt slabs yet.</p><a class="btn primary" href="#marketplace">Shop slabs</a></div>`}</div>`;
 };
 
@@ -917,13 +951,28 @@ pages.rewards=()=>{
   <div class="rewards">${ACHIEVEMENTS.map(a=>{const u=W.address&&a.f(s);return `<div class="reward ${u?'':'locked'}">${badgeSvg(a.type,52)}<div><h4>${a.name}</h4><p class="muted" style="font-size:.84rem">${a.desc}</p></div><div style="display:flex;justify-content:space-between;gap:6px;align-items:center;margin-top:auto"><span class="chip">Achievement</span>${u?'<span class="chip live">Unlocked</span>':'<span class="chip">Locked</span>'}</div></div>`}).join('')}</div></div>`;
 };
 
+pages.leaderboard=()=>{
+  if(LBD.state==='idle')setTimeout(loadLeaders,0);
+  const me=W.address;
+  const body=LBD.state==='loading'||LBD.state==='idle'?`<div class="empty"><h3>Loading the leaderboard…</h3></div>`
+   :LBD.state==='setup'?`<div class="empty"><h3>The leaderboard is getting set up.</h3><p>Check back soon.</p></div>`
+   :LBD.state==='error'?`<div class="empty"><h3>${esc(LBD.err||'We couldn’t connect to the network. Please try again.')}</h3><button class="btn" data-act="lb-retry">Try again</button></div>`
+   :!LBD.rows.length?`<div class="empty"><h3>No collectors yet.</h3><p>Be the first on the board.</p>${me&&hasPass()?joinBtn('Join the leaderboard'):''}</div>`
+   :`<div class="tbl-wrap"><table class="lb"><thead><tr><th>Rank</th><th>Collector</th><th class="num">Score</th><th class="num">Slabs</th><th class="num">Insured value</th><th class="num">Top slab</th><th class="num">Grade 10s</th></tr></thead><tbody>
+     ${LBD.rows.map(r=>`<tr class="${r.wallet===me?'me':''}"><td class="rank ${r.rank<=3?'top':''}">${r.rank}</td><td><div class="who"><span class="avatar" style="background:linear-gradient(135deg,hsl(${hash(r.wallet)%360} 70% 60%),hsl(${(hash(r.wallet)+60)%360} 60% 35%))"></span><a href="https://solscan.io/account/${esc(r.wallet)}" target="_blank" rel="noopener" class="mono">${esc(short(r.wallet))}</a>${r.wallet===me?' <span class="chip live">You</span>':''}</div></td><td class="num">${n(r.score)}</td><td class="num">${r.slabs}</td><td class="num">${usd(r.value)}</td><td class="num">${usd(r.top)}</td><td class="num">${r.gems}</td></tr>`).join('')}
+   </tbody></table></div>`;
+  const cta=!me?`<button class="btn primary" data-act="connect">Connect wallet</button>`:hasPass()?joinBtn('Update my rank'):`<button class="btn primary" data-act="pass-buy">Get MONDEX Pass to join</button>`;
+  return head('Collector rankings','Leaderboard','Ranked by Collector Score, worked out from the Collector Crypt slabs each wallet really holds. Pass holders join by signing a free message.',LIVEC)+
+  `<div class="wrap"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:20px"><p class="muted" style="font-size:.86rem;max-width:60ch">Scores update when a collector signs in. Signing is free: no transaction, nothing approved.</p>${cta}</div>${body}</div>`;
+};
+
 pages['collector-crypt']=()=>head('About the vault','Collector Crypt','The slabs on MONDEX are Collector Crypt tokens: each one is backed by a physical graded card stored in an insured vault.','<span class="chip">Not affiliated with Collector Crypt</span>')+
  `<div class="wrap"><div class="split" style="margin-bottom:40px"><div class="panel"><span class="eyebrow">How a slab token works</span><h3 style="margin:10px 0 14px">Backed by the real card</h3><p class="muted">Collector Crypt stores each graded card in an insured vault and issues one token for it on Solana. Whoever holds the token owns the card. Selling it moves the token in seconds; the card stays safe in the vault.</p></div>
  <div class="panel"><span class="eyebrow">Getting the card</span><h3 style="margin:10px 0 14px">Redeem and ship</h3><p class="muted">To get the physical slab, redeem the token through Collector Crypt. The token is burned and the card ships to you. Fees and terms are set by Collector Crypt.</p><div style="margin-top:14px"><a class="btn" href="https://collectorcrypt.com" target="_blank" rel="noopener">Visit Collector Crypt</a></div></div></div>
  <div class="flow">${['Graded slab vaulted','Token minted on Solana','Bought and traded on-chain','Shown in your MONDEX collection','Redeemed for the physical card'].map((s,i,a)=>`<div class="step ${i===3?'hl':''}">${s.toUpperCase()}</div>${i<a.length-1?'<div class="arrow"></div>':''}`).join('')}</div></div>`;
 
 pages.roadmap=()=>head('Where MONDEX is going','Roadmap','')+
- `<div class="wrap"><div class="road">${[['Real data','now','Live',['Live Slabs from Solana','Card images and TCGplayer prices','Wallet lookup']],['Real wallets','now','Live',['Connect Phantom, Solflare or Backpack','Your slabs and Collector Score','Achievements']],['Real buying','now','Live',['Live Magic Eden listings','Buy in your own wallet']],['On-chain rewards','','Next',['Achievement badges sent as tokens','Season leaderboard']],['More','','Later',['Sets and collections','Price history','Mobile polish']]]
+ `<div class="wrap"><div class="road">${[['Real data','now','Live',['Live Slabs from Solana','Card images and TCGplayer prices','Wallet lookup']],['Real wallets','now','Live',['Connect Phantom, Solflare or Backpack','Your slabs and Collector Score','Achievements']],['Real buying','now','Live',['Live Magic Eden listings','Buy in your own wallet']],['Leaderboard','now','Live',['Wallet sign-in','Rankings from real holdings']],['On-chain rewards','','Next',['Achievement badges sent as tokens']],['More','','Later',['Sets and collections','Price history','Mobile polish']]]
  .map(([t,c,s,items],i)=>`<div class="phase ${c}"><div class="pn">0${i+1}</div><div><h3>${t} <span class="chip ${s==='Live'?'live':''}">${s}</span></h3><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`).join('')}</div></div>`;
 
 pages.guide=()=>head('Collector guide','Grading guide','What the numbers on a slab mean.')+
@@ -933,18 +982,18 @@ pages.guide=()=>head('Collector guide','Grading guide','What the numbers on a sl
  <div class="panel"><span class="eyebrow">Graders</span><h3 style="margin:10px 0 14px">Who grades the slabs</h3><div style="display:grid;gap:12px" class="muted"><p><strong style="color:var(--fg)">PSA</strong> is the most common grader for Pokémon cards.</p><p><strong style="color:var(--fg)">BGS (Beckett)</strong> adds subgrades for centering, corners, edges and surface.</p><p><strong style="color:var(--fg)">CGC</strong> grades with half points and is common on modern cards.</p></div></div></div></div>`;
 
 pages.faq=()=>{const Q=[
- ['What is MONDEX?','<p>A fan-built collector site for graded Pokémon cards on Solana. It shows real Collector Crypt slabs, real listings, and your real collection when you connect a wallet.</p>'],
+ ['What is MONDEX?','<p>A collector site for graded Pokémon cards on Solana. It shows real Collector Crypt slabs, real listings, and your real collection when you connect a wallet.</p>'],
  ['Are the cards real?','<p>Yes. Every slab shown is a Collector Crypt token backed by a physical graded card in an insured vault. Data is read live from Solana.</p>'],
  ['How do I buy a slab?','<p>Open the Marketplace and choose Buy on Magic Eden. You review and sign the purchase in your own wallet on Magic Eden. MONDEX never holds your funds or cards.</p>'],
  ['Is it safe to connect my wallet?','<p>MONDEX only reads your public address. It never asks for your seed phrase or private key and never requests token approvals.</p>'],
  ['What are tiers?','<p>Common, Rare, Epic, Legendary and Mythic are set by the insured value on each slab’s token, from under $60 to $2,500+.</p>'],
  ['What is Collector Score?','<p>A game metric from the slabs you hold: Common 1, Rare 5, Epic 15, Legendary 50, Mythic 250, plus 50% for a grade 10. It has no monetary value.</p>'],
- ['Is MONDEX affiliated with Pokémon, Collector Crypt or Magic Eden?','<p>No. MONDEX is an independent fan project. Pokémon is a trademark of Nintendo, Creatures Inc. and GAME FREAK inc.</p>'],
+ ['Is MONDEX affiliated with Pokémon, Collector Crypt or Magic Eden?','<p>No. MONDEX is an independent project. Pokémon is a trademark of Nintendo, Creatures Inc. and GAME FREAK inc.</p>'],
  ['What is the MONDEX Pass?','<p>A one-time payment of 0.5 SOL, sent from your wallet straight to MONDEX, that unlocks your collection dashboard, achievements and wallet lookups for that wallet. Solana payments are final.</p>'],
  ['Is there a MONDEX token?','<p>No. There is no MONDEX token.</p>']];
  return head('Questions','FAQ','')+`<div class="wrap"><div class="faq" style="max-width:860px">${Q.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}</summary><div class="ans">${a}</div></details>`).join('')}</div></div>`};
 pages.terms=()=>head('Legal','Terms','')+`<div class="wrap"><div class="legal">
- <h3>About MONDEX</h3><p>MONDEX is an independent fan project that displays public Solana data about Collector Crypt tokens and links to listings on Magic Eden. MONDEX does not sell cards or take custody of anyone's cards or funds.</p>
+ <h3>About MONDEX</h3><p>MONDEX is an independent project that displays public Solana data about Collector Crypt tokens and links to listings on Magic Eden. MONDEX does not sell cards or take custody of anyone's cards or funds.</p>
  <h3>MONDEX Pass</h3><p>The MONDEX Pass is a one-time payment of 0.5 SOL for access to site features for the paying wallet. It is not an investment and has no resale value. Solana payments are final; check the amount and address before you sign.</p>
  <h3>Purchases</h3><p>Purchases happen on Magic Eden under its terms, signed in your own wallet. Check every transaction before you sign it.</p>
  <h3>Your wallet</h3><p>MONDEX never asks for your seed phrase or private key and never requests token approvals.</p>
@@ -994,6 +1043,8 @@ document.addEventListener('click',ev=>{
     case 'mk-page':loadListings(+t.dataset.v);break;
     case 'mk-retry':loadListings(MK.offset);break;
     case 'pass-buy':passReview();break;
+    case 'lb-join':joinLeaderboard();break;
+    case 'lb-retry':loadLeaders();break;
     case 'pass-pay':payPass();break;
     case 'pass-check':checkPass(false);break;
   }
@@ -1004,7 +1055,7 @@ document.addEventListener('pointermove',e=>{if(reduce)return;const c=e.target.cl
   document.querySelectorAll('[data-tilt]').forEach(el=>{if(el!==c){el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')}});
   if(!c)return;const b=c.getBoundingClientRect(),px=(e.clientX-b.left)/b.width-.5,py=(e.clientY-b.top)/b.height-.5;c.style.setProperty('--ry',(px*14).toFixed(1)+'deg');c.style.setProperty('--rx',(-py*14).toFixed(1)+'deg')});
 
-render();probeImages();loadLive();
+render();probeImages();loadLive();loadSolPrice();
 // Reconnect a wallet the visitor already trusted, without a popup
 setTimeout(()=>{if(S.lastWallet)useWallet(S.lastWallet,true)},400);
 })();
