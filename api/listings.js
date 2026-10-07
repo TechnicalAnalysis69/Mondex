@@ -1,5 +1,17 @@
 // Vercel serverless function: live Collector Crypt Pokémon listings from Magic Eden.
 // GET /api/listings?offset=0 → up to 100 listings per page, Pokémon cards only.
+// "2022 #182 Galarian Zapdos V CGC 9 Brilliant Stars - English" -> "Galarian Zapdos V"
+// "2021 #175 Full Art/Celebi V CGC" -> "Celebi V"
+function cleanTitle(raw) {
+  let s = String(raw || '').trim();
+  const m = s.match(/^\d{4}\s+#\S+\s+(.*?)\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)\b/i);
+  if (m) s = m[1]; else s = s.replace(/^\d{4}\s+#\S+\s+/, '');
+  if (s.includes('/')) s = s.split('/').slice(1).join('/');
+  s = s.replace(/\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)(\s+\d+(\.\d+)?)?\s*$/i, '').trim();
+  return s || String(raw || 'Graded card');
+}
+const gradeNum = (num, text) => num || ((String(text || '').match(/\d+(\.\d+)?(?!.*\d)/) || [])[0]) || null;
+
 export default async function handler(req, res) {
   const offset = Math.max(0, Math.min(5000, parseInt(req.query.offset, 10) || 0));
   const url = `https://api-mainnet.magiceden.dev/v2/collections/collector_crypt/listings?offset=${offset}&limit=100`;
@@ -15,8 +27,7 @@ export default async function handler(req, res) {
       (t.attributes || []).forEach((a) => { if (a && a.trait_type) attrs[String(a.trait_type).toLowerCase()] = a.value; });
       const pick = (...names) => { for (const n of names) { if (attrs[n] != null && attrs[n] !== '') return attrs[n]; } return null; };
       const rawName = t.name || 'Graded card';
-      let title = rawName.includes('/') ? rawName.split('/').slice(1).join('/') : rawName;
-      title = title.replace(/\s+(PSA|CGC|BGS|SGC|TAG|BECKETT)(\s+\d+(\.\d+)?)?\s*$/i, '').trim() || rawName;
+      const title = cleanTitle(rawName);
       const insured = parseFloat(pick('insured value'));
       const mint = l.tokenMint || t.mintAddress;
       return {
@@ -24,7 +35,7 @@ export default async function handler(req, res) {
         name: rawName,
         title,
         image: (l.extra && l.extra.img) || t.image || null,
-        grade: pick('gradenum') || pick('the grade', 'grade'),
+        grade: gradeNum(pick('gradenum'), pick('the grade', 'grade')),
         gradeText: pick('the grade', 'grade'),
         grader: pick('grading company'),
         cert: pick('grading id'),
