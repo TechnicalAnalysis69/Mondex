@@ -1055,12 +1055,12 @@ async function loadSlabs(page,owner){
   }catch(e){SL.state='setup';SL.err=null;rerender()}
 }
 function slabCard(x){
-  const tier=['Mythic','Legendary','Epic','Rare','Common'][0];
-  return `<div class="listing"><div class="card Rare" style="cursor:default" role="img" aria-label="${esc(x.name)}"><div class="card-in">
-    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(x.name)}</div><div class="sl-sub">${esc([x.year,x.set].filter(Boolean).join(' · ')||'Vaulted slab')}</div></div><div class="sl-g"><div class="sl-grader">${esc(x.grader||'GRADE')}</div><div class="sl-num">${esc(x.grade||'—')}</div></div></div>
-    <div class="art">${x.image?`<img src="${esc(x.image)}" loading="lazy" alt="${esc(x.name)} slab photo">`:''}</div>
-    <div class="card-bot"><span class="rb Rare">Vaulted</span><span class="serial">${esc(x.cert?'CERT '+x.cert:x.id.slice(0,4)+'…'+x.id.slice(-4))}</span></div></div></div>
-    <div class="mono muted" style="font-size:.72rem;word-break:break-all"><a href="https://solscan.io/token/${esc(x.id)}" target="_blank" rel="noopener">View token on Solscan</a></div></div>`;
+  const v=x.insured, tier=v==null?'Rare':v<60?'Common':v<200?'Rare':v<600?'Epic':v<2500?'Legendary':'Mythic';
+  return `<div class="listing"><div class="card ${tier}" style="cursor:default" role="img" aria-label="${esc(x.title||x.name)}, ${esc(x.grader||'')} ${esc(x.grade||'')}"><div class="card-in">
+    <div class="slab-label"><div class="sl-l"><div class="sl-name">${esc(x.title||x.name)}</div><div class="sl-sub">${esc([x.year,x.set].filter(Boolean).join(' · ')||'Vaulted slab')}</div></div><div class="sl-g"><div class="sl-grader">${esc(x.grader||'GRADE')}</div><div class="sl-num">${esc(x.grade||'—')}</div></div></div>
+    <div class="art">${x.image?`<img src="${esc(x.image)}" loading="lazy" alt="${esc(x.title||x.name)} slab photo">`:''}</div>
+    <div class="card-bot"><span class="rb ${tier}">${tier}</span><span class="serial">${v!=null?'$'+n(v)+' insured':'Vaulted'}</span></div></div></div>
+    <div class="mono muted" style="font-size:.72rem;line-height:1.5">${x.gradeText?esc(x.gradeText)+' · ':''}${x.cert?'Cert '+esc(x.cert):''}<br>${esc(x.vault||'Collector Crypt vault')} · <a href="https://solscan.io/token/${esc(x.id)}" target="_blank" rel="noopener">Solscan</a></div></div>`;
 }
 pages.slabs=()=>{
   if(SL.state==='idle')setTimeout(()=>loadSlabs(1,''),0);
