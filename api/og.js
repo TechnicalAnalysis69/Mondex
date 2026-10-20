@@ -39,8 +39,8 @@ async function loadFonts() {
 }
 
 const logo = () => h('div', { alignItems: 'center', gap: 14 },
-  h('div', { width: 34, height: 34, borderRadius: 8, border: `3px solid ${C.foil}`, alignItems: 'center', justifyContent: 'center', color: C.foil, fontSize: 20, fontWeight: 800 }, 'M'),
-  h('div', { fontFamily: 'Display', fontSize: 34, letterSpacing: 2, color: C.fg }, 'MONDEX'));
+  h('div', { width: 34, height: 34, borderRadius: 8, border: `3px solid ${C.foil}`, alignItems: 'center', justifyContent: 'center', color: C.foil, fontSize: 20, fontWeight: 800 }, 'P'),
+  h('div', { fontFamily: 'Display', fontSize: 34, letterSpacing: 2, color: C.fg }, 'PokeDex'));
 const stat = (k, v, color) => h('div', { flexDirection: 'column', gap: 6, padding: '18px 22px', background: C.panel, border: `2px solid ${C.line}`, borderRadius: 18, flex: 1 },
   h('div', { fontSize: 18, color: C.dim, letterSpacing: 2, textTransform: 'uppercase' }, k),
   h('div', { fontSize: 38, fontWeight: 700, color: color || C.fg }, v));

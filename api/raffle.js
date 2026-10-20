@@ -9,7 +9,7 @@ import crypto from 'node:crypto';
 import { hasRedis, redis, parseJSON } from './_lib.js';
 
 const MINT = process.env.TOKEN_MINT || '';
-const TICKER = process.env.TOKEN_TICKER || 'MONDEX';
+const TICKER = process.env.TOKEN_TICKER || 'POKEDEX';
 const MIN = Number(process.env.RAFFLE_MIN || 1000000);
 const EXCLUDE = new Set(String(process.env.RAFFLE_EXCLUDE || '').split(',').map((s) => s.trim()).filter(Boolean));
 const rpc = (method, params) => fetch(`https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`, {
